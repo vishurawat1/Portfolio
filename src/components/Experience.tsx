@@ -35,26 +35,15 @@ const timelineData = [
     ]
   },
   {
-    type: "achievement",
-    role: "Achievements & Certifications",
-    company: "Various",
-    duration: "Ongoing",
-    details: [
-      "Solved 150+ DSA problems across LeetCode and competitive programming platforms.",
-      "Finalist at HackIndore 2025 for developing a municipality management dashboard.",
-      "Oracle Certified Foundations Associate in Artificial Intelligence."
-    ]
-  },
-  {
     type: "experience",
     role: "Software Engineering Intern",
     company: "DDPI Groups",
     duration: "May 2026 – Present",
     details: [
-      "Developed, tested, and deployed a robust full-stack web platform using Next.js, Node.js, Express, and MongoDB.",
-      "Engineered stateful RESTful APIs with JWT-based authentication mechanisms.",
-      "Architected data pipelines with MongoDB, reducing database response latency by 15%.",
-      "Managed deployment workflows utilizing Vercel and AWS infrastructure with CI/CD pipelines."
+      "Developing, testing, and deploying a robust full-stack web platform using Next.js, Node.js, Express, and MongoDB.",
+      "Engineering stateful RESTful APIs with JWT-based authentication mechanisms.",
+      "Architecting data pipelines with MongoDB, reducing database response latency by 15%.",
+      "Managing deployment workflows utilizing Vercel and AWS infrastructure with CI/CD pipelines."
     ]
   }
 ];
@@ -79,9 +68,9 @@ export default function Experience() {
         <div className="relative" ref={containerRef}>
           {/* Background Line */}
           <div className="absolute left-[15px] md:left-1/2 md:-translate-x-1/2 top-0 bottom-0 w-1 bg-white/10 rounded-full" />
-          
+
           {/* Glowing Animated Line */}
-          <motion.div 
+          <motion.div
             className="absolute left-[15px] md:left-1/2 md:-translate-x-1/2 top-0 w-1 bg-neon-cyan shadow-[0_0_15px_#00f0ff] rounded-full origin-top"
             style={{ height: lineHeight }}
           />
@@ -91,12 +80,12 @@ export default function Experience() {
               const isEven = index % 2 === 0;
               return (
                 <div key={index} className={`relative flex flex-col md:flex-row ${isEven ? 'md:flex-row-reverse' : ''} items-start md:justify-between w-full pl-12 md:pl-0`}>
-                  
+
                   {/* Timeline Dot */}
                   <div className="absolute left-[11px] md:left-1/2 md:-translate-x-1/2 mt-1.5 w-3 h-3 rounded-full bg-celestial-purple border-2 border-neon-cyan shadow-[0_0_10px_#00f0ff] z-10" />
 
                   {/* Content Container */}
-                  <motion.div 
+                  <motion.div
                     initial={{ opacity: 0, x: isEven ? 50 : -50 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true, margin: "-100px" }}
@@ -108,7 +97,7 @@ export default function Experience() {
                       <h3 className="text-xl font-serif text-off-white font-bold">{item.role}</h3>
                       <h4 className="text-soft-gold text-sm font-medium">{item.company}</h4>
                     </div>
-                    
+
                     <ul className="space-y-2">
                       {item.details.map((detail, idx) => (
                         <li key={idx} className="text-muted-silver text-sm flex items-start">
@@ -118,7 +107,7 @@ export default function Experience() {
                       ))}
                     </ul>
                   </motion.div>
-                  
+
                   {/* Empty space for alternative side on desktop */}
                   <div className="hidden md:block md:w-[45%]" />
                 </div>

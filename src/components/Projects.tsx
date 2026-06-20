@@ -9,6 +9,8 @@ interface ProjectProps {
   tech: string[];
   description: string[];
   year: string;
+  githubLink?: string;
+  externalLink?: string;
 }
 
 const projects: ProjectProps[] = [
@@ -21,7 +23,9 @@ const projects: ProjectProps[] = [
       "Designed interactive workflows for dynamic resume improvements and visualized ATS scores using Recharts.",
       "Secured serverless API routes with rate limiting and Firebase-based caching."
     ],
-    year: "2025"
+    year: "2025",
+    githubLink: "https://github.com/vishurawat1",
+    externalLink: "https://vr-resume-analysis.vercel.app/"
   },
   {
     title: "Wedding Budget Estimation Platform",
@@ -32,7 +36,9 @@ const projects: ProjectProps[] = [
       "Integrated PDF export workflows for downloadable budget reports.",
       "Created reusable frontend components, reducing duplicate UI code by 30%."
     ],
-    year: "2025"
+    year: "2025",
+    githubLink: "https://github.com/vishurawat1",
+    externalLink: "https://vr-budget-calculator.vercel.app/"
   },
   {
     title: "Modern URL Shortener",
@@ -43,7 +49,9 @@ const projects: ProjectProps[] = [
       "Created analytics dashboards using Recharts to visualize traffic trends.",
       "Secured backend services using Express rate limiting, CORS handling, and NanoID."
     ],
-    year: "2025"
+    year: "2025",
+    githubLink: "https://github.com/vishurawat1",
+    externalLink: "#"
   }
 ];
 
@@ -112,18 +120,26 @@ function ProjectCard({ project }: { project: ProjectProps }) {
           maskComposite: 'exclude',
         }}
       />
-      
+
       <div className="relative z-10 flex flex-col h-full">
         <div className="flex justify-between items-start mb-4">
           <h3 className="text-2xl font-serif text-off-white font-semibold">{project.title}</h3>
           <div className="flex gap-3 text-muted-silver">
-            <a href="#" className="hover:text-neon-cyan transition-colors"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.02c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A4.8 4.8 0 0 0 8 18v4"></path></svg></a>
-            <a href="#" className="hover:text-neon-cyan transition-colors"><ExternalLink size={20} /></a>
+            {project.githubLink && (
+              <a href={project.githubLink} target="_blank" rel="noopener noreferrer" className="hover:text-neon-cyan transition-colors">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.02c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A4.8 4.8 0 0 0 8 18v4"></path></svg>
+              </a>
+            )}
+            {project.externalLink && (
+              <a href={project.externalLink} target="_blank" rel="noopener noreferrer" className="hover:text-neon-cyan transition-colors">
+                <ExternalLink size={20} />
+              </a>
+            )}
           </div>
         </div>
-        
+
         <p className="text-sm text-neon-cyan font-mono mb-4">{project.year}</p>
-        
+
         <div className="flex flex-wrap gap-2 mb-6">
           {project.tech.map((t, i) => (
             <span key={i} className="text-xs px-3 py-1 rounded-full bg-celestial-purple/20 text-neon-cyan border border-celestial-purple/30">
@@ -131,7 +147,7 @@ function ProjectCard({ project }: { project: ProjectProps }) {
             </span>
           ))}
         </div>
-        
+
         <ul className="space-y-3 flex-grow">
           {project.description.map((desc, i) => (
             <li key={i} className="text-muted-silver text-sm flex items-start">
@@ -150,10 +166,10 @@ export default function Projects() {
     <section className="py-24 px-6 relative z-10" id="spellbook">
       <div className="max-w-6xl mx-auto">
         <div className="mb-16">
-          <h2 className="text-4xl md:text-5xl font-serif text-off-white font-bold mb-4">The Spellbook</h2>
+          <h2 className="text-4xl md:text-5xl font-serif text-off-white font-bold mb-4">My Projects</h2>
           <div className="h-1 w-24 bg-gradient-to-r from-neon-cyan to-celestial-purple rounded-full"></div>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {projects.map((project, i) => (
             <ProjectCard key={i} project={project} />

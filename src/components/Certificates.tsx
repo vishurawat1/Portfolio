@@ -5,19 +5,29 @@ import { Award } from "lucide-react";
 
 const certificates = [
   {
-    title: "Master of Magical Development",
-    issuer: "Sorcery Tech Institute",
-    date: "2025",
+    title: "Marketing Analytics",
+    issuer: "NPTEL",
+    date: "April 2026",
   },
   {
-    title: "Advanced React & WebGL",
-    issuer: "Frontend Alchemists",
-    date: "2024",
+    title: "IT Support Certificate",
+    issuer: "Google",
+    date: "Feburary 2026",
   },
   {
-    title: "Hackathon Champion",
-    issuer: "BVP IEEE",
-    date: "2023",
+    title: "The Bits and Bytes of computer networking",
+    issuer: "Google",
+    date: "November 2025",
+  },
+  {
+    title: "Certified Foundation Associate",
+    issuer: "Oracle",
+    date: "October 2025",
+  },
+  {
+    title: "Technology Job Simulation",
+    issuer: "Deloitte",
+    date: "July 2025",
   }
 ];
 
@@ -50,7 +60,7 @@ export default function Certificates() {
           >
             {/* Border glow */}
             <div className="absolute inset-0 bg-gradient-to-br from-celestial-purple/50 via-deep-space to-neon-cyan/50 opacity-50 group-hover:opacity-100 transition-opacity" />
-            
+
             <div className="relative h-full bg-deep-space/90 backdrop-blur-md p-8 rounded-xl border border-muted-silver/10 flex flex-col items-center text-center">
               <Award className="w-12 h-12 text-soft-gold mb-4 drop-shadow-[0_0_10px_rgba(255,215,0,0.5)]" />
               <h3 className="text-xl font-serif text-off-white mb-2">{cert.title}</h3>
