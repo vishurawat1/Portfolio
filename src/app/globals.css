@@ -9,6 +9,13 @@
   --color-off-white: #f3f1f6;
   --color-muted-silver: #a09ca6;
 
+  /* Upside Down Alter-Ego Theme Colors */
+  --color-abyss-black: #050002;
+  --color-crimson-abyss: #1a0305;
+  --color-blood-red: #ff0033;
+  --color-crimson-glow: #ef4444;
+  --color-warrior-amber: #f59e0b;
+
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-serif: var(--font-playfair), ui-serif, Georgia, serif;
   --font-cinzel: var(--font-cinzel), serif;
@@ -21,6 +28,7 @@
     background-size: 550px 550px, 350px 350px, 250px 250px, 150px 150px;
     background-position: 0 0, 40px 60px, 130px 270px, 70px 100px;
     background-attachment: fixed;
+    transition: background-color 0.8s ease, color 0.8s ease;
     
     /* Hide scrollbar globally but allow scrolling */
     -ms-overflow-style: none;  /* IE and Edge */
@@ -30,9 +38,46 @@
   html::-webkit-scrollbar, body::-webkit-scrollbar {
     display: none; /* Chrome, Safari and Opera */
   }
+
+  /* Upside Down Theme Overrides */
+  html.upside-down-mode, body.upside-down-mode {
+    background-color: #030001 !important;
+    color: #e5e5e5 !important;
+    background-image: radial-gradient(rgba(239, 68, 68, 0.4), rgba(255, 0, 51, 0.15) 2px, transparent 4px), radial-gradient(rgba(255, 255, 255, 0.2), rgba(239, 68, 68, 0.1) 1px, transparent 3px), radial-gradient(rgba(185, 28, 28, 0.3), rgba(0,0,0,.3) 2px, transparent 4px) !important;
+    background-size: 450px 450px, 250px 250px, 180px 180px !important;
+  }
 }
 
 /* Lock scroll utility used by JS */
 .no-scroll {
   overflow: hidden;
+}
+
+@keyframes tilt {
+  0%, 50%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(1deg);
+  }
+  75% {
+    transform: rotate(-1deg);
+  }
+}
+
+@keyframes spinSlow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-tilt {
+  animation: tilt 6s infinite linear;
+}
+
+.animate-spin-slow {
+  animation: spinSlow 12s infinite linear;
 }

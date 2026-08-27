@@ -1,9 +1,16 @@
 "use client";
 
+import { useThemeMode } from "@/context/ThemeModeContext";
 import { useEffect, useRef } from "react";
 
 export default function CanvasCursor() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { mode } = useThemeMode();
+  const modeRef = useRef(mode);
+
+  useEffect(() => {
+    modeRef.current = mode;
+  }, [mode]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -106,8 +113,8 @@ export default function CanvasCursor() {
     let E = {
       debug: true,
       friction: 0.5,
-      trails: 40,
-      size: 40,
+      trails: 20,
+      size: 35,
       dampening: 0.25,
       tension: 0.98,
     };
@@ -131,12 +138,21 @@ export default function CanvasCursor() {
       if (running) {
         ctx!.globalCompositeOperation = "source-over";
         ctx!.clearRect(0, 0, canvas!.width, canvas!.height);
-        ctx!.globalCompositeOperation = "lighter";
+
+        const isUpsideDown = modeRef.current === "upside-down";
         
-        // Cycle hue between cyan (180) and purple (270)
-        let hue = Math.round(f.update());
-        ctx!.strokeStyle = `hsla(${hue}, 100%, 60%, 0.15)`;
-        ctx!.lineWidth = 2;
+        if (isUpsideDown) {
+          // Fiery subtle crimson/amber embers - translucent so text is 100% readable
+          let hue = Math.round(f.update()) % 360;
+          let emberHue = ((hue % 35) + 345) % 360;
+          ctx!.strokeStyle = `hsla(${emberHue}, 100%, 60%, 0.07)`;
+          ctx!.lineWidth = 1.2;
+        } else {
+          // Delicate cyan/purple luminescence
+          let hue = Math.round(f.update());
+          ctx!.strokeStyle = `hsla(${hue}, 100%, 65%, 0.06)`;
+          ctx!.lineWidth = 1.2;
+        }
         
         for (let t = 0; t < E.trails; t++) {
           if (lines[t]) {
@@ -156,9 +172,9 @@ export default function CanvasCursor() {
 
     f = new (Oscillator as any)({
       phase: Math.random() * 2 * Math.PI,
-      amplitude: 45, // To fluctuate between 180 and 270
+      amplitude: 45,
       frequency: 0.01,
-      offset: 225, // Base hue (midpoint between cyan and purple)
+      offset: 225,
     });
 
     resizeCanvas();
@@ -179,7 +195,7 @@ export default function CanvasCursor() {
   return (
     <canvas
       ref={canvasRef}
-      className="pointer-events-none fixed inset-0 z-0 w-full h-full"
+      className="pointer-events-none fixed inset-0 z-[40] w-full h-full"
     />
   );
 }
