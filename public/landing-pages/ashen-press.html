@@ -1,0 +1,1318 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>My Certificates — Vertical Kakemono Hanging Scroll Gallery</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Onest:wght@300;400;500;600;700&family=EB+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #05080d;
+    --ink: #dfede0;
+    --ink-muted: rgba(223, 237, 224, 0.65);
+    --gold: #d4af37;
+    --gold-bright: #ffd700;
+    --vermilion: #e0231c;
+    --amber: #ff9a3c;
+    --ease: cubic-bezier(.22, 1, .36, 1);
+    --ease-out: cubic-bezier(.16, 1, .3, 1);
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    width: 100%; height: 100%;
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Onest', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  canvas#gl {
+    position: fixed; inset: 0;
+    width: 100%; height: 100%;
+    display: block;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    z-index: 1;
+    opacity: 1;
+  }
+
+  /* subtle ambient vignette */
+  .vignette {
+    position: fixed; inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background: radial-gradient(circle at 50% 48%, transparent 45%, rgba(2, 4, 7, 0.88) 100%);
+  }
+
+  /* header */
+  header {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: 64px; z-index: 20;
+    display: flex; align-items: center;
+    justify-content: space-between;
+    padding: 0 clamp(16px, 3.5vw, 40px);
+    pointer-events: none;
+  }
+  header * { pointer-events: auto; }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .mark-seal {
+    width: 30px; height: 30px;
+    border-radius: 7px;
+    background: rgba(224, 35, 28, 0.15);
+    border: 1px solid rgba(224, 35, 28, 0.4);
+    display: grid; place-items: center;
+    color: var(--vermilion);
+    font-size: 13.5px; font-weight: 700;
+  }
+  .brand-text { display: flex; flex-direction: column; gap: 1px; }
+  .brand-title {
+    font-size: 14.5px; font-weight: 500;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--ink);
+  }
+  .brand-sub {
+    font-size: 10.5px; letter-spacing: 0.16em;
+    color: var(--gold);
+  }
+  .header-badge {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 13px; border-radius: 999px;
+    background: rgba(14, 20, 28, 0.88);
+    border: 1px solid rgba(212, 175, 55, 0.28);
+    font-size: 11px; color: var(--gold);
+    letter-spacing: 0.06em;
+  }
+  .h-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: #00e676; box-shadow: 0 0 8px #00e676;
+  }
+
+  /* instructions hint */
+  .shelf-hint {
+    position: fixed; top: 72px; left: 50%;
+    transform: translateX(-50%);
+    z-index: 10; pointer-events: none;
+    font-size: 11px; letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    background: rgba(8, 12, 18, 0.8);
+    padding: 5px 15px; border-radius: 999px;
+    border: 1px solid rgba(223, 237, 224, 0.12);
+    backdrop-filter: blur(12px);
+    transition: opacity 0.5s ease;
+  }
+
+  /* Navigation Arrows */
+  .nav-arrow {
+    position: fixed; top: 50%;
+    transform: translateY(-50%);
+    z-index: 25;
+    width: 50px; height: 50px;
+    border-radius: 50%;
+    background: rgba(12, 17, 26, 0.85);
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    color: var(--gold);
+    display: grid; place-items: center;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7), 0 0 16px rgba(212, 175, 55, 0.2);
+    backdrop-filter: blur(12px);
+    transition: all 0.25s var(--ease-out);
+    user-select: none;
+  }
+  .nav-arrow:hover {
+    background: rgba(224, 35, 28, 0.25);
+    border-color: var(--vermilion);
+    color: #fff;
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.85), 0 0 24px rgba(224, 35, 28, 0.5);
+  }
+  .nav-arrow:active { transform: translateY(-50%) scale(0.96); }
+  .nav-prev { left: clamp(14px, 3vw, 36px); }
+  .nav-next { right: clamp(14px, 3vw, 36px); }
+
+  /* Minimal bottom indicator bar */
+  .scroll-counter-pill {
+    position: fixed; bottom: 22px; left: 50%;
+    transform: translateX(-50%);
+    z-index: 20;
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 8px 20px; border-radius: 999px;
+    background: rgba(10, 15, 22, 0.88);
+    border: 1px solid rgba(212, 175, 55, 0.35);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.8);
+    font-size: 11.5px; letter-spacing: 0.08em;
+    color: var(--ink);
+    user-select: none;
+    pointer-events: none;
+  }
+  .counter-num {
+    font-weight: 700; color: var(--gold);
+  }
+  .counter-dot {
+    opacity: 0.4;
+  }
+  .counter-title {
+    color: rgba(223, 237, 224, 0.95);
+    font-weight: 500;
+  }
+  .counter-tag {
+    font-size: 9.5px; font-weight: 700;
+    padding: 2px 7px; border-radius: 4px;
+    letter-spacing: 0.05em;
+  }
+
+  /* split-screen certificate modal */
+  .cert-modal-backdrop {
+    position: fixed; inset: 0;
+    z-index: 100;
+    background: rgba(2, 4, 7, 0.85);
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+    display: flex; align-items: center; justify-content: center;
+    padding: clamp(14px, 2.8vw, 32px);
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.35s var(--ease-out);
+  }
+  .cert-modal-backdrop.open {
+    opacity: 1; pointer-events: auto;
+  }
+
+  .cert-modal-container {
+    position: relative;
+    width: 100%; max-width: 1060px;
+    max-height: 90vh;
+    background: linear-gradient(145deg, rgba(14, 19, 28, 0.98), rgba(7, 10, 15, 0.99));
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    border-radius: 20px;
+    box-shadow: 0 35px 80px rgba(0, 0, 0, 0.92), 0 0 50px rgba(212, 175, 55, 0.15);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+    transform: scale(0.95) translateY(10px);
+    transition: transform 0.35s var(--ease-out);
+  }
+  .cert-modal-backdrop.open .cert-modal-container {
+    transform: scale(1) translateY(0);
+  }
+
+  .cert-modal-close {
+    position: absolute; top: 16px; right: 18px;
+    width: 36px; height: 36px; border-radius: 50%;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: var(--ink);
+    display: grid; place-items: center;
+    cursor: pointer; z-index: 20;
+    transition: all 0.2s ease;
+  }
+  .cert-modal-close:hover {
+    background: rgba(224, 35, 28, 0.25);
+    border-color: var(--vermilion);
+    color: #fff;
+    transform: rotate(90deg);
+  }
+
+  .cert-modal-layout {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    overflow-y: auto;
+    max-height: calc(90vh - 2px);
+  }
+  @media (max-width: 860px) {
+    .cert-modal-layout { grid-template-columns: 1fr; }
+  }
+
+  /* Left Side: Certificate Canvas Plate */
+  .cert-modal-left {
+    padding: clamp(18px, 3vw, 36px);
+    background: radial-gradient(circle at 50% 50%, rgba(20, 27, 38, 0.7), rgba(9, 12, 18, 0.95));
+    border-right: 1px solid rgba(223, 237, 224, 0.1);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 14px;
+  }
+  .cert-card-preview {
+    width: 100%; max-width: 460px;
+    aspect-ratio: 1.414 / 1;
+    background: #fdfaf3;
+    border-radius: 8px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.75), 0 0 30px rgba(212, 175, 55, 0.2);
+    position: relative;
+    overflow: hidden;
+    color: #1a1612;
+    padding: clamp(14px, 2.5vw, 24px);
+    display: flex; flex-direction: column;
+    justify-content: space-between;
+    box-sizing: border-box;
+    border: 6px double #c9a038;
+  }
+  .cc-watermark {
+    position: absolute; right: 12px; bottom: 8px;
+    font-size: 110px; font-weight: 700;
+    color: rgba(201, 160, 56, 0.07);
+    line-height: 1; pointer-events: none;
+    user-select: none;
+  }
+  .cc-header {
+    display: flex; align-items: flex-start;
+    justify-content: space-between; gap: 12px;
+  }
+  .cc-issuer-row { display: flex; align-items: center; gap: 8px; }
+  .cc-issuer {
+    font-size: 13.5px; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: #4b5563;
+  }
+  .cc-badge {
+    font-size: 9.5px; font-weight: 700;
+    padding: 2px 7px; border-radius: 4px;
+    letter-spacing: 0.06em;
+    background: #2563eb; color: #fff;
+  }
+  .cc-stamp {
+    width: 38px; height: 38px;
+    border: 2px solid #e0231c; border-radius: 6px;
+    color: #e0231c; font-size: 14px; font-weight: 700;
+    display: grid; place-items: center;
+    background: rgba(224, 35, 28, 0.06);
+    transform: rotate(-4deg);
+    flex-shrink: 0;
+  }
+  .cc-body { text-align: center; margin: 10px 0; }
+  .cc-label {
+    font-size: 9.5px; letter-spacing: 0.16em;
+    text-transform: uppercase; color: #6b7280;
+    margin-bottom: 4px;
+  }
+  .cc-title {
+    font-family: 'EB Garamond', serif;
+    font-size: clamp(18px, 2.4vw, 25px);
+    font-weight: 600; line-height: 1.15;
+    color: #111827; margin: 0 0 6px;
+  }
+  .cc-recipient {
+    font-size: 14px; font-weight: 600;
+    letter-spacing: 0.04em; color: #1f2937;
+  }
+  .cc-footer {
+    display: flex; align-items: flex-end;
+    justify-content: space-between;
+    border-top: 1px solid rgba(201, 160, 56, 0.35);
+    padding-top: 8px;
+    font-size: 10px; color: #6b7280;
+  }
+  .cc-date { font-weight: 500; }
+  .cc-id { font-family: monospace; letter-spacing: 0.05em; }
+
+  /* Right Side: Credential Metadata */
+  .cert-modal-right {
+    padding: clamp(20px, 3.2vw, 42px);
+    display: flex; flex-direction: column;
+    justify-content: space-between;
+    gap: 20px;
+  }
+  .cm-meta-top {
+    display: flex; align-items: center;
+    justify-content: space-between; gap: 12px;
+  }
+  .cm-issuer {
+    font-size: 12px; font-weight: 600;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--gold);
+  }
+  .cm-duration {
+    font-size: 11.5px; color: var(--ink-muted);
+  }
+  .cm-title {
+    font-size: clamp(22px, 2.6vw, 32px);
+    font-weight: 600; line-height: 1.2;
+    color: #fff; margin: 0;
+  }
+  .cm-section {
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .cm-section-label {
+    font-size: 10px; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--gold);
+    margin: 0; font-weight: 600;
+  }
+  .cm-desc {
+    margin: 0; font-size: 13.5px; line-height: 1.6;
+    color: rgba(223, 237, 224, 0.85);
+  }
+  .cm-skills {
+    display: flex; flex-wrap: wrap; gap: 6px;
+  }
+  .cm-skill-tag {
+    font-size: 10.5px; padding: 4px 9px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(223, 237, 224, 0.15);
+    color: var(--ink);
+  }
+  .cm-actions {
+    display: flex; align-items: center; gap: 12px;
+    margin-top: 8px; flex-wrap: wrap;
+  }
+  .cm-btn-verify {
+    flex: 1; min-width: 190px;
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    background: linear-gradient(135deg, var(--vermilion), #b51711);
+    color: #fff; text-decoration: none;
+    font-size: 13px; font-weight: 500;
+    padding: 12px 20px; border-radius: 9px;
+    box-shadow: 0 8px 24px rgba(224, 35, 28, 0.35);
+    transition: all 0.25s var(--ease-out);
+    cursor: pointer;
+  }
+  .cm-btn-verify:hover {
+    background: linear-gradient(135deg, #f0322b, var(--vermilion));
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(224, 35, 28, 0.5);
+  }
+  .cm-btn-close {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(223, 237, 224, 0.2);
+    color: var(--ink);
+    font-size: 12.5px; font-weight: 400;
+    padding: 12px 18px; border-radius: 9px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .cm-btn-close:hover {
+    background: rgba(255, 255, 255, 0.12);
+  }
+
+
+</style>
+</head>
+<body>
+
+<canvas id="gl"></canvas>
+<div class="vignette"></div>
+
+<header>
+  <div class="brand">
+    <div class="mark-seal">証</div>
+    <div class="brand-text">
+      <span class="brand-title">My Certificates</span>
+      <span class="brand-sub">Vertical Kakemono Hanging Scroll Vault · 証書掛軸</span>
+    </div>
+  </div>
+  <div class="header-badge">
+    <span class="h-dot"></span>
+    <span>7 Verified Accreditations</span>
+  </div>
+</header>
+
+<div class="shelf-hint" id="shelf-hint">Click vertical scroll to inspect certificate · Drag or use arrows to navigate</div>
+
+<!-- Sleek Navigational Arrows -->
+<button type="button" class="nav-arrow nav-prev" id="btn-prev" aria-label="Previous Certificate">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M15 18l-6-6 6-6"/></svg>
+</button>
+<button type="button" class="nav-arrow nav-next" id="btn-next" aria-label="Next Certificate">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 18l6-6-6-6"/></svg>
+</button>
+
+<!-- Minimal Bottom Status Bar -->
+<div class="scroll-counter-pill" id="scroll-status">
+  <span class="counter-num" id="counter-num">SCROLL 1 OF 7</span>
+  <span class="counter-dot">·</span>
+  <span class="counter-title" id="counter-title">AWS Certified Cloud Practitioner</span>
+  <span class="counter-tag" id="counter-tag" style="background:#ff990025; color:#ff9900; border:1px solid #ff990060;">AWS</span>
+</div>
+
+<!-- SPLIT-SCREEN CERTIFICATE MODAL -->
+<div class="cert-modal-backdrop" id="cert-modal">
+  <div class="cert-modal-container">
+    <button class="cert-modal-close" id="cert-modal-close" aria-label="Close Modal">✕</button>
+    <div class="cert-modal-layout">
+      
+      <!-- LEFT SIDE: RENDERED OFFICIAL CERTIFICATE PLATE -->
+      <div class="cert-modal-left">
+        <div class="cert-card-preview" id="cert-card-plate">
+          <div class="cc-watermark" id="m-watermark">雲</div>
+          <div class="cc-header">
+            <div class="cc-issuer-row">
+              <span class="cc-issuer" id="m-card-issuer">AMAZON WEB SERVICES</span>
+              <span class="cc-badge" id="m-card-badge">AWS</span>
+            </div>
+            <div class="cc-stamp">検印</div>
+          </div>
+          <div class="cc-body">
+            <div class="cc-label">OFFICIALLY ACCREDITED TO</div>
+            <div class="cc-recipient">Vishwajeet Rawat</div>
+            <div class="cc-label" style="margin-top:10px;">FOR DEMONSTRATED MASTERY IN</div>
+            <h3 class="cc-title" id="m-card-title">AWS Certified Cloud Practitioner</h3>
+          </div>
+          <div class="cc-footer">
+            <span class="cc-date" id="m-card-date">17 Sept 2025</span>
+            <span class="cc-id" id="m-card-id">ID: AWS-CCP-2025-VR9812</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT SIDE: METADATA & VERIFICATION ACTIONS -->
+      <div class="cert-modal-right">
+        <div>
+          <div class="cm-meta-top">
+            <span class="cm-issuer" id="m-issuer-name">Amazon Web Services</span>
+            <span class="cm-duration" id="m-duration-text">Issued Sept 2025</span>
+          </div>
+          <h2 class="cm-title" id="m-title">AWS Certified Cloud Practitioner</h2>
+        </div>
+
+        <div class="cm-section">
+          <h4 class="cm-section-label">ACCREDITATION DISCLOSURE</h4>
+          <p class="cm-desc" id="m-desc"></p>
+        </div>
+
+        <div class="cm-section">
+          <h4 class="cm-section-label">CORE ARCHITECTURAL COMPETENCIES</h4>
+          <div class="cm-skills" id="m-skills"></div>
+        </div>
+
+        <div class="cm-actions">
+          <a href="#" target="_blank" rel="noopener noreferrer" class="cm-btn-verify" id="m-redirect-link">
+            <span>Verify Credential / View PDF</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M7 7h10v10"/></svg>
+          </a>
+          <button type="button" class="cm-btn-close" id="m-btn-close">Close Scroll</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<script type="module">
+import * as THREE from './three.module.js';
+
+/* ============================================================ 1 · DATA */
+const CERTS = [
+  {
+    id: 'aws-ccp',
+    title: 'AWS Certified Cloud Practitioner',
+    short: 'Cloud Practitioner',
+    issuer: 'Amazon Web Services',
+    tag: 'AWS',
+    date: '17 Sept 2025',
+    kanji: '雲',
+    accent: '#ff9900',
+    brocade: '#281a0b',
+    silk: '#ff9900',
+    desc: 'Mastered cloud architectural fundamentals, shared responsibility security models, IAM governance, global infrastructure resilience, and cloud economics across core AWS compute, storage, and networking services.',
+    skills: ['Cloud Architecture', 'Security & IAM', 'EC2 / S3 / RDS', 'Billing & Economics'],
+    certId: 'AWS-CCP-2025-VR9812',
+    pdfUrl: 'https://www.rawwat.com/certificates/aws-certified-cloud-practitioner.pdf'
+  },
+  {
+    id: 'aws-te',
+    title: 'AWS Technical Essentials',
+    short: 'Technical Essentials',
+    issuer: 'Amazon Web Services',
+    tag: 'AWS',
+    date: '17 Sept 2025',
+    kanji: '基',
+    accent: '#ff9900',
+    brocade: '#241608',
+    silk: '#e68a00',
+    desc: 'Hands-on architectural proficiency in provisioning EC2 instances, configuring resilient EBS and S3 tiers, routing multi-tier traffic inside custom VPC subnets, and orchestrating managed RDS databases.',
+    skills: ['Compute (EC2)', 'Storage (S3 / EBS)', 'Networking (VPC)', 'Database (RDS)'],
+    certId: 'AWS-TE-2025-VR4410',
+    pdfUrl: 'https://www.rawwat.com/certificates/aws-technical-essentials.pdf'
+  },
+  {
+    id: 'google-it',
+    title: 'Google IT Support Certificate',
+    short: 'IT Support',
+    issuer: 'Google',
+    tag: 'Google',
+    date: 'February 2026',
+    kanji: '系',
+    accent: '#4285f4',
+    brocade: '#0d1829',
+    silk: '#4285f4',
+    desc: 'Enterprise IT infrastructure operations spanning multi-platform operating systems (Linux kernel & Windows), CLI system diagnostics, automated incident recovery, active directory user administration, and system defense.',
+    skills: ['Operating Systems', 'System Administration', 'Network Diagnostics', 'Security Protocols'],
+    certId: 'GOOG-IT-2026-VR7802',
+    pdfUrl: 'https://www.rawwat.com/certificates/google-it-support.pdf'
+  },
+  {
+    id: 'google-net',
+    title: 'Bits & Bytes of Computer Networking',
+    short: 'Networking',
+    issuer: 'Google',
+    tag: 'Google',
+    date: 'November 2025',
+    kanji: '網',
+    accent: '#34a853',
+    brocade: '#0a1d12',
+    silk: '#34a853',
+    desc: 'Deep dive into the 5-layer network model, TCP three-way handshakes, UDP streaming, CIDR subnetting, ARP, DHCP, DNS hierarchical resolution, routing table convergence, and packet-level inspection with Wireshark.',
+    skills: ['TCP/IP Suite', 'Subnetting & CIDR', 'Routing & DNS', 'Network Security'],
+    certId: 'GOOG-NET-2025-VR3199',
+    pdfUrl: 'https://www.rawwat.com/certificates/bits-and-bytes-computer-networking.pdf'
+  },
+  {
+    id: 'oracle-fa',
+    title: 'Certified Foundation Associate — AI',
+    short: 'AI Foundations',
+    issuer: 'Oracle',
+    tag: 'Oracle',
+    date: 'October 2025',
+    kanji: '礎',
+    accent: '#f80000',
+    brocade: '#280c0c',
+    silk: '#f80000',
+    desc: 'Foundations of enterprise AI architectures, machine learning model lifecycles, neural network training paradigms, vector embeddings, natural language processing pipelines, and autonomous database integration.',
+    skills: ['Enterprise AI', 'Machine Learning', 'Data Modeling', 'Cloud AI Services'],
+    certId: 'ORCL-AI-2025-VR8821',
+    pdfUrl: 'https://www.rawwat.com/certificates/oracle-certified-foundation-associate.pdf'
+  },
+  {
+    id: 'deloitte-sim',
+    title: 'Technology Job Simulation',
+    short: 'Tech Simulation',
+    issuer: 'Deloitte',
+    tag: 'Deloitte',
+    date: 'July 2025',
+    kanji: '構',
+    accent: '#86bc25',
+    brocade: '#14200b',
+    silk: '#86bc25',
+    desc: 'Delivered client-facing architectural feasibility assessments, modernized legacy codebase monoliths to microservices, formulated comprehensive data security compliance schemas, and analyzed forensic code issues.',
+    skills: ['Software Architecture', 'Technology Consulting', 'Client Solutions', 'Forensic Code Review'],
+    certId: 'DEL-SIM-2025-VR5543',
+    pdfUrl: 'https://www.rawwat.com/certificates/deloitte-technology-job-simulation.pdf'
+  },
+  {
+    id: 'nptel-mkt',
+    title: 'Marketing Analytics',
+    short: 'Marketing Analytics',
+    issuer: 'NPTEL · IIT',
+    tag: 'NPTEL',
+    date: 'April 2026',
+    kanji: '析',
+    accent: '#ff7700',
+    brocade: '#251508',
+    silk: '#ff7700',
+    desc: 'Applied statistical inference, predictive linear and logistic regression models, k-means clustering for market segmentation, conjoint analysis, customer lifetime value (CLV) optimization, and conversion analytics.',
+    skills: ['Statistical Modeling', 'Predictive Analytics', 'Customer Clustering', 'Data Analytics'],
+    certId: 'NPTEL-MKT-2026-VR1094',
+    pdfUrl: 'https://www.rawwat.com/certificates/marketing-analytics.pdf'
+  }
+];
+
+/* ============================================================ 2 · CONSTANTS & MATH */
+const K = {
+  scrollW: 1.68,
+  scrollH: 2.62,
+  spacing: 2.38,
+  wallZ: -1.65,
+  scrollZ: -1.18,
+  fov: 30,
+  camP: [0.0, 0.05, 6.6],
+  camT: [0.0, 0.05, -1.0]
+};
+
+function lerp(a, b, t) { return a + (b - a) * t; }
+
+/* ============================================================ 3 · HIGH-RES VERTICAL KAKEMONO TEXTURE */
+function createKakemonoTexture(cert) {
+  const c = document.createElement('canvas');
+  c.width = 1024;
+  c.height = 1600;
+  const g = c.getContext('2d');
+
+  // 1. Silk brocade outer border mounting
+  const bgGrad = g.createLinearGradient(0, 0, 1024, 1600);
+  bgGrad.addColorStop(0, '#0d1117');
+  bgGrad.addColorStop(0.3, cert.brocade);
+  bgGrad.addColorStop(0.7, '#151d27');
+  bgGrad.addColorStop(1, '#090d12');
+  g.fillStyle = bgGrad;
+  g.fillRect(0, 0, 1024, 1600);
+
+  // Silk weave micro-pattern
+  g.fillStyle = 'rgba(255, 255, 255, 0.035)';
+  for (let y = 0; y < 1600; y += 4) {
+    g.fillRect(0, y, 1024, 1.5);
+  }
+  for (let x = 0; x < 1024; x += 4) {
+    g.fillRect(x, 0, 1.5, 1600);
+  }
+
+  // Gold dust flecks
+  g.fillStyle = 'rgba(212, 175, 55, 0.22)';
+  for (let i = 0; i < 350; i++) {
+    const sx = (Math.sin(i * 12.3) * 0.5 + 0.5) * 1024;
+    const sy = (Math.cos(i * 7.1) * 0.5 + 0.5) * 1600;
+    g.fillRect(sx, sy, 2, 2);
+  }
+
+  // Vertical silk accent side ribbons
+  const sideGradL = g.createLinearGradient(0, 0, 50, 0);
+  sideGradL.addColorStop(0, 'rgba(0,0,0,0.8)');
+  sideGradL.addColorStop(1, 'rgba(0,0,0,0)');
+  g.fillStyle = sideGradL;
+  g.fillRect(0, 0, 50, 1600);
+
+  const sideGradR = g.createLinearGradient(974, 0, 1024, 0);
+  sideGradR.addColorStop(0, 'rgba(0,0,0,0)');
+  sideGradR.addColorStop(1, 'rgba(0,0,0,0.8)');
+  g.fillStyle = sideGradR;
+  g.fillRect(974, 0, 50, 1600);
+
+  // Outer gold leaf frame
+  g.strokeStyle = 'rgba(212, 175, 55, 0.9)';
+  g.lineWidth = 4;
+  g.strokeRect(36, 42, 952, 1516);
+
+  g.strokeStyle = 'rgba(255, 255, 255, 0.35)';
+  g.lineWidth = 1.5;
+  g.strokeRect(44, 50, 936, 1500);
+
+  // 2. Center Washi Parchment Certificate Sheet (FLAT, HIGH CONTRAST, 100% LEGIBLE)
+  const px = 64;
+  const py = 76;
+  const pw = 896;
+  const ph = 1448;
+
+  // Rich cream parchment plate
+  const pGrad = g.createLinearGradient(px, py, px + pw, py + ph);
+  pGrad.addColorStop(0, '#fffef8');
+  pGrad.addColorStop(0.5, '#fcf7ec');
+  pGrad.addColorStop(1, '#f7f0df');
+  g.fillStyle = pGrad;
+  g.beginPath();
+  g.roundRect(px, py, pw, ph, 16);
+  g.fill();
+
+  // Double gold accent border around certificate parchment
+  g.strokeStyle = '#cba338';
+  g.lineWidth = 3.5;
+  g.stroke();
+
+  g.strokeStyle = 'rgba(203, 163, 56, 0.4)';
+  g.lineWidth = 1.5;
+  g.strokeRect(px + 12, py + 12, pw - 24, ph - 24);
+
+  // Large subtle Kanji watermark
+  g.fillStyle = 'rgba(203, 163, 56, 0.08)';
+  g.font = 'bold 360px serif';
+  g.textAlign = 'center';
+  g.textBaseline = 'middle';
+  g.fillText(cert.kanji, 512, 800);
+
+  // Top decorative gold brackets
+  const cornerSize = 40;
+  g.strokeStyle = '#cba338';
+  g.lineWidth = 2.5;
+  // Top-left
+  g.beginPath();
+  g.moveTo(px + 24, py + 24 + cornerSize);
+  g.lineTo(px + 24, py + 24);
+  g.lineTo(px + 24 + cornerSize, py + 24);
+  g.stroke();
+  // Top-right
+  g.beginPath();
+  g.moveTo(px + pw - 24 - cornerSize, py + 24);
+  g.lineTo(px + pw - 24, py + 24);
+  g.lineTo(px + pw - 24, py + 24 + cornerSize);
+  g.stroke();
+  // Bottom-left
+  g.beginPath();
+  g.moveTo(px + 24, py + ph - 24 - cornerSize);
+  g.lineTo(px + 24, py + ph - 24);
+  g.lineTo(px + 24 + cornerSize, py + ph - 24);
+  g.stroke();
+  // Bottom-right
+  g.beginPath();
+  g.moveTo(px + pw - 24 - cornerSize, py + ph - 24);
+  g.lineTo(px + pw - 24, py + ph - 24);
+  g.lineTo(px + pw - 24, py + ph - 24 - cornerSize);
+  g.stroke();
+
+  // 3. Header: Issuer Brand Tag Pill
+  g.fillStyle = cert.accent;
+  g.beginPath();
+  g.roundRect(512 - 160, py + 48, 320, 56, 28);
+  g.fill();
+
+  g.fillStyle = '#ffffff';
+  g.font = 'bold 24px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  g.letterSpacing = '0.1em';
+  g.textAlign = 'center';
+  g.textBaseline = 'middle';
+  g.fillText(cert.issuer.toUpperCase(), 512, py + 76);
+
+  // Official Red Hanko Vermilion Seal Stamp
+  g.save();
+  g.translate(512, py + 200);
+  g.strokeStyle = '#e0231c';
+  g.lineWidth = 4;
+  g.strokeRect(-42, -42, 84, 84);
+  g.fillStyle = 'rgba(224, 35, 28, 0.12)';
+  g.fillRect(-42, -42, 84, 84);
+  g.fillStyle = '#e0231c';
+  g.font = 'bold 34px serif';
+  g.textAlign = 'center';
+  g.textBaseline = 'middle';
+  g.fillText('検印', 0, 2);
+  g.restore();
+
+  // Sub-badge: OFFICIAL ACCREDITATION
+  g.fillStyle = '#8f6f26';
+  g.font = '700 18px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  g.letterSpacing = '0.22em';
+  g.textAlign = 'center';
+  g.fillText('OFFICIAL CERTIFICATION · 認証', 512, py + 295);
+
+  // 4. BIG, BOLD, 100% VISIBLE CERTIFICATE TITLE
+  g.fillStyle = '#0f141d';
+  g.font = 'bold 50px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  g.textAlign = 'center';
+  g.textBaseline = 'middle';
+
+  const words = cert.title.split(' ');
+  const lines = [];
+  let currentLine = words[0];
+
+  for (let i = 1; i < words.length; i++) {
+    const testLine = currentLine + ' ' + words[i];
+    const metrics = g.measureText(testLine);
+    if (metrics.width < 720) {
+      currentLine = testLine;
+    } else {
+      lines.push(currentLine);
+      currentLine = words[i];
+    }
+  }
+  lines.push(currentLine);
+
+  let titleY = py + 395;
+  if (lines.length === 1) titleY = py + 430;
+  else if (lines.length === 2) titleY = py + 400;
+  else if (lines.length >= 3) titleY = py + 375;
+
+  for (let line of lines) {
+    g.fillText(line, 512, titleY);
+    titleY += 66;
+  }
+
+  // Ornamental Divider
+  g.strokeStyle = 'rgba(203, 163, 56, 0.85)';
+  g.lineWidth = 2;
+  g.beginPath();
+  g.moveTo(512 - 180, titleY + 20);
+  g.lineTo(512 + 180, titleY + 20);
+  g.stroke();
+
+  g.fillStyle = '#cba338';
+  g.beginPath();
+  g.arc(512, titleY + 20, 5, 0, Math.PI * 2);
+  g.fill();
+
+  // Recipient Block
+  g.fillStyle = '#64748b';
+  g.font = '700 18px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  g.letterSpacing = '0.14em';
+  g.fillText('AWARDED TO', 512, py + 920);
+
+  g.fillStyle = '#0f172a';
+  g.font = 'bold 42px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  g.letterSpacing = '0.04em';
+  g.fillText('Vishwajeet Rawat', 512, py + 975);
+
+  // Gold Star Badge Icon
+  g.fillStyle = '#d97706';
+  g.font = 'bold 24px serif';
+  g.fillText('✦ ✦ ✦', 512, py + 1045);
+
+  // Competency Summary Pill
+  g.fillStyle = 'rgba(15, 23, 42, 0.05)';
+  g.beginPath();
+  g.roundRect(512 - 290, py + 1100, 580, 74, 12);
+  g.fill();
+  g.strokeStyle = 'rgba(203, 163, 56, 0.35)';
+  g.lineWidth = 1;
+  g.stroke();
+
+  g.fillStyle = '#334155';
+  g.font = '600 20px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  g.fillText(cert.skills.slice(0, 3).join('  ·  '), 512, py + 1137);
+
+  // Bottom Metadata: Date & ID
+  g.fillStyle = '#b45309';
+  g.font = 'bold 28px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  g.fillText(cert.date, 512, py + 1250);
+
+  g.fillStyle = '#475569';
+  g.font = '600 21px monospace';
+  g.letterSpacing = '0.08em';
+  g.fillText('ID: ' + cert.certId, 512, py + 1305);
+
+  // Click to inspect hint at the base
+  g.fillStyle = '#94a3b8';
+  g.font = '600 16px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  g.letterSpacing = '0.14em';
+  g.fillText('CLICK TO EXPAND CREDENTIAL', 512, py + 1375);
+
+  return c;
+}
+
+function createWallTexture() {
+  const c = document.createElement('canvas');
+  c.width = 512; c.height = 512;
+  const g = c.getContext('2d');
+  g.fillStyle = '#05080d';
+  g.fillRect(0, 0, 512, 512);
+
+  g.fillStyle = 'rgba(255, 255, 255, 0.02)';
+  for (let i = 0; i < 2000; i++) {
+    const x = Math.random() * 512, y = Math.random() * 512;
+    g.fillRect(x, y, 1.5, 1.5);
+  }
+  return c;
+}
+
+/* ============================================================ 4 · SCENE & THREE.JS ENGINE */
+let scene, camera, renderer, glCanvas;
+const scrolls = [];
+let activeScroll = null;
+let currentIndex = 0;
+let targetOffset = 0;
+let currentOffset = 0;
+let isDragging = false;
+let startDragX = 0;
+let startDragOffset = 0;
+let mouse = { x: 0, y: 0, targetX: 0, targetY: 0 };
+const raycaster = new THREE.Raycaster();
+const pointerVec = new THREE.Vector2();
+
+function initScene() {
+  try {
+    glCanvas = document.getElementById('gl');
+    renderer = new THREE.WebGLRenderer({ canvas: glCanvas, antialias: true, alpha: false });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.18;
+
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x05080d);
+
+    camera = new THREE.PerspectiveCamera(K.fov, window.innerWidth / window.innerHeight, 0.1, 50);
+    camera.position.set(...K.camP);
+    camera.lookAt(...K.camT);
+
+    // Soft temple atmospheric lighting
+    const ambient = new THREE.AmbientLight(0xfff6ea, 1.05);
+    scene.add(ambient);
+
+    const mainLight = new THREE.DirectionalLight(0xfff0dd, 2.1);
+    mainLight.position.set(2.5, 5.0, 4.5);
+    scene.add(mainLight);
+
+    const fillLight = new THREE.DirectionalLight(0x88bbff, 0.7);
+    fillLight.position.set(-3.5, 1.5, 3.0);
+    scene.add(fillLight);
+
+    const goldRim = new THREE.PointLight(0xffb844, 1.8, 12);
+    goldRim.position.set(0, 0.2, 2.2);
+    scene.add(goldRim);
+
+    buildArchitecture();
+    buildVerticalKakemonoScrolls();
+
+    window.addEventListener('resize', onResize);
+    setupNavigation();
+    setupPointer();
+    updateStatusUI();
+
+    window.renderer = renderer;
+    window.scene = scene;
+    window.scrolls = scrolls;
+    console.log('SCENE INITIALIZED SUCCESSFULLY, SCROLLS COUNT:', scrolls.length);
+
+    requestAnimationFrame(renderLoop);
+  } catch (err) {
+    console.error('ERROR INITIALIZING SCENE:', err);
+  }
+}
+
+/* ============================================================ 5 · ARCHITECTURE */
+function buildArchitecture() {
+  const wallTex = new THREE.CanvasTexture(createWallTexture());
+  wallTex.wrapS = wallTex.wrapT = THREE.RepeatWrapping;
+  wallTex.repeat.set(6, 4);
+  const wallMat = new THREE.MeshStandardMaterial({
+    map: wallTex,
+    roughness: 0.92,
+    metalness: 0.05
+  });
+  const wall = new THREE.Mesh(new THREE.PlaneGeometry(24, 12), wallMat);
+  wall.position.set(0, 0, K.wallZ);
+  scene.add(wall);
+}
+
+/* ============================================================ 6 · BUILD VERTICAL KAKEMONO SCROLLS */
+function buildVerticalKakemonoScrolls() {
+  // 1. Hanging Scroll Body (Vertical Flat / Subtle Arc Plane)
+  const bannerGeo = new THREE.PlaneGeometry(K.scrollW, K.scrollH, 20, 20);
+
+  // 2. Top Suspension Stave (Horizontal wooden rod with gold finials)
+  const topRodGeo = new THREE.CylinderGeometry(0.045, 0.045, K.scrollW + 0.22, 32);
+  topRodGeo.rotateZ(Math.PI / 2);
+
+  const finialGeo = new THREE.CylinderGeometry(0.07, 0.05, 0.09, 24);
+  finialGeo.rotateZ(Math.PI / 2);
+
+  // 3. Bottom Weighted Roller Bar (Horizontal roller rod with gold ends)
+  const botRollerGeo = new THREE.CylinderGeometry(0.065, 0.065, K.scrollW + 0.26, 32);
+  botRollerGeo.rotateZ(Math.PI / 2);
+
+  const botFinialGeo = new THREE.CylinderGeometry(0.095, 0.075, 0.12, 24);
+  botFinialGeo.rotateZ(Math.PI / 2);
+
+  // Materials
+  const woodMat = new THREE.MeshStandardMaterial({
+    color: 0x1a120c,
+    roughness: 0.35,
+    metalness: 0.25
+  });
+
+  const goldMat = new THREE.MeshStandardMaterial({
+    color: 0xd4af37,
+    roughness: 0.22,
+    metalness: 0.88
+  });
+
+  const cordMat = new THREE.MeshStandardMaterial({
+    color: 0xe0231c,
+    roughness: 0.45,
+    metalness: 0.1
+  });
+
+  // Silk hanger cord geometry (triangle arch above top rod)
+  const cordPts = [
+    new THREE.Vector3(-K.scrollW * 0.42, K.scrollH / 2, 0.02),
+    new THREE.Vector3(0, K.scrollH / 2 + 0.38, 0.02),
+    new THREE.Vector3(K.scrollW * 0.42, K.scrollH / 2, 0.02)
+  ];
+  const cordCurve = new THREE.CatmullRomCurve3(cordPts);
+  const cordGeo = new THREE.TubeGeometry(cordCurve, 20, 0.012, 8, false);
+
+  CERTS.forEach((cert, i) => {
+    const gRoot = new THREE.Group();
+    const gHover = new THREE.Group();
+
+    // High-res flat vertical texture
+    const tex = new THREE.CanvasTexture(createKakemonoTexture(cert));
+    tex.colorSpace = THREE.SRGBColorSpace;
+    const bannerMat = new THREE.MeshStandardMaterial({
+      map: tex,
+      roughness: 0.42,
+      metalness: 0.1,
+      side: THREE.DoubleSide
+    });
+
+    const bannerMesh = new THREE.Mesh(bannerGeo, bannerMat);
+
+    // Top Stave
+    const topRod = new THREE.Mesh(topRodGeo, woodMat);
+    topRod.position.set(0, K.scrollH / 2 + 0.02, 0.01);
+
+    const topFinL = new THREE.Mesh(finialGeo, goldMat);
+    topFinL.position.set(-(K.scrollW + 0.22) / 2 - 0.045, K.scrollH / 2 + 0.02, 0.01);
+    const topFinR = new THREE.Mesh(finialGeo, goldMat);
+    topFinR.position.set((K.scrollW + 0.22) / 2 + 0.045, K.scrollH / 2 + 0.02, 0.01);
+
+    const cordMesh = new THREE.Mesh(cordGeo, cordMat);
+
+    // Bottom Roller
+    const botRoller = new THREE.Mesh(botRollerGeo, woodMat);
+    botRoller.position.set(0, -K.scrollH / 2 - 0.03, 0.02);
+
+    const botFinL = new THREE.Mesh(botFinialGeo, goldMat);
+    botFinL.position.set(-(K.scrollW + 0.26) / 2 - 0.06, -K.scrollH / 2 - 0.03, 0.02);
+    const botFinR = new THREE.Mesh(botFinialGeo, goldMat);
+    botFinR.position.set((K.scrollW + 0.26) / 2 + 0.06, -K.scrollH / 2 - 0.03, 0.02);
+
+    gHover.add(bannerMesh);
+    gHover.add(topRod);
+    gHover.add(topFinL);
+    gHover.add(topFinR);
+    gHover.add(cordMesh);
+    gHover.add(botRoller);
+    gHover.add(botFinL);
+    gHover.add(botFinR);
+
+    gRoot.add(gHover);
+    gRoot.position.set(i * K.spacing, 0.05, K.scrollZ);
+    scene.add(gRoot);
+
+    // Large responsive hit box for easy clicking
+    const hitGeo = new THREE.BoxGeometry(K.scrollW * 1.05, K.scrollH * 1.15, 0.25);
+    const hitMat = new THREE.MeshBasicMaterial({ visible: false });
+    const hit = new THREE.Mesh(hitGeo, hitMat);
+    hit.position.set(0, 0, 0);
+    gRoot.add(hit);
+
+    const item = {
+      data: cert,
+      index: i,
+      gRoot,
+      gHover,
+      hit,
+      lift: 0,
+      targetLift: 0
+    };
+
+    hit.userData.item = item;
+    scrolls.push(item);
+  });
+}
+
+/* ============================================================ 7 · NAVIGATION & STATUS */
+function updateStatusUI() {
+  const activeCert = CERTS[currentIndex];
+  if (!activeCert) return;
+
+  const numEl = document.getElementById('counter-num');
+  const titleEl = document.getElementById('counter-title');
+  const tagEl = document.getElementById('counter-tag');
+
+  if (numEl) numEl.textContent = `SCROLL ${currentIndex + 1} OF ${CERTS.length}`;
+  if (titleEl) titleEl.textContent = activeCert.title;
+  if (tagEl) {
+    tagEl.textContent = activeCert.tag;
+    tagEl.style.background = `${activeCert.accent}25`;
+    tagEl.style.color = activeCert.accent;
+    tagEl.style.borderColor = `${activeCert.accent}60`;
+  }
+}
+
+function goToIndex(idx) {
+  currentIndex = Math.max(0, Math.min(CERTS.length - 1, idx));
+  targetOffset = -currentIndex * K.spacing;
+  updateStatusUI();
+}
+
+function nextScroll() {
+  goToIndex((currentIndex + 1) % CERTS.length);
+}
+
+function prevScroll() {
+  goToIndex((currentIndex - 1 + CERTS.length) % CERTS.length);
+}
+
+function setupNavigation() {
+  const btnPrev = document.getElementById('btn-prev');
+  const btnNext = document.getElementById('btn-next');
+
+  if (btnPrev) btnPrev.addEventListener('click', prevScroll);
+  if (btnNext) btnNext.addEventListener('click', nextScroll);
+
+  window.addEventListener('keydown', (e) => {
+    if (activeScroll) {
+      if (e.key === 'Escape') closeCertificate();
+      return;
+    }
+    if (e.key === 'ArrowRight' || e.key === 'd') nextScroll();
+    if (e.key === 'ArrowLeft' || e.key === 'a') prevScroll();
+    if (e.key === 'Enter' || e.key === ' ') {
+      openCertificate(scrolls[currentIndex]);
+    }
+  });
+
+  // Wheel horizontal navigation
+  window.addEventListener('wheel', (e) => {
+    if (activeScroll) return;
+    if (Math.abs(e.deltaX) > 25 || Math.abs(e.deltaY) > 35) {
+      if (e.deltaX > 25 || e.deltaY > 35) nextScroll();
+      else prevScroll();
+    }
+  }, { passive: true });
+}
+
+/* ============================================================ 8 · MODAL & INTERACTIONS */
+function openCertificate(item) {
+  if (!item) return;
+  activeScroll = item;
+
+  const d = item.data;
+
+  // Left Side: Card Preview Fill
+  document.getElementById('m-watermark').textContent = d.kanji;
+  document.getElementById('m-card-issuer').textContent = d.issuer.toUpperCase();
+  document.getElementById('m-card-badge').textContent = d.tag;
+  document.getElementById('m-card-title').textContent = d.title;
+  document.getElementById('m-card-title').style.color = d.accent;
+  document.getElementById('m-card-date').textContent = d.date;
+  document.getElementById('m-card-id').textContent = 'CREDENTIAL ID: ' + d.certId;
+
+  // Right Side: Details Fill
+  document.getElementById('m-issuer-name').textContent = d.issuer;
+  document.getElementById('m-duration-text').textContent = d.date;
+  document.getElementById('m-title').textContent = d.title;
+  document.getElementById('m-desc').textContent = d.desc;
+
+  // Skills chips
+  const skillsContainer = document.getElementById('m-skills');
+  skillsContainer.innerHTML = '';
+  d.skills.forEach(s => {
+    const chip = document.createElement('span');
+    chip.className = 'cm-skill-tag';
+    chip.textContent = s;
+    skillsContainer.appendChild(chip);
+  });
+
+  // Action links
+  const verifyBtn = document.getElementById('m-redirect-link');
+  verifyBtn.href = d.pdfUrl;
+
+  const modal = document.getElementById('cert-modal');
+  modal.classList.add('open');
+}
+
+function closeCertificate() {
+  const modal = document.getElementById('cert-modal');
+  modal.classList.remove('open');
+  activeScroll = null;
+}
+
+function setupPointer() {
+  document.getElementById('cert-modal-close').addEventListener('click', closeCertificate);
+  document.getElementById('m-btn-close').addEventListener('click', closeCertificate);
+  document.getElementById('cert-modal').addEventListener('click', (e) => {
+    if (e.target.id === 'cert-modal') closeCertificate();
+  });
+
+  window.addEventListener('pointerdown', (e) => {
+    if (activeScroll || e.target.closest('button, a, header, .cert-modal-container')) return;
+    isDragging = true;
+    startDragX = e.clientX;
+    startDragOffset = currentOffset;
+  });
+
+  window.addEventListener('pointermove', (e) => {
+    const nx = (e.clientX / window.innerWidth) * 2 - 1;
+    const ny = -(e.clientY / window.innerHeight) * 2 + 1;
+    mouse.targetX = nx * 0.45;
+    mouse.targetY = ny * 0.35;
+    pointerVec.set(nx, ny);
+
+    if (isDragging) {
+      const dx = (e.clientX - startDragX) * 0.005;
+      targetOffset = startDragOffset + dx;
+    }
+  });
+
+  window.addEventListener('pointerup', (e) => {
+    if (isDragging) {
+      isDragging = false;
+      const nearestIdx = Math.round(-targetOffset / K.spacing);
+      goToIndex(nearestIdx);
+    }
+  });
+
+  window.addEventListener('click', (e) => {
+    if (activeScroll || isDragging || e.target.closest('button, a, header')) return;
+    raycaster.setFromCamera(pointerVec, camera);
+    const hits = raycaster.intersectObjects(scene.children, true);
+    for (let h of hits) {
+      if (h.object.userData && h.object.userData.item) {
+        const item = h.object.userData.item;
+        if (item.index === currentIndex) {
+          openCertificate(item);
+        } else {
+          goToIndex(item.index);
+        }
+        break;
+      }
+    }
+  });
+}
+
+function onResize() {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+}
+
+/* ============================================================ 9 · ANIMATION LOOP */
+let lastT = performance.now();
+function renderLoop(t) {
+  const dt = Math.min((t - lastT) / 1000, 0.1);
+  lastT = t;
+
+  // Smooth gallery easing
+  currentOffset = lerp(currentOffset, targetOffset, 0.08);
+
+  // Subtle camera parallax
+  mouse.x = lerp(mouse.x, mouse.targetX, 0.05);
+  mouse.y = lerp(mouse.y, mouse.targetY, 0.05);
+  camera.position.x = K.camP[0] + mouse.x * 1.8;
+  camera.position.y = K.camP[1] + mouse.y * 1.1;
+  camera.lookAt(K.camT[0] + mouse.x * 0.3, K.camT[1], K.camT[2]);
+
+  // Update scrolls layout and focus elevation
+  scrolls.forEach((s, idx) => {
+    const xPos = currentOffset + idx * K.spacing;
+    s.gRoot.position.x = xPos;
+
+    const distFromCenter = Math.abs(xPos);
+    const isFocused = distFromCenter < 1.2;
+
+    // Gentle breathing and scale for focused scroll
+    const targetScale = isFocused ? 1.04 : 0.96;
+    const targetZ = isFocused ? K.scrollZ + 0.25 : K.scrollZ;
+    s.gRoot.position.z = lerp(s.gRoot.position.z, targetZ, 0.08);
+    s.gHover.scale.setScalar(lerp(s.gHover.scale.x, targetScale, 0.08));
+
+    // Subtle gentle float
+    const floatY = Math.sin(t * 0.0018 + idx * 0.8) * 0.025;
+    s.gHover.position.y = floatY;
+  });
+
+  renderer.render(scene, camera);
+  requestAnimationFrame(renderLoop);
+}
+
+/* ============================================================ 10 · PARENT POSTMESSAGE */
+window.addEventListener('message', (e) => {
+  if (e.data && e.data.type === 'filter') {
+    const f = e.data.filter;
+    const matchIdx = CERTS.findIndex(c => {
+      if (f === 'all') return true;
+      if (f === 'cloud') return c.tag === 'AWS';
+      if (f === 'systems') return c.tag === 'Google';
+      if (f === 'enterprise') return c.tag === 'Oracle' || c.tag === 'Deloitte';
+      if (f === 'analytics') return c.tag === 'NPTEL';
+      return false;
+    });
+    if (matchIdx !== -1) {
+      goToIndex(matchIdx);
+    }
+  }
+});
+
+if (document.readyState === 'complete' || document.readyState === 'interactive') {
+  initScene();
+} else {
+  window.addEventListener('DOMContentLoaded', initScene);
+}
+</script>
+</body>
+</html>

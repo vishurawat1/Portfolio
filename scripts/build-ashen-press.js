@@ -1,0 +1,1293 @@
+const fs = require('fs');
+const path = require('path');
+
+const htmlContent = `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>My Certificates — 3D Makimono Scroll Vault</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Onest:wght@300;400;500;600;700&family=EB+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #05080d;
+    --ink: #dfede0;
+    --ink-muted: rgba(223, 237, 224, 0.65);
+    --gold: #d4af37;
+    --gold-bright: #ffd700;
+    --vermilion: #e0231c;
+    --amber: #ff9a3c;
+    --ease: cubic-bezier(.22, 1, .36, 1);
+    --ease-out: cubic-bezier(.16, 1, .3, 1);
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    width: 100%; height: 100%;
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Onest', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  canvas#gl {
+    position: fixed; inset: 0;
+    width: 100%; height: 100%;
+    display: block;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+  }
+  canvas#gl.on { opacity: 1; }
+
+  /* subtle ambient vignette */
+  .vignette {
+    position: fixed; inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background: radial-gradient(circle at 50% 48%, transparent 45%, rgba(2, 4, 7, 0.88) 100%);
+  }
+
+  /* header */
+  header {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: 64px; z-index: 20;
+    display: flex; align-items: center;
+    justify-content: space-between;
+    padding: 0 clamp(16px, 3.5vw, 40px);
+    pointer-events: none;
+  }
+  header * { pointer-events: auto; }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .mark-seal {
+    width: 30px; height: 30px;
+    border-radius: 7px;
+    background: rgba(224, 35, 28, 0.15);
+    border: 1px solid rgba(224, 35, 28, 0.4);
+    display: grid; place-items: center;
+    color: var(--vermilion);
+    font-size: 13.5px; font-weight: 700;
+  }
+  .brand-text { display: flex; flex-direction: column; gap: 1px; }
+  .brand-title {
+    font-size: 14.5px; font-weight: 500;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--ink);
+  }
+  .brand-sub {
+    font-size: 10.5px; letter-spacing: 0.16em;
+    color: var(--gold);
+  }
+  .header-badge {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 13px; border-radius: 999px;
+    background: rgba(14, 20, 28, 0.88);
+    border: 1px solid rgba(212, 175, 55, 0.28);
+    font-size: 11px; color: var(--gold);
+    letter-spacing: 0.06em;
+  }
+  .h-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: #00e676; box-shadow: 0 0 8px #00e676;
+  }
+
+  /* instructions hint */
+  .shelf-hint {
+    position: fixed; top: 72px; left: 50%;
+    transform: translateX(-50%);
+    z-index: 10; pointer-events: none;
+    font-size: 11px; letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    background: rgba(8, 12, 18, 0.8);
+    padding: 5px 15px; border-radius: 999px;
+    border: 1px solid rgba(223, 237, 224, 0.12);
+    backdrop-filter: blur(12px);
+    transition: opacity 0.5s ease;
+  }
+  .shelf-hint.hide { opacity: 0; }
+
+  /* bottom catalogue shelf rail */
+  footer {
+    position: fixed; left: 0; right: 0; bottom: 0;
+    z-index: 25; padding: 14px 0 12px;
+    background: linear-gradient(to top, rgba(3, 5, 8, 0.98) 65%, rgba(3, 5, 8, 0));
+    pointer-events: none;
+  }
+  .rail {
+    display: flex; align-items: center; justify-content: center;
+    gap: clamp(6px, 1.1vw, 14px);
+    padding: 0 clamp(14px, 2.5vw, 36px);
+    overflow-x: auto; scrollbar-width: none;
+    pointer-events: auto;
+  }
+  .rail::-webkit-scrollbar { display: none; }
+  .rail-item {
+    background: rgba(12, 17, 24, 0.9);
+    border: 1px solid rgba(223, 237, 224, 0.14);
+    border-radius: 9px;
+    padding: 7px 12px;
+    display: flex; align-items: center; gap: 9px;
+    cursor: pointer;
+    transition: all 0.25s var(--ease-out);
+    white-space: nowrap;
+    text-align: left;
+    color: inherit;
+  }
+  .rail-item:hover, .rail-item.active {
+    background: rgba(22, 30, 44, 0.98);
+    border-color: rgba(212, 175, 55, 0.55);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 16px rgba(212, 175, 55, 0.22);
+  }
+  .rail-badge-tag {
+    font-size: 9.5px; font-weight: 700;
+    padding: 2px 6px; border-radius: 4px;
+    letter-spacing: 0.05em;
+  }
+  .rail-txt h4 {
+    margin: 0; font-size: 11.5px; font-weight: 500;
+    color: var(--ink);
+  }
+  .rail-txt span {
+    font-size: 9.5px; color: var(--gold);
+    letter-spacing: 0.04em;
+  }
+
+  /* split-screen certificate modal */
+  .cert-modal-backdrop {
+    position: fixed; inset: 0;
+    z-index: 100;
+    background: rgba(2, 4, 7, 0.85);
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+    display: flex; align-items: center; justify-content: center;
+    padding: clamp(14px, 2.8vw, 32px);
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.35s var(--ease-out);
+  }
+  .cert-modal-backdrop.open {
+    opacity: 1; pointer-events: auto;
+  }
+
+  .cert-modal-container {
+    position: relative;
+    width: 100%; max-width: 1060px;
+    max-height: 90vh;
+    background: linear-gradient(145deg, rgba(14, 19, 28, 0.98), rgba(7, 10, 15, 0.99));
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    border-radius: 20px;
+    box-shadow: 0 35px 80px rgba(0, 0, 0, 0.92), 0 0 50px rgba(212, 175, 55, 0.15);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+    transform: scale(0.95) translateY(10px);
+    transition: transform 0.35s var(--ease-out);
+  }
+  .cert-modal-backdrop.open .cert-modal-container {
+    transform: scale(1) translateY(0);
+  }
+
+  .cert-modal-close {
+    position: absolute; top: 16px; right: 18px;
+    width: 36px; height: 36px; border-radius: 50%;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: var(--ink);
+    display: grid; place-items: center;
+    cursor: pointer; z-index: 20;
+    transition: all 0.2s ease;
+  }
+  .cert-modal-close:hover {
+    background: rgba(224, 35, 28, 0.25);
+    border-color: var(--vermilion);
+    color: #fff;
+    transform: rotate(90deg);
+  }
+
+  .cert-modal-layout {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    overflow-y: auto;
+    max-height: calc(90vh - 2px);
+  }
+  @media (max-width: 860px) {
+    .cert-modal-layout { grid-template-columns: 1fr; }
+  }
+
+  /* Left Side: Certificate Canvas Plate */
+  .cert-modal-left {
+    padding: clamp(18px, 3vw, 36px);
+    background: radial-gradient(circle at 50% 50%, rgba(20, 27, 38, 0.7), rgba(9, 12, 18, 0.95));
+    border-right: 1px solid rgba(223, 237, 224, 0.1);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 14px;
+  }
+  .cert-card-preview {
+    width: 100%; max-width: 460px;
+    aspect-ratio: 1.414 / 1;
+    background: #fdfaf3;
+    border-radius: 8px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.75), 0 0 30px rgba(212, 175, 55, 0.2);
+    position: relative;
+    overflow: hidden;
+    color: #1a1612;
+    padding: clamp(14px, 2.5vw, 24px);
+    display: flex; flex-direction: column;
+    justify-content: space-between;
+    box-sizing: border-box;
+    border: 6px double #c9a038;
+  }
+  .cc-watermark {
+    position: absolute; right: 12px; bottom: 8px;
+    font-size: 110px; font-weight: 700;
+    color: rgba(201, 160, 56, 0.07);
+    line-height: 1; pointer-events: none;
+    user-select: none;
+    font-family: 'EB Garamond', serif;
+  }
+  .cc-top {
+    display: flex; justify-content: space-between;
+    align-items: flex-start; border-bottom: 1px solid rgba(201, 160, 56, 0.35);
+    padding-bottom: 8px;
+  }
+  .cc-issuer-tag {
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: #8b6814;
+  }
+  .cc-seal-pill {
+    font-size: 9px; font-weight: 600;
+    padding: 2px 7px; border-radius: 4px;
+    background: rgba(201, 160, 56, 0.15);
+    border: 1px solid rgba(201, 160, 56, 0.4);
+    color: #6b4e05;
+  }
+  .cc-body { text-align: center; margin: 10px 0; }
+  .cc-honor-line {
+    font-size: 9px; letter-spacing: 0.2em;
+    text-transform: uppercase; color: #7a664d;
+    margin: 0 0 4px;
+  }
+  .cc-recipient {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: clamp(22px, 3.2vw, 28px);
+    font-weight: 600; color: #16120e;
+    margin: 2px 0 6px;
+    letter-spacing: 0.02em;
+  }
+  .cc-for-text {
+    font-size: 9.5px; color: #6e5c46;
+    margin: 0 0 4px;
+  }
+  .cc-cert-title {
+    font-size: clamp(13px, 1.8vw, 16px);
+    font-weight: 700; color: #872e12;
+    margin: 0; line-height: 1.25;
+  }
+  .cc-bottom {
+    display: flex; justify-content: space-between;
+    align-items: flex-end;
+    border-top: 1px solid rgba(201, 160, 56, 0.35);
+    padding-top: 8px;
+    font-size: 9.5px; color: #5a4935;
+  }
+  .cc-id { font-family: monospace; font-size: 8.5px; color: #8a7356; }
+  .cc-sig {
+    text-align: right;
+    font-style: italic; font-family: 'EB Garamond', serif;
+    font-size: 11px; color: #1c150c;
+  }
+
+  /* Right Side: Description, What I Learnt, Redirect Link */
+  .cert-modal-right {
+    padding: clamp(20px, 3.2vw, 40px);
+    display: flex; flex-direction: column;
+    justify-content: space-between;
+    gap: 18px;
+  }
+  .cm-header-meta {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 8px;
+  }
+  .cm-issuer {
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--amber);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .cm-duration {
+    font-size: 11px; color: var(--gold);
+    display: flex; align-items: center; gap: 5px;
+    background: rgba(212, 175, 55, 0.1);
+    padding: 3px 10px; border-radius: 999px;
+    border: 1px solid rgba(212, 175, 55, 0.25);
+  }
+  .cm-title {
+    font-size: clamp(20px, 2.4vw, 28px);
+    font-weight: 500; color: var(--ink);
+    margin: 8px 0 0; line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+  .cm-verified-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 10.5px; color: #00e676;
+    background: rgba(0, 230, 118, 0.1);
+    padding: 3px 10px; border-radius: 999px;
+    border: 1px solid rgba(0, 230, 118, 0.3);
+    width: fit-content; margin-top: 8px;
+  }
+  .cm-section {
+    display: flex; flex-direction: column; gap: 7px;
+  }
+  .cm-section-label {
+    font-size: 10px; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--gold);
+    margin: 0; font-weight: 600;
+  }
+  .cm-desc {
+    margin: 0; font-size: 13.5px; line-height: 1.6;
+    color: rgba(223, 237, 224, 0.85);
+  }
+  .cm-skills {
+    display: flex; flex-wrap: wrap; gap: 6px;
+  }
+  .cm-skill-tag {
+    font-size: 10.5px; padding: 4px 9px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(223, 237, 224, 0.15);
+    color: var(--ink);
+  }
+  .cm-actions {
+    display: flex; align-items: center; gap: 12px;
+    margin-top: 8px; flex-wrap: wrap;
+  }
+  .cm-btn-verify {
+    flex: 1; min-width: 190px;
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    background: linear-gradient(135deg, var(--vermilion), #b51711);
+    color: #fff; text-decoration: none;
+    font-size: 13px; font-weight: 500;
+    padding: 12px 20px; border-radius: 9px;
+    box-shadow: 0 8px 24px rgba(224, 35, 28, 0.35);
+    transition: all 0.25s var(--ease-out);
+    cursor: pointer;
+  }
+  .cm-btn-verify:hover {
+    background: linear-gradient(135deg, #f0322b, var(--vermilion));
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(224, 35, 28, 0.5);
+  }
+  .cm-btn-close {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(223, 237, 224, 0.2);
+    color: var(--ink);
+    font-size: 12.5px; font-weight: 400;
+    padding: 12px 18px; border-radius: 9px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .cm-btn-close:hover {
+    background: rgba(255, 255, 255, 0.12);
+  }
+
+  /* loader */
+  .loader {
+    position: fixed; inset: 0; z-index: 50;
+    display: grid; place-items: center;
+    background: var(--bg);
+    transition: opacity 0.6s linear;
+    pointer-events: none;
+  }
+  .loader.gone { opacity: 0; }
+  .loader-spinner {
+    width: 38px; height: 38px;
+    border: 2px solid rgba(212, 175, 55, 0.2);
+    border-top-color: var(--gold);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<canvas id="gl"></canvas>
+<div class="vignette"></div>
+
+<header>
+  <div class="brand">
+    <div class="mark-seal">証</div>
+    <div class="brand-text">
+      <span class="brand-title">My Certificates</span>
+      <span class="brand-sub">3D Makimono Scroll Vault · 証書絵巻</span>
+    </div>
+  </div>
+  <div class="header-badge">
+    <span class="h-dot"></span>
+    <span>7 Verified Accreditations</span>
+  </div>
+</header>
+
+<div class="shelf-hint" id="shelf-hint">Click scroll to inspect certificate · Drag to orbit</div>
+
+<footer>
+  <div class="rail" id="rail"></div>
+</footer>
+
+<!-- SPLIT-SCREEN CERTIFICATE MODAL -->
+<div class="cert-modal-backdrop" id="cert-modal">
+  <div class="cert-modal-container">
+    <button class="cert-modal-close" id="cert-modal-close" aria-label="Close Modal">✕</button>
+    <div class="cert-modal-layout">
+      
+      <!-- LEFT SIDE: RENDERED OFFICIAL CERTIFICATE PLATE -->
+      <div class="cert-modal-left">
+        <div class="cert-card-preview" id="modal-cert-plate">
+          <div class="cc-watermark" id="m-watermark">雲</div>
+          <div class="cc-top">
+            <span class="cc-issuer-tag" id="m-card-issuer">AWS CERTIFICATION</span>
+            <span class="cc-seal-pill" id="m-card-badge">VERIFIED</span>
+          </div>
+          <div class="cc-body">
+            <p class="cc-honor-line">Official Accreditation Credential</p>
+            <h2 class="cc-recipient">Vishwajeet Rawat</h2>
+            <p class="cc-for-text">has demonstrated verified competency in</p>
+            <h3 class="cc-cert-title" id="m-card-title">AWS Certified Cloud Practitioner</h3>
+          </div>
+          <div class="cc-bottom">
+            <div>
+              <span id="m-card-date">17 Sept 2025</span><br>
+              <span class="cc-id" id="m-card-id">ID: AWS-CCP-2025-VR</span>
+            </div>
+            <div class="cc-sig">
+              <span>Official Verification</span><br>
+              <strong>Global Credentials Office</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT SIDE: DETAILS, WHAT I LEARNT, REDIRECT LINK -->
+      <div class="cert-modal-right">
+        <div>
+          <div class="cm-header-meta">
+            <span class="cm-issuer" id="m-issuer-tag">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <span id="m-issuer-name">Amazon Web Services</span>
+            </span>
+            <span class="cm-duration" id="m-duration-badge">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+              <span id="m-duration-text">17 Sept 2025</span>
+            </span>
+          </div>
+
+          <h2 class="cm-title" id="m-title">AWS Certified Cloud Practitioner</h2>
+          
+          <div class="cm-verified-pill">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>Verified Industry Accreditation</span>
+          </div>
+        </div>
+
+        <div class="cm-section">
+          <h4 class="cm-section-label">WHAT I LEARNT</h4>
+          <p class="cm-desc" id="m-desc"></p>
+        </div>
+
+        <div class="cm-section">
+          <h4 class="cm-section-label">CORE ARCHITECTURAL COMPETENCIES</h4>
+          <div class="cm-skills" id="m-skills"></div>
+        </div>
+
+        <div class="cm-actions">
+          <a href="#" target="_blank" rel="noopener noreferrer" class="cm-btn-verify" id="m-redirect-link">
+            <span>Verify Credential / View PDF</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M7 7h10v10"/></svg>
+          </a>
+          <button type="button" class="cm-btn-close" id="m-btn-close">Close Scroll</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="loader" id="loader"><div class="loader-spinner"></div></div>
+
+<script type="importmap">
+{ "imports": { "three": "https://unpkg.com/three@0.181.0/build/three.module.js" } }
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+
+/* ============================================================ 1 · DATA */
+const CERTS = [
+  {
+    id: 'aws-ccp',
+    title: 'AWS Certified Cloud Practitioner',
+    short: 'Cloud Practitioner',
+    issuer: 'Amazon Web Services',
+    tag: 'AWS',
+    date: '17 Sept 2025',
+    shelf: 0,
+    slot: 0,
+    kanji: '雲',
+    accent: '#ff9900',
+    brocade: '#2e1c08',
+    silk: '#ff9900',
+    desc: 'Mastered cloud architectural fundamentals, shared responsibility security models, IAM governance, global infrastructure resilience, and cloud economics across core AWS compute, storage, and networking services.',
+    skills: ['Cloud Architecture', 'Security & IAM', 'EC2 / S3 / RDS', 'Billing & Economics'],
+    certId: 'AWS-CCP-2025-VR9812',
+    pdfUrl: 'https://www.rawwat.com/certificates/aws-certified-cloud-practitioner.pdf'
+  },
+  {
+    id: 'aws-te',
+    title: 'AWS Technical Essentials',
+    short: 'Technical Essentials',
+    issuer: 'Amazon Web Services',
+    tag: 'AWS',
+    date: '17 Sept 2025',
+    shelf: 0,
+    slot: 1,
+    kanji: '基',
+    accent: '#ff9900',
+    brocade: '#281807',
+    silk: '#e68a00',
+    desc: 'Hands-on architectural proficiency in provisioning EC2 instances, configuring resilient EBS and S3 tiers, routing multi-tier traffic inside custom VPC subnets, and orchestrating managed RDS databases.',
+    skills: ['Compute (EC2)', 'Storage (S3 / EBS)', 'Networking (VPC)', 'Database (RDS)'],
+    certId: 'AWS-TE-2025-VR4410',
+    pdfUrl: 'https://www.rawwat.com/certificates/aws-technical-essentials.pdf'
+  },
+  {
+    id: 'google-it',
+    title: 'Google IT Support Certificate',
+    short: 'IT Support',
+    issuer: 'Google',
+    tag: 'Google',
+    date: 'February 2026',
+    shelf: 0,
+    slot: 2,
+    kanji: '系',
+    accent: '#4285f4',
+    brocade: '#0d1a33',
+    silk: '#4285f4',
+    desc: 'Enterprise IT infrastructure operations spanning multi-platform operating systems (Linux kernel & Windows), CLI system diagnostics, automated incident recovery, active directory user administration, and system defense.',
+    skills: ['Operating Systems', 'System Administration', 'Network Diagnostics', 'Security Protocols'],
+    certId: 'GOOG-IT-2026-VR7802',
+    pdfUrl: 'https://www.rawwat.com/certificates/google-it-support.pdf'
+  },
+  {
+    id: 'google-net',
+    title: 'Bits & Bytes of Computer Networking',
+    short: 'Networking',
+    issuer: 'Google',
+    tag: 'Google',
+    date: 'November 2025',
+    shelf: 0,
+    slot: 3,
+    kanji: '網',
+    accent: '#34a853',
+    brocade: '#0b2314',
+    silk: '#34a853',
+    desc: 'Deep dive into the 5-layer network model, TCP three-way handshakes, UDP streaming, CIDR subnetting, ARP, DHCP, DNS hierarchical resolution, routing table convergence, and packet-level inspection with Wireshark.',
+    skills: ['TCP/IP Suite', 'Subnetting & CIDR', 'Routing & DNS', 'Network Security'],
+    certId: 'GOOG-NET-2025-VR3199',
+    pdfUrl: 'https://www.rawwat.com/certificates/bits-and-bytes-computer-networking.pdf'
+  },
+  {
+    id: 'oracle-fa',
+    title: 'Certified Foundation Associate — AI',
+    short: 'AI Foundations',
+    issuer: 'Oracle',
+    tag: 'Oracle',
+    date: 'October 2025',
+    shelf: 1,
+    slot: 0,
+    kanji: '礎',
+    accent: '#f80000',
+    brocade: '#2c0c0c',
+    silk: '#f80000',
+    desc: 'Foundations of enterprise AI architectures, machine learning model lifecycles, neural network training paradigms, vector embeddings, natural language processing pipelines, and autonomous database integration.',
+    skills: ['Enterprise AI', 'Machine Learning', 'Data Modeling', 'Cloud AI Services'],
+    certId: 'ORCL-AI-2025-VR8821',
+    pdfUrl: 'https://www.rawwat.com/certificates/oracle-certified-foundation-associate.pdf'
+  },
+  {
+    id: 'deloitte-sim',
+    title: 'Technology Job Simulation',
+    short: 'Tech Simulation',
+    issuer: 'Deloitte',
+    tag: 'Deloitte',
+    date: 'July 2025',
+    shelf: 1,
+    slot: 1,
+    kanji: '構',
+    accent: '#86bc25',
+    brocade: '#17240c',
+    silk: '#86bc25',
+    desc: 'Delivered client-facing architectural feasibility assessments, modernized legacy codebase monoliths to microservices, formulated comprehensive data security compliance schemas, and analyzed forensic code issues.',
+    skills: ['Software Architecture', 'Technology Consulting', 'Client Solutions', 'Forensic Code Review'],
+    certId: 'DEL-SIM-2025-VR5543',
+    pdfUrl: 'https://www.rawwat.com/certificates/deloitte-technology-job-simulation.pdf'
+  },
+  {
+    id: 'nptel-mkt',
+    title: 'Marketing Analytics',
+    short: 'Marketing Analytics',
+    issuer: 'NPTEL · IIT',
+    tag: 'NPTEL',
+    date: 'April 2026',
+    shelf: 1,
+    slot: 2,
+    kanji: '析',
+    accent: '#ff7700',
+    brocade: '#2a1608',
+    silk: '#ff7700',
+    desc: 'Applied statistical inference, predictive linear and logistic regression models, k-means clustering for market segmentation, conjoint analysis, customer lifetime value (CLV) optimization, and conversion analytics.',
+    skills: ['Statistical Modeling', 'Predictive Analytics', 'Customer Clustering', 'Data Analytics'],
+    certId: 'NPTEL-MKT-2026-VR1094',
+    pdfUrl: 'https://www.rawwat.com/certificates/marketing-analytics.pdf'
+  }
+];
+
+/* ============================================================ 2 · CONSTANTS & MATH */
+const K = {
+  scrollR: 0.165,
+  scrollH: 1.34,
+  lean: -0.16,
+  yaw: 0.10,
+  shelfTop: [0.38, -1.18],
+  plankHalf: 3.60, plankThick: 0.11, plankDepth: 0.90,
+  wallZ: -1.50, scrollZ: -1.20,
+  fov: 28,
+  camP: [0.0, -0.40, 8.4],
+  camT: [0.0, -0.40, -1.0],
+  orbitAz: 0.08, orbitEl: 0.045
+};
+
+function lerp(a,b,t){ return a + (b - a)*t; }
+
+/* ============================================================ 3 · CANVAS TEXTURES */
+function createScrollTexture(cert) {
+  const c = document.createElement('canvas');
+  c.width = 1024; c.height = 1024;
+  const g = c.getContext('2d');
+
+  // Background washi silk texture
+  const grad = g.createLinearGradient(0, 0, 1024, 0);
+  grad.addColorStop(0, '#0c1017');
+  grad.addColorStop(0.25, cert.brocade);
+  grad.addColorStop(0.5, '#1e2638');
+  grad.addColorStop(0.75, cert.brocade);
+  grad.addColorStop(1, '#0a0d14');
+  g.fillStyle = grad;
+  g.fillRect(0, 0, 1024, 1024);
+
+  // Woven silk weave micro-lines
+  g.fillStyle = 'rgba(255, 255, 255, 0.04)';
+  for (let y = 0; y < 1024; y += 4) {
+    g.fillRect(0, y, 1024, 1.5);
+  }
+  for (let x = 0; x < 1024; x += 4) {
+    g.fillRect(x, 0, 1.5, 1024);
+  }
+
+  // Gold dust speckles
+  g.fillStyle = 'rgba(212, 175, 55, 0.22)';
+  for (let i = 0; i < 500; i++) {
+    const sx = Math.random() * 1024, sy = Math.random() * 1024;
+    g.fillRect(sx, sy, 2, 2);
+  }
+
+  // Vertical silk accent runner (centered at x = 512)
+  const runnerW = 420;
+  const rx = (1024 - runnerW) / 2;
+  const rGrad = g.createLinearGradient(rx, 0, rx + runnerW, 0);
+  rGrad.addColorStop(0, 'rgba(0,0,0,0.7)');
+  rGrad.addColorStop(0.2, cert.silk);
+  rGrad.addColorStop(0.5, '#fff');
+  rGrad.addColorStop(0.8, cert.silk);
+  rGrad.addColorStop(1, 'rgba(0,0,0,0.7)');
+  g.fillStyle = 'rgba(10, 14, 20, 0.95)';
+  g.fillRect(rx, 0, runnerW, 1024);
+  g.fillStyle = rGrad;
+  g.fillRect(rx + 10, 0, runnerW - 20, 1024);
+
+  // Border gold hairlines
+  g.strokeStyle = 'rgba(212, 175, 55, 0.9)';
+  g.lineWidth = 4;
+  g.strokeRect(rx + 14, 16, runnerW - 28, 992);
+  g.strokeStyle = 'rgba(255, 255, 255, 0.45)';
+  g.lineWidth = 1.5;
+  g.strokeRect(rx + 20, 22, runnerW - 40, 980);
+
+  // Front parchment placemat for certificate
+  g.fillStyle = 'rgba(253, 248, 238, 0.94)';
+  g.beginPath();
+  g.roundRect(rx + 28, 90, runnerW - 56, 840, 12);
+  g.fill();
+  g.strokeStyle = '#c9a038';
+  g.lineWidth = 2.5;
+  g.stroke();
+
+  // Large Kanji Watermark
+  g.fillStyle = 'rgba(201, 160, 56, 0.16)';
+  g.font = 'bold 240px serif';
+  g.textAlign = 'center';
+  g.textBaseline = 'middle';
+  g.fillText(cert.kanji, 512, 512);
+
+  // Top Issuer Tag
+  g.fillStyle = cert.accent;
+  g.font = 'bold 28px sans-serif';
+  g.letterSpacing = '0.14em';
+  g.fillText(cert.tag, 512, 150);
+
+  // Red Hanko Seal Stamp
+  g.save();
+  g.translate(512, 235);
+  g.strokeStyle = '#e0231c';
+  g.lineWidth = 4;
+  g.strokeRect(-36, -36, 72, 72);
+  g.fillStyle = 'rgba(224, 35, 28, 0.12)';
+  g.fillRect(-36, -36, 72, 72);
+  g.fillStyle = '#e0231c';
+  g.font = 'bold 28px serif';
+  g.fillText('検印', 0, 9);
+  g.restore();
+
+  // Certificate Title (wrapped)
+  g.fillStyle = '#141820';
+  g.font = 'bold 24px sans-serif';
+  const words = cert.title.split(' ');
+  let ty = 340;
+  for (let w of words) {
+    g.fillText(w, 512, ty);
+    ty += 34;
+  }
+
+  // Recipient
+  g.fillStyle = '#6b5435';
+  g.font = '500 18px sans-serif';
+  g.fillText('Vishwajeet Rawat', 512, 760);
+
+  // Bottom seal / accreditation
+  g.fillStyle = '#9c7a26';
+  g.font = 'bold 16px sans-serif';
+  g.fillText(cert.date, 512, 880);
+
+  return c;
+}
+
+function createPlacardTexture(cert) {
+  const c = document.createElement('canvas');
+  c.width = 512; c.height = 128;
+  const g = c.getContext('2d');
+
+  // Obsidian lacquer plaque base
+  g.fillStyle = '#0a0e16';
+  g.fillRect(0, 0, 512, 128);
+
+  // Antique brass border
+  g.strokeStyle = 'rgba(212, 175, 55, 0.85)';
+  g.lineWidth = 3.5;
+  g.strokeRect(5, 5, 502, 118);
+  g.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+  g.lineWidth = 1;
+  g.strokeRect(9, 9, 494, 110);
+
+  // Issuer Pill on left
+  g.fillStyle = cert.accent;
+  g.beginPath();
+  g.roundRect(22, 20, 80, 28, 6);
+  g.fill();
+  g.fillStyle = '#fff';
+  g.font = 'bold 14px sans-serif';
+  g.textAlign = 'center';
+  g.fillText(cert.tag, 62, 39);
+
+  // Status dot & verified
+  g.fillStyle = '#00e676';
+  g.beginPath();
+  g.arc(430, 34, 5, 0, Math.PI * 2);
+  g.fill();
+  g.fillStyle = '#bce6c6';
+  g.font = '600 12px sans-serif';
+  g.textAlign = 'right';
+  g.fillText('VERIFIED', 484, 38);
+
+  // Certificate Name
+  g.fillStyle = '#ffffff';
+  g.font = 'bold 23px sans-serif';
+  g.textAlign = 'left';
+  g.fillText(cert.short, 22, 82);
+
+  // Subtitle date
+  g.fillStyle = '#d4af37';
+  g.font = '500 13px sans-serif';
+  g.fillText(cert.date + ' · Official Accreditation', 22, 106);
+
+  return c;
+}
+
+function createShelfWoodTexture() {
+  const c = document.createElement('canvas');
+  c.width = 1024; c.height = 256;
+  const g = c.getContext('2d');
+
+  const grad = g.createLinearGradient(0, 0, 0, 256);
+  grad.addColorStop(0, '#1c1510');
+  grad.addColorStop(0.5, '#120d09');
+  grad.addColorStop(1, '#0a0705');
+  g.fillStyle = grad;
+  g.fillRect(0, 0, 1024, 256);
+
+  // Wood grain lines
+  g.fillStyle = 'rgba(235, 180, 110, 0.05)';
+  for (let i = 0; i < 180; i++) {
+    const y = Math.random() * 256;
+    const h = 1 + Math.random() * 2;
+    g.fillRect(0, y, 1024, h);
+  }
+
+  // Front bevel highlight
+  g.fillStyle = 'rgba(212, 175, 55, 0.35)';
+  g.fillRect(0, 0, 1024, 3);
+
+  return c;
+}
+
+function createWallTexture() {
+  const c = document.createElement('canvas');
+  c.width = 512; c.height = 512;
+  const g = c.getContext('2d');
+  g.fillStyle = '#05080d';
+  g.fillRect(0, 0, 512, 512);
+
+  g.fillStyle = 'rgba(255, 255, 255, 0.025)';
+  for (let i = 0; i < 2000; i++) {
+    const x = Math.random() * 512, y = Math.random() * 512;
+    g.fillRect(x, y, 1.5, 1.5);
+  }
+  return c;
+}
+
+/* ============================================================ 4 · SCENE & THREE.JS ENGINE */
+let scene, camera, renderer, glCanvas;
+const scrolls = [];
+let activeScroll = null;
+let hoveredScroll = null;
+let mouse = { x: 0, y: 0, targetX: 0, targetY: 0 };
+
+function initScene() {
+  glCanvas = document.getElementById('gl');
+  renderer = new THREE.WebGLRenderer({ canvas: glCanvas, antialias: true, alpha: false });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.18;
+
+  scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x05080d);
+
+  camera = new THREE.PerspectiveCamera(K.fov, window.innerWidth / window.innerHeight, 0.1, 50);
+  camera.position.set(...K.camP);
+  camera.lookAt(...K.camT);
+
+  // Lighting
+  const ambient = new THREE.AmbientLight(0xfff5e6, 0.85);
+  scene.add(ambient);
+
+  const mainLight = new THREE.DirectionalLight(0xffeedd, 1.8);
+  mainLight.position.set(2.5, 4.2, 4.0);
+  scene.add(mainLight);
+
+  const fillLight = new THREE.DirectionalLight(0x88bbff, 0.65);
+  fillLight.position.set(-3.0, 1.2, 2.5);
+  scene.add(fillLight);
+
+  const goldRim = new THREE.PointLight(0xffaa33, 1.6, 9);
+  goldRim.position.set(0, 0, 1.8);
+  scene.add(goldRim);
+
+  buildArchitecture();
+  buildScrolls();
+
+  window.addEventListener('resize', onResize);
+  setupPointer();
+  buildRail();
+
+  setTimeout(() => {
+    glCanvas.classList.add('on');
+    document.getElementById('loader').classList.add('gone');
+  }, 120);
+
+  requestAnimationFrame(renderLoop);
+}
+
+/* ============================================================ 5 · ARCHITECTURE */
+function buildArchitecture() {
+  // Back Wall
+  const wallTex = new THREE.CanvasTexture(createWallTexture());
+  wallTex.wrapS = wallTex.wrapT = THREE.RepeatWrapping;
+  wallTex.repeat.set(4, 3);
+  const wallMat = new THREE.MeshStandardMaterial({
+    map: wallTex,
+    roughness: 0.88,
+    metalness: 0.05
+  });
+  const wall = new THREE.Mesh(new THREE.PlaneGeometry(16, 10), wallMat);
+  wall.position.set(0, 0, K.wallZ);
+  scene.add(wall);
+
+  // Shelves
+  const woodTex = new THREE.CanvasTexture(createShelfWoodTexture());
+  const woodMat = new THREE.MeshStandardMaterial({
+    map: woodTex,
+    roughness: 0.35,
+    metalness: 0.15,
+    color: 0x221a14
+  });
+
+  const plankGeo = new THREE.BoxGeometry(K.plankHalf * 2, K.plankThick, K.plankDepth);
+
+  K.shelfTop.forEach((yTop) => {
+    const p = new THREE.Mesh(plankGeo, woodMat);
+    p.position.set(0, yTop - K.plankThick / 2, K.wallZ + K.plankDepth / 2);
+    scene.add(p);
+  });
+}
+
+/* ============================================================ 6 · BUILD SCROLLS */
+function getScrollBasePos(data) {
+  let x = 0;
+  if (data.shelf === 0) {
+    x = (data.slot - 1.5) * 1.40;
+  } else {
+    x = (data.slot - 1.0) * 1.58;
+  }
+  const y = K.shelfTop[data.shelf] + (K.scrollH / 2) * Math.cos(K.lean) + 0.02;
+  const z = K.scrollZ;
+  return [x, y, z];
+}
+
+function buildScrolls() {
+  const scrollGeo = new THREE.CylinderGeometry(K.scrollR, K.scrollR, K.scrollH, 40);
+  const knobGeo = new THREE.CylinderGeometry(K.scrollR * 1.30, K.scrollR * 1.05, 0.12, 28);
+  const capGeo = new THREE.CylinderGeometry(K.scrollR * 1.20, K.scrollR * 1.20, 0.038, 28);
+  const tieGeo = new THREE.CylinderGeometry(K.scrollR + 0.009, K.scrollR + 0.009, 0.16, 40);
+
+  const knobMat = new THREE.MeshStandardMaterial({
+    color: 0x18120c,
+    roughness: 0.25,
+    metalness: 0.4
+  });
+
+  const goldMat = new THREE.MeshStandardMaterial({
+    color: 0xd4af37,
+    roughness: 0.20,
+    metalness: 0.88
+  });
+
+  const tieMat = new THREE.MeshStandardMaterial({
+    color: 0xe0231c,
+    roughness: 0.45,
+    metalness: 0.15
+  });
+
+  CERTS.forEach((cert, i) => {
+    const basePos = getScrollBasePos(cert);
+    const gRoot = new THREE.Group();
+    gRoot.position.set(...basePos);
+
+    const gHover = new THREE.Group();
+    const gTilt = new THREE.Group();
+    gTilt.rotation.x = K.lean;
+    gTilt.rotation.y = K.yaw * (i % 2 === 0 ? 1 : -0.7);
+    gTilt.rotation.z = (Math.random() - 0.5) * 0.02;
+
+    // Scroll Core Cylinder (rotated so front face points forward)
+    const tex = new THREE.CanvasTexture(createScrollTexture(cert));
+    tex.colorSpace = THREE.SRGBColorSpace;
+    const scrollMat = new THREE.MeshStandardMaterial({
+      map: tex,
+      roughness: 0.38,
+      metalness: 0.12
+    });
+    const scrollMesh = new THREE.Mesh(scrollGeo, scrollMat);
+    scrollMesh.rotation.y = Math.PI; // Face the decorated runner forward!
+
+    // End Knobs (Top & Bottom)
+    const knobTop = new THREE.Mesh(knobGeo, knobMat);
+    knobTop.position.y = K.scrollH / 2 + 0.06;
+    const capTop = new THREE.Mesh(capGeo, goldMat);
+    capTop.position.y = K.scrollH / 2 + 0.12 + 0.019;
+
+    const knobBot = new THREE.Mesh(knobGeo, knobMat);
+    knobBot.position.y = -K.scrollH / 2 - 0.06;
+    const capBot = new THREE.Mesh(capGeo, goldMat);
+    capBot.position.y = -K.scrollH / 2 - 0.12 - 0.019;
+
+    // Tie Cord around waist
+    const tieMesh = new THREE.Mesh(tieGeo, tieMat);
+
+    gTilt.add(scrollMesh);
+    gTilt.add(knobTop);
+    gTilt.add(capTop);
+    gTilt.add(knobBot);
+    gTilt.add(capBot);
+    gTilt.add(tieMesh);
+
+    gHover.add(gTilt);
+    gRoot.add(gHover);
+    scene.add(gRoot);
+
+    // 3D BADGE BELOW SCROLL ON SHELF
+    const placardTex = new THREE.CanvasTexture(createPlacardTexture(cert));
+    placardTex.colorSpace = THREE.SRGBColorSpace;
+    const placardMat = new THREE.MeshStandardMaterial({
+      map: placardTex,
+      roughness: 0.28,
+      metalness: 0.22
+    });
+    const placardGeo = new THREE.BoxGeometry(0.78, 0.15, 0.30);
+    const placard = new THREE.Mesh(placardGeo, placardMat);
+    placard.position.set(basePos[0], K.shelfTop[cert.shelf] + 0.08, K.scrollZ + 0.38);
+    placard.rotation.x = -0.22; // Ergonomic angle tilted toward viewer
+    scene.add(placard);
+
+    // Hit Box for pointer detection
+    const hitGeo = new THREE.CylinderGeometry(K.scrollR * 1.8, K.scrollR * 1.8, K.scrollH * 1.15, 16);
+    const hitMat = new THREE.MeshBasicMaterial({ visible: false });
+    const hit = new THREE.Mesh(hitGeo, hitMat);
+    hit.position.copy(gRoot.position);
+    hit.rotation.copy(gTilt.rotation);
+    scene.add(hit);
+
+    const item = {
+      data: cert,
+      index: i,
+      basePos,
+      gRoot,
+      gHover,
+      gTilt,
+      hit,
+      placard,
+      lift: 0,
+      targetLift: 0,
+      active: false
+    };
+
+    hit.userData.item = item;
+    placard.userData.item = item;
+    scrolls.push(item);
+  });
+}
+
+/* ============================================================ 7 · RAIL & UI */
+function buildRail() {
+  const railEl = document.getElementById('rail');
+  CERTS.forEach((c, idx) => {
+    const btn = document.createElement('div');
+    btn.className = 'rail-item';
+    btn.dataset.idx = idx;
+    btn.innerHTML = \`
+      <span class="rail-badge-tag" style="background:\${c.accent}25; color:\${c.accent}; border:1px solid \${c.accent}60;">\${c.tag}</span>
+      <div class="rail-txt">
+        <h4>\${c.short}</h4>
+        <span>\${c.date}</span>
+      </div>
+    \`;
+    btn.addEventListener('click', () => {
+      openCertificate(scrolls[idx]);
+    });
+    btn.addEventListener('pointerenter', () => {
+      if (!activeScroll) highlightScroll(scrolls[idx]);
+    });
+    btn.addEventListener('pointerleave', () => {
+      if (!activeScroll) unhighlightScroll();
+    });
+    railEl.appendChild(btn);
+  });
+}
+
+/* ============================================================ 8 · MODAL & INTERACTIONS */
+function openCertificate(item) {
+  if (!item) return;
+  activeScroll = item;
+
+  const d = item.data;
+
+  // Left Side: Card Preview Fill
+  document.getElementById('m-watermark').textContent = d.kanji;
+  document.getElementById('m-card-issuer').textContent = d.issuer.toUpperCase();
+  document.getElementById('m-card-badge').textContent = d.tag;
+  document.getElementById('m-card-title').textContent = d.title;
+  document.getElementById('m-card-title').style.color = d.accent;
+  document.getElementById('m-card-date').textContent = d.date;
+  document.getElementById('m-card-id').textContent = 'CREDENTIAL ID: ' + d.certId;
+
+  // Right Side: Details Fill
+  document.getElementById('m-issuer-name').textContent = d.issuer;
+  document.getElementById('m-duration-text').textContent = d.date;
+  document.getElementById('m-title').textContent = d.title;
+  document.getElementById('m-desc').textContent = d.desc;
+
+  // Skills chips
+  const skillsContainer = document.getElementById('m-skills');
+  skillsContainer.innerHTML = '';
+  d.skills.forEach(s => {
+    const chip = document.createElement('span');
+    chip.className = 'cm-skill-tag';
+    chip.textContent = s;
+    skillsContainer.appendChild(chip);
+  });
+
+  // Action links
+  const verifyBtn = document.getElementById('m-redirect-link');
+  verifyBtn.href = d.pdfUrl;
+
+  // Open modal
+  const modal = document.getElementById('cert-modal');
+  modal.classList.add('open');
+  document.getElementById('shelf-hint').classList.add('hide');
+
+  // Highlight active in rail
+  document.querySelectorAll('.rail-item').forEach((b, i) => {
+    b.classList.toggle('active', i === item.index);
+  });
+}
+
+function closeCertificate() {
+  activeScroll = null;
+  const modal = document.getElementById('cert-modal');
+  modal.classList.remove('open');
+  document.getElementById('shelf-hint').classList.remove('hide');
+  document.querySelectorAll('.rail-item').forEach(b => b.classList.remove('active'));
+}
+
+document.getElementById('cert-modal-close').addEventListener('click', closeCertificate);
+document.getElementById('m-btn-close').addEventListener('click', closeCertificate);
+document.getElementById('cert-modal').addEventListener('click', (e) => {
+  if (e.target.id === 'cert-modal') closeCertificate();
+});
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeCertificate();
+});
+
+function highlightScroll(item) {
+  hoveredScroll = item;
+  scrolls.forEach(s => {
+    s.targetLift = (s === item) ? 0.22 : 0;
+  });
+}
+
+function unhighlightScroll() {
+  hoveredScroll = null;
+  scrolls.forEach(s => { s.targetLift = 0; });
+}
+
+/* ============================================================ 9 · RAYCASTING & POINTER */
+const raycaster = new THREE.Raycaster();
+const pointerVec = new THREE.Vector2();
+
+function setupPointer() {
+  window.addEventListener('pointermove', (e) => {
+    pointerVec.x = (e.clientX / window.innerWidth) * 2 - 1;
+    pointerVec.y = -(e.clientY / window.innerHeight) * 2 + 1;
+
+    mouse.targetX = pointerVec.x * K.orbitAz;
+    mouse.targetY = pointerVec.y * K.orbitEl;
+
+    if (!activeScroll) {
+      raycaster.setFromCamera(pointerVec, camera);
+      const hits = raycaster.intersectObjects(scene.children, true);
+      let found = null;
+      for (let h of hits) {
+        if (h.object.userData && h.object.userData.item) {
+          found = h.object.userData.item;
+          break;
+        }
+      }
+      if (found) {
+        document.body.style.cursor = 'pointer';
+        highlightScroll(found);
+      } else {
+        document.body.style.cursor = 'default';
+        unhighlightScroll();
+      }
+    }
+  });
+
+  window.addEventListener('click', (e) => {
+    if (activeScroll) return;
+    raycaster.setFromCamera(pointerVec, camera);
+    const hits = raycaster.intersectObjects(scene.children, true);
+    for (let h of hits) {
+      if (h.object.userData && h.object.userData.item) {
+        openCertificate(h.object.userData.item);
+        break;
+      }
+    }
+  });
+}
+
+function onResize() {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+}
+
+/* ============================================================ 10 · ANIMATION LOOP */
+let lastT = performance.now();
+function renderLoop(t) {
+  const dt = Math.min((t - lastT) / 1000, 0.1);
+  lastT = t;
+
+  // Camera parallax
+  mouse.x = lerp(mouse.x, mouse.targetX, 0.05);
+  mouse.y = lerp(mouse.y, mouse.targetY, 0.05);
+  camera.position.x = K.camP[0] + mouse.x * 2.8;
+  camera.position.y = K.camP[1] + mouse.y * 1.6;
+  camera.lookAt(K.camT[0] + mouse.x * 0.5, K.camT[1], K.camT[2]);
+
+  // Scroll animations
+  scrolls.forEach(s => {
+    s.lift = lerp(s.lift, s.targetLift, 0.12);
+    s.gHover.position.y = s.lift;
+    s.gHover.position.z = s.lift * 0.6;
+    if (s.placard) {
+      s.placard.position.y = K.shelfTop[s.data.shelf] + 0.08 + s.lift * 0.04;
+    }
+  });
+
+  renderer.render(scene, camera);
+  requestAnimationFrame(renderLoop);
+}
+
+window.addEventListener('DOMContentLoaded', initScene);
+</script>
+</body>
+</html>`;
+
+// Ensure directories exist
+const d1 = '/Users/vishumac/Desktop/Portfolio/src/shaders/ashen-press/sources';
+if (!fs.existsSync(d1)) fs.mkdirSync(d1, { recursive: true });
+fs.writeFileSync(path.join(d1, 'ashen-press.html'), htmlContent, 'utf8');
+console.log('Successfully wrote src/shaders/ashen-press/sources/ashen-press.html');
+
+const d2 = '/Users/vishumac/Desktop/Portfolio/public/landing-pages';
+if (!fs.existsSync(d2)) fs.mkdirSync(d2, { recursive: true });
+fs.writeFileSync(path.join(d2, 'ashen-press.html'), htmlContent, 'utf8');
+console.log('Successfully wrote public/landing-pages/ashen-press.html');
