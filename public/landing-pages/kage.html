@@ -2474,10 +2474,10 @@ footer.foot{
 
 /* ============================================================= Light Theme (Hikari - 陽の京都) */
 body.light-theme {
-  --ink: #f4f6f5;
+  --ink: #eef2f5;
   --ink-2: #ffffff;
-  --bone: #111827;
-  --bone-dim: #374151;
+  --bone: #0f172a;
+  --bone-dim: #334155;
   --muted: #64748b;
   --line: rgba(15, 23, 42, 0.12);
   --line-soft: rgba(15, 23, 42, 0.07);
@@ -2489,15 +2489,32 @@ body.light-theme {
 }
 
 body.light-theme #gl {
-  background: #e8eef2;
+  background: #cad5e0;
 }
 
 body.light-theme #vignette {
-  background: radial-gradient(125% 95% at 50% 42%, transparent 45%, rgba(185, 198, 210, 0.28) 100%);
+  background: radial-gradient(125% 95% at 50% 42%, transparent 45%, rgba(130, 150, 170, 0.22) 100%);
+}
+
+/* Section Scrims: replace dark black radial masks with gentle morning atmosphere washes */
+body.light-theme .sec::before {
+  background: radial-gradient(110% 62% at 30% 50%, rgba(238, 242, 245, 0.82), rgba(238, 242, 245, 0.52) 42%, rgba(238, 242, 245, 0.12) 74%, transparent) !important;
+}
+
+body.light-theme #pathways::before {
+  background: radial-gradient(108% 64% at 50% 50%, rgba(238, 242, 245, 0.72), rgba(238, 242, 245, 0.42) 50%, transparent) !important;
+}
+
+body.light-theme #eternity::before {
+  background: radial-gradient(82% 58% at 50% 46%, rgba(238, 242, 245, 0.35), rgba(238, 242, 245, 0.68) 56%, rgba(238, 242, 245, 0.88) 82%, transparent) !important;
+}
+
+body.light-theme .foot::before {
+  background: linear-gradient(rgba(238, 242, 245, 0.55), rgba(238, 242, 245, 0.92) 40%, rgba(238, 242, 245, 0.98)) !important;
 }
 
 body.light-theme .hero::before {
-  background: linear-gradient(rgba(244, 246, 245, 0.88), rgba(244, 246, 245, 0.40) 46%, transparent);
+  background: linear-gradient(rgba(238, 242, 245, 0.85), rgba(238, 242, 245, 0.35) 46%, transparent) !important;
 }
 
 body.light-theme .brand-logo {
@@ -2505,7 +2522,7 @@ body.light-theme .brand-logo {
 }
 
 body.light-theme .brand-tx b {
-  color: #111827;
+  color: #0f172a;
 }
 
 body.light-theme .brand-tx i {
@@ -2513,7 +2530,7 @@ body.light-theme .brand-tx i {
 }
 
 body.light-theme .nav::before {
-  background: rgba(244, 246, 245, 0.88);
+  background: rgba(240, 244, 246, 0.88);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid rgba(15, 23, 42, 0.08);
@@ -2524,22 +2541,22 @@ body.light-theme .nav-link {
 }
 
 body.light-theme .nav-link .alt {
-  color: #111827;
+  color: #0f172a;
 }
 
 body.light-theme .nav-link:hover,
 body.light-theme .nav-link.on {
-  color: #111827;
+  color: #0f172a;
 }
 
 body.light-theme .nav-burger i {
-  background: #111827;
+  background: #0f172a;
 }
 
 /* Mobile Navigation in Light Theme */
 @media (max-width: 820px) {
   body.light-theme .nav-links {
-    background: rgba(246, 248, 247, 0.98) !important;
+    background: rgba(244, 247, 249, 0.98) !important;
     border-left: 1px solid rgba(15, 23, 42, 0.12) !important;
     box-shadow: -12px 0 32px rgba(15, 23, 42, 0.08);
   }
@@ -2555,8 +2572,8 @@ body.light-theme .nav-burger i {
 /* Preloader in Light Theme */
 html.light-theme #pre,
 body.light-theme #pre {
-  background: #f4f6f5 !important;
-  color: #111827 !important;
+  background: #eef2f5 !important;
+  color: #0f172a !important;
 }
 html.light-theme .pre-logo,
 body.light-theme .pre-logo {
@@ -2586,23 +2603,26 @@ body.light-theme .pre-meta b {
 /* Light Theme - Hero Typography & Badges */
 body.light-theme .display {
   text-shadow: 0 2px 24px rgba(255, 255, 255, 0.85);
-  color: #111827;
+  color: #0f172a;
 }
 
 body.light-theme .hero-sub {
-  color: #374151 !important;
-  text-shadow: 0 1px 12px rgba(255, 255, 255, 0.85) !important;
+  color: #1e293b !important;
+  text-shadow: 0 1px 16px rgba(255, 255, 255, 0.95) !important;
+  font-weight: 400;
 }
 
 body.light-theme .hero-role-badge {
-  background: rgba(255, 255, 255, 0.90) !important;
+  background: rgba(255, 255, 255, 0.82) !important;
   border: 1px solid rgba(15, 23, 42, 0.14) !important;
-  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.08) !important;
-  color: #111827 !important;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06) !important;
+  color: #0f172a !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 body.light-theme .hero-role-badge span:nth-child(2) {
-  color: #111827 !important;
+  color: #0f172a !important;
 }
 
 body.light-theme .hero-role-badge span:nth-child(3) {
@@ -2614,30 +2634,34 @@ body.light-theme .hero-role-badge span:nth-child(4) {
 }
 
 body.light-theme .hero-btn {
-  background: rgba(255, 255, 255, 0.92) !important;
-  border-color: rgba(15, 23, 42, 0.16) !important;
-  color: #0f172a !important;
-  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.06) !important;
+  background: rgba(255, 255, 255, 0.80) !important;
+  border: 1px solid rgba(15, 23, 42, 0.20) !important;
+  color: #1e293b !important;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 body.light-theme .hero-btn:hover {
-  background: #ffffff !important;
-  border-color: rgba(15, 23, 42, 0.38) !important;
-  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.12) !important;
-  color: #000000 !important;
+  background: #0f172a !important;
+  border-color: #0f172a !important;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.22) !important;
+  color: #ffffff !important;
+  transform: translateY(-2px);
 }
 
 body.light-theme .hero-btn-primary {
   background: #dc2626 !important;
   border-color: #b91c1c !important;
   color: #ffffff !important;
-  box-shadow: 0 4px 16px rgba(220, 38, 38, 0.35) !important;
+  box-shadow: 0 4px 18px rgba(220, 38, 38, 0.38) !important;
 }
 
 body.light-theme .hero-btn-primary:hover {
   background: #b91c1c !important;
   border-color: #991b1b !important;
-  box-shadow: 0 6px 22px rgba(220, 38, 38, 0.5) !important;
+  box-shadow: 0 6px 24px rgba(220, 38, 38, 0.55) !important;
+  color: #ffffff !important;
 }
 
 body.light-theme .hero-side .v.jp {
@@ -2653,7 +2677,7 @@ body.light-theme .hero-cue .track {
 }
 
 body.light-theme .hero-cue .track i {
-  background: #111827;
+  background: #0f172a;
 }
 
 /* Light Theme - Section Headers */
@@ -2672,29 +2696,30 @@ body.light-theme .eyebrow {
 
 body.light-theme .body,
 body.light-theme .body-lg {
-  color: #374151;
+  color: #334155;
   text-shadow: none;
 }
 
 /* Light Theme - Project Cards */
 body.light-theme .card-fr {
-  outline-color: rgba(15, 23, 42, 0.12);
-  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+  outline-color: rgba(15, 23, 42, 0.14);
+  box-shadow: 0 16px 40px -10px rgba(15, 23, 42, 0.14);
 }
 
 body.light-theme .card:hover .card-fr {
-  outline-color: rgba(15, 23, 42, 0.28);
+  outline-color: rgba(220, 38, 38, 0.45);
 }
 
 body.light-theme .card-hover-info {
-  background: rgba(255, 255, 255, 0.94);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(14px);
   border-color: rgba(15, 23, 42, 0.12);
   box-shadow: 0 14px 40px rgba(15, 23, 42, 0.12);
-  color: #111827;
+  color: #0f172a;
 }
 
 body.light-theme .card-hover-info b {
-  color: #111827;
+  color: #0f172a;
 }
 
 body.light-theme .card-hover-info p {
@@ -2702,20 +2727,93 @@ body.light-theme .card-hover-info p {
 }
 
 /* Light Theme - Skills Section */
+body.light-theme .h-skills {
+  color: #0f172a !important;
+}
+
+body.light-theme .skills-lead {
+  color: #475569 !important;
+}
+
+body.light-theme .skills-resonance-hud {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.88), rgba(240, 244, 248, 0.95)) !important;
+  border: 1px solid rgba(148, 163, 184, 0.35) !important;
+  box-shadow: 0 8px 30px rgba(15, 23, 42, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
+}
+
+body.light-theme .hud-category-label {
+  color: #64748b !important;
+}
+
+body.light-theme .hud-status-badge {
+  background: rgba(15, 23, 42, 0.06) !important;
+  border-color: rgba(15, 23, 42, 0.12) !important;
+  color: #1e293b !important;
+}
+
+body.light-theme .hud-reset-btn {
+  background: rgba(15, 23, 42, 0.05) !important;
+  border-color: rgba(15, 23, 42, 0.14) !important;
+  color: #475569 !important;
+}
+
+body.light-theme .hud-reset-btn:hover {
+  background: rgba(15, 23, 42, 0.12) !important;
+  color: #0f172a !important;
+}
+
+body.light-theme .s-tab {
+  background: rgba(255, 255, 255, 0.75) !important;
+  border-color: rgba(148, 163, 184, 0.35) !important;
+  color: #475569 !important;
+}
+
+body.light-theme .s-tab span {
+  background: rgba(15, 23, 42, 0.06) !important;
+  color: #334155 !important;
+}
+
+body.light-theme .s-tab:hover {
+  background: #ffffff !important;
+  border-color: rgba(15, 23, 42, 0.28) !important;
+  color: #0f172a !important;
+}
+
+body.light-theme .s-tab.is-active {
+  background: #dc2626 !important;
+  border-color: #b91c1c !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 14px rgba(220, 38, 38, 0.35) !important;
+}
+
+body.light-theme .s-tab.is-active span {
+  background: rgba(255, 255, 255, 0.25) !important;
+  color: #ffffff !important;
+}
+
+/* Washi Porcelain Skill Cards: Translucent, tactile, layered */
 body.light-theme .skill-card {
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(246, 248, 250, 0.98)) !important;
-  border-color: rgba(15, 23, 42, 0.11) !important;
-  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.05) !important;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.72), rgba(243, 246, 248, 0.84)) !important;
+  backdrop-filter: blur(16px) saturate(1.2) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(1.2) !important;
+  border: 1px solid rgba(148, 163, 184, 0.32) !important;
+  box-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
 }
 
 body.light-theme .skill-card::after {
-  background: linear-gradient(90deg, transparent, rgba(15, 23, 42, 0.12), transparent) !important;
+  background: linear-gradient(90deg, transparent, rgba(148, 163, 184, 0.25), transparent) !important;
 }
 
 body.light-theme .skill-card:hover {
-  background: #ffffff !important;
-  border-color: rgba(15, 23, 42, 0.28) !important;
-  box-shadow: 0 12px 28px -6px rgba(15, 23, 42, 0.12) !important;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.94), rgba(246, 249, 251, 0.98)) !important;
+  border-color: rgba(220, 38, 38, 0.45) !important;
+  box-shadow: 0 12px 28px -6px rgba(15, 23, 42, 0.12), 0 0 0 1px rgba(220, 38, 38, 0.18) !important;
+}
+
+body.light-theme .skill-card.is-active {
+  background: linear-gradient(145deg, rgba(254, 242, 242, 0.95), rgba(254, 226, 226, 0.88)) !important;
+  border-color: var(--vermilion) !important;
+  box-shadow: 0 0 20px rgba(220, 38, 38, 0.25), 0 8px 24px -4px rgba(15, 23, 42, 0.10) !important;
 }
 
 body.light-theme .sc-name {
@@ -2728,121 +2826,371 @@ body.light-theme .sc-sub {
 
 body.light-theme .sc-focus-tag {
   color: #475569 !important;
-  background: rgba(15, 23, 42, 0.05) !important;
-  border-color: rgba(15, 23, 42, 0.10) !important;
-}
-
-body.light-theme .sc-badge {
-  color: #dc2626 !important;
-  background: rgba(220, 38, 38, 0.08) !important;
-  border-color: rgba(220, 38, 38, 0.20) !important;
 }
 
 body.light-theme .sc-icon-wrap {
   color: #0f172a !important;
-  background: rgba(15, 23, 42, 0.05) !important;
+  background: rgba(255, 255, 255, 0.85) !important;
+  border: 1px solid rgba(15, 23, 42, 0.10) !important;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+}
+
+/* Category Badge Chromatic Palette */
+body.light-theme .skill-card[data-cat="frontend"] .sc-badge {
+  color: #0284c7 !important;
+  background: rgba(2, 132, 199, 0.09) !important;
+  border: 1px solid rgba(2, 132, 199, 0.22) !important;
+}
+
+body.light-theme .skill-card[data-cat="backend"] .sc-badge {
+  color: #16a34a !important;
+  background: rgba(22, 163, 74, 0.09) !important;
+  border: 1px solid rgba(22, 163, 74, 0.22) !important;
+}
+
+body.light-theme .skill-card[data-cat="database"] .sc-badge {
+  color: #d97706 !important;
+  background: rgba(217, 119, 6, 0.09) !important;
+  border: 1px solid rgba(217, 119, 6, 0.22) !important;
+}
+
+body.light-theme .skill-card[data-cat="tools"] .sc-badge {
+  color: #dc2626 !important;
+  background: rgba(220, 38, 38, 0.09) !important;
+  border: 1px solid rgba(220, 38, 38, 0.22) !important;
+}
+
+body.light-theme .skill-card[data-cat="concepts"] .sc-badge {
+  color: #7c3aed !important;
+  background: rgba(124, 58, 237, 0.09) !important;
+  border: 1px solid rgba(124, 58, 237, 0.22) !important;
 }
 
 body.light-theme .gate-stat-item {
-  background: rgba(255, 255, 255, 0.85);
-  border-color: rgba(15, 23, 42, 0.12);
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(148, 163, 184, 0.32);
   box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05);
+  backdrop-filter: blur(12px);
 }
 
 body.light-theme .gate-stat-item b {
-  color: #111827;
+  color: #0f172a;
 }
 
 body.light-theme .gate-stat-item span {
   color: #64748b;
 }
 
-/* Light Theme - Journey Map */
-body.light-theme .treasure-map-viewport {
-  background: linear-gradient(145deg, #f7f3eb, #ebe3d4) !important;
-  border-color: rgba(180, 140, 80, 0.35) !important;
-  box-shadow: inset 0 0 60px rgba(180, 140, 80, 0.18), 0 16px 36px -10px rgba(0, 0, 0, 0.10) !important;
+/* Light Theme - Journey Map (Warm Japanese Parchment / Antique Washi Map) */
+body.light-theme #lessons.sec--journey-pinned > .journey-pinned-stage,
+body.light-theme .journey-pinned-stage {
+  background: radial-gradient(circle at 50% 45%, #fdfbf7 0%, #f5efe4 100%) !important;
 }
 
 body.light-theme .journey-stage-header {
-  background: rgba(244, 246, 245, 0.88) !important;
-  border-color: rgba(15, 23, 42, 0.08) !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+  border: 1px solid rgba(180, 140, 60, 0.35) !important;
+  box-shadow: 0 4px 20px rgba(100, 80, 50, 0.08) !important;
+  border-radius: 12px;
+  padding: 10px 18px;
 }
 
 body.light-theme .jsh-title {
-  color: #111827 !important;
+  color: #0f172a !important;
+  text-shadow: none !important;
 }
 
-body.light-theme .map-dossier-card {
-  background: rgba(255, 255, 255, 0.95) !important;
-  border-color: rgba(15, 23, 42, 0.12) !important;
-  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.12) !important;
-  color: #111827 !important;
-}
-
-body.light-theme .mdc-title {
-  color: #111827 !important;
-}
-
-body.light-theme .mdc-desc {
+body.light-theme .sec-head-mini {
   color: #475569 !important;
 }
 
-/* Light Theme - Certificates */
-body.light-theme .cert-filter-btn {
-  background: rgba(255, 255, 255, 0.88);
+body.light-theme .sec-head-mini .k {
+  color: #334155 !important;
+}
+
+body.light-theme .sec-head-mini .k b {
+  color: #dc2626 !important;
+}
+
+body.light-theme .sec-head-mini .rule {
+  background: #cbd5e1 !important;
+}
+
+body.light-theme .map-progress-tracker {
+  background: rgba(255, 255, 255, 0.94) !important;
+  border: 1px solid rgba(180, 140, 60, 0.35) !important;
+  box-shadow: 0 4px 16px rgba(100, 80, 50, 0.08) !important;
+}
+
+body.light-theme .mpt-badge {
+  background: rgba(180, 140, 60, 0.15) !important;
+  color: #854d0e !important;
+  border: 1px solid rgba(180, 140, 60, 0.3) !important;
+}
+
+body.light-theme .mpt-current {
+  color: #0f172a !important;
+  font-weight: 600 !important;
+}
+
+body.light-theme .mpt-bar-track {
+  background: rgba(15, 23, 42, 0.10) !important;
+}
+
+body.light-theme .mpt-bar-fill {
+  background: linear-gradient(90deg, #dc2626, #ea580c) !important;
+}
+
+body.light-theme .mnh-hint {
+  color: #475569 !important;
+}
+
+body.light-theme .jsh-expedition-badge {
+  background: rgba(15, 23, 42, 0.06);
+  border-color: rgba(15, 23, 42, 0.12);
+  color: #1e293b;
+}
+
+body.light-theme .mq-dot {
+  background: rgba(15, 23, 42, 0.06);
   border-color: rgba(15, 23, 42, 0.14);
-  color: #374151;
-}
-
-body.light-theme .cert-filter-btn:hover {
-  background: #ffffff;
-  color: #111827;
-}
-
-body.light-theme .cert-filter-btn.active {
-  background: #dc2626;
-  border-color: #b91c1c;
-  color: #ffffff;
-}
-
-body.light-theme .cert-stat-badge {
-  background: rgba(255, 255, 255, 0.85);
-  border-color: rgba(15, 23, 42, 0.12);
-  color: #374151;
-}
-
-body.light-theme .certs-footer-banner {
-  background: rgba(255, 255, 255, 0.90);
-  border-color: rgba(15, 23, 42, 0.12);
-  box-shadow: 0 12px 36px rgba(15, 23, 42, 0.08);
-}
-
-body.light-theme .certs-banner-title {
-  color: #111827;
-}
-
-body.light-theme .certs-banner-sub {
   color: #475569;
 }
 
+body.light-theme .mq-dot.is-active {
+  background: #dc2626;
+  border-color: #b91c1c;
+  color: #ffffff;
+  box-shadow: 0 0 12px rgba(220, 38, 38, 0.5);
+}
+
+body.light-theme .treasure-map-viewport {
+  background: radial-gradient(circle at 50% 50%, #ffffff 0%, #fbf8f2 50%, #f1e9da 100%) !important;
+  border: 1.5px solid rgba(180, 140, 60, 0.45) !important;
+  box-shadow: 0 20px 48px -10px rgba(100, 80, 50, 0.15), inset 0 0 80px rgba(210, 180, 130, 0.22) !important;
+}
+
+/* Mountain silhouettes in map */
+body.light-theme .map-cartography-svg path[fill="rgba(12,18,26,0.55)"] {
+  fill: rgba(180, 150, 110, 0.22) !important;
+  stroke: rgba(160, 120, 60, 0.35) !important;
+}
+
+body.light-theme .map-topo-contours path {
+  stroke: rgba(140, 110, 70, 0.18) !important;
+}
+
+body.light-theme .map-grid-lines line {
+  stroke: rgba(140, 110, 70, 0.12) !important;
+}
+
+body.light-theme .map-compass circle {
+  stroke: rgba(160, 120, 50, 0.45) !important;
+}
+
+body.light-theme .map-compass polygon {
+  fill: #9a6b1f !important;
+}
+
+body.light-theme .map-compass text {
+  fill: #785212 !important;
+  font-weight: 600 !important;
+}
+
+body.light-theme .map-cartography-svg text {
+  fill: #785212 !important;
+}
+
+body.light-theme .map-depth-curve {
+  stroke: rgba(120, 100, 70, 0.18) !important;
+}
+
+body.light-theme .map-path-trail {
+  stroke: rgba(140, 110, 80, 0.28) !important;
+}
+
+body.light-theme .map-path-glow {
+  stroke: #dc2626 !important;
+  filter: drop-shadow(0 0 6px rgba(220, 38, 38, 0.45));
+}
+
+body.light-theme .map-corner-bracket {
+  border-color: rgba(160, 120, 50, 0.50) !important;
+}
+
+body.light-theme .map-stamp-seal {
+  border-color: rgba(220, 38, 38, 0.5) !important;
+  color: #b91c1c !important;
+}
+
+body.light-theme .map-coord-tag {
+  color: #78654c !important;
+}
+
+/* Plaque below node in light mode */
+body.light-theme .wp-at-rest {
+  background: rgba(255, 255, 255, 0.96) !important;
+  border: 1px solid rgba(180, 140, 60, 0.40) !important;
+  box-shadow: 0 8px 24px rgba(100, 80, 50, 0.15) !important;
+}
+
+body.light-theme .wp-pos {
+  color: #0f172a !important;
+  font-weight: 600 !important;
+}
+
+body.light-theme .wp-time {
+  color: #b45309 !important;
+  font-weight: 600 !important;
+}
+
+body.light-theme .wp-seal-kanji {
+  color: #b91c1c !important;
+  text-shadow: none !important;
+}
+
+/* Hover / Active Dossier card in journey map */
+body.light-theme .wp-dossier {
+  background: rgba(255, 255, 255, 0.98) !important;
+  border: 1.5px solid rgba(180, 140, 60, 0.45) !important;
+  box-shadow: 0 24px 60px rgba(60, 45, 25, 0.18), 0 0 35px rgba(220, 38, 38, 0.15) !important;
+  color: #1e293b !important;
+}
+
+body.light-theme .dossier-role {
+  color: #0f172a !important;
+  font-weight: 600 !important;
+}
+
+body.light-theme .dossier-time-badge {
+  background: rgba(180, 140, 60, 0.15) !important;
+  color: #92400e !important;
+  border: 1px solid rgba(180, 140, 60, 0.3) !important;
+}
+
+body.light-theme .dossier-org {
+  color: #334155 !important;
+  font-weight: 500 !important;
+}
+
+body.light-theme .dossier-chip {
+  background: rgba(15, 23, 42, 0.05) !important;
+  border: 1px solid rgba(15, 23, 42, 0.12) !important;
+  color: #1e293b !important;
+}
+
+body.light-theme .dossier-bullets li {
+  color: #334155 !important;
+}
+
+body.light-theme .dossier-bullets li strong {
+  color: #0f172a !important;
+}
+
+body.light-theme .dossier-tag {
+  background: #f1f5f9 !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #334155 !important;
+}
+
+body.light-theme .card-lab b {
+  color: #0f172a !important;
+}
+
+body.light-theme .card-lab .jp {
+  color: #475569 !important;
+}
+
+body.light-theme #eternity .certs-head h2 {
+  color: #0f172a !important;
+}
+
+body.light-theme #eternity .certs-head p {
+  color: #334155 !important;
+}
+
+body.light-theme .cert-vault-stage {
+  background: #fbf8f3 !important;
+  border: 1.5px solid rgba(180, 140, 60, 0.45) !important;
+  box-shadow: 0 24px 60px rgba(100, 80, 50, 0.14) !important;
+  border-radius: 20px;
+}
+
+body.light-theme .cert-vault-frame {
+  background: #fbf8f3 !important;
+}
+
+/* Light Theme - Certificates Filters */
+body.light-theme .cert-filter-btn {
+  background: rgba(255, 255, 255, 0.92) !important;
+  border: 1px solid rgba(180, 140, 60, 0.35) !important;
+  color: #334155 !important;
+  box-shadow: 0 2px 8px rgba(100, 80, 50, 0.05) !important;
+}
+
+body.light-theme .cert-filter-btn:hover {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border-color: rgba(180, 140, 60, 0.60) !important;
+}
+
+body.light-theme .cert-filter-btn.active {
+  background: #dc2626 !important;
+  border-color: #b91c1c !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 16px rgba(220, 38, 38, 0.35) !important;
+}
+
+body.light-theme .cert-stat-badge {
+  background: rgba(255, 255, 255, 0.94) !important;
+  border: 1px solid rgba(180, 140, 60, 0.35) !important;
+  color: #334155 !important;
+  box-shadow: 0 2px 8px rgba(100, 80, 50, 0.05) !important;
+}
+
+body.light-theme .certs-footer-banner {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.97) 0%, rgba(248, 244, 236, 0.99) 100%) !important;
+  border: 1.5px solid rgba(180, 140, 60, 0.40) !important;
+  box-shadow: 0 16px 40px rgba(100, 80, 50, 0.10) !important;
+}
+
+body.light-theme .certs-banner-eyebrow {
+  color: #dc2626 !important;
+  font-weight: 600 !important;
+}
+
+body.light-theme .certs-banner-title {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+body.light-theme .certs-banner-sub {
+  color: #475569 !important;
+}
+
 body.light-theme .cert-top-btn {
-  background: rgba(15, 23, 42, 0.06);
-  border-color: rgba(15, 23, 42, 0.12);
-  color: #111827;
+  background: rgba(15, 23, 42, 0.06) !important;
+  border-color: rgba(15, 23, 42, 0.14) !important;
+  color: #0f172a !important;
+}
+
+body.light-theme .cert-top-btn:hover {
+  background: rgba(15, 23, 42, 0.12) !important;
 }
 
 /* Light Theme - Contact Section */
 body.light-theme .contact-card {
-  background: rgba(255, 255, 255, 0.82) !important;
-  border-color: rgba(15, 23, 42, 0.11) !important;
-  box-shadow: 0 6px 24px rgba(15, 23, 42, 0.06) !important;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.75), rgba(244, 247, 249, 0.88)) !important;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(148, 163, 184, 0.35) !important;
+  box-shadow: 0 6px 24px -4px rgba(15, 23, 42, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
 }
 
 body.light-theme .contact-card:hover {
-  background: rgba(255, 255, 255, 0.96) !important;
-  border-color: rgba(15, 23, 42, 0.25) !important;
-  box-shadow: 0 12px 36px rgba(15, 23, 42, 0.10) !important;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.94), rgba(246, 249, 251, 0.98)) !important;
+  border-color: rgba(220, 38, 38, 0.45) !important;
+  box-shadow: 0 12px 32px -4px rgba(15, 23, 42, 0.12), 0 0 0 1px rgba(220, 38, 38, 0.18) !important;
 }
 
 body.light-theme .contact-card-val {
@@ -2864,15 +3212,64 @@ body.light-theme .contact-card-watermark {
 }
 
 body.light-theme .contact-dispatch-panel {
-  background: rgba(255, 255, 255, 0.85) !important;
-  border-color: rgba(15, 23, 42, 0.12) !important;
-  box-shadow: 0 12px 40px rgba(15, 23, 42, 0.08) !important;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.88), rgba(242, 245, 248, 0.96)) !important;
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(148, 163, 184, 0.35) !important;
+  box-shadow: 0 16px 48px -12px rgba(15, 23, 42, 0.10) !important;
+}
+
+body.light-theme .contact-dispatch-title {
+  color: #0f172a !important;
+}
+
+body.light-theme .contact-dispatch-sub {
+  color: #475569 !important;
+}
+
+body.light-theme .contact-field label {
+  color: #334155 !important;
+}
+
+body.light-theme .contact-input,
+body.light-theme .contact-textarea {
+  background: #ffffff !important;
+  border: 1px solid rgba(15, 23, 42, 0.16) !important;
+  color: #0f172a !important;
+  box-shadow: inset 0 2px 4px rgba(15, 23, 42, 0.04) !important;
+}
+
+body.light-theme .contact-input::placeholder,
+body.light-theme .contact-textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+body.light-theme .contact-input:focus,
+body.light-theme .contact-textarea:focus {
+  background: #ffffff !important;
+  border-color: #dc2626 !important;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12) !important;
+}
+
+body.light-theme .contact-submit-btn {
+  background: #dc2626 !important;
+  color: #ffffff !important;
+  border-color: #b91c1c !important;
+  box-shadow: 0 4px 16px rgba(220, 38, 38, 0.35) !important;
+}
+
+body.light-theme .contact-submit-btn:hover {
+  background: #b91c1c !important;
+  box-shadow: 0 6px 20px rgba(220, 38, 38, 0.5) !important;
+}
+
+body.light-theme .contact-dispatch-note {
+  color: #64748b !important;
 }
 
 body.light-theme .dispatch-lead,
 body.light-theme .dispatch-note,
 body.light-theme .dispatch-h b {
-  color: #111827 !important;
+  color: #0f172a !important;
 }
 
 body.light-theme .dispatch-btn {
@@ -2884,23 +3281,34 @@ body.light-theme .dispatch-btn {
 
 body.light-theme .dispatch-btn:hover {
   background: #b91c1c !important;
+  box-shadow: 0 6px 22px rgba(220, 38, 38, 0.5) !important;
 }
 
 /* Light Theme - Colophon */
 body.light-theme .footer-colophon-section {
+  background: #f1f5f9 !important;
   border-top-color: rgba(15, 23, 42, 0.12) !important;
 }
 
+body.light-theme .footer-colophon-section * {
+  text-shadow: none !important;
+}
+
 body.light-theme .footer-cloud-scrim {
-  background: linear-gradient(180deg, rgba(244, 246, 245, 0.85) 0%, rgba(244, 246, 245, 0.40) 25%, transparent 60%) !important;
+  background: linear-gradient(180deg, rgba(241, 245, 249, 0.70) 0%, rgba(241, 245, 249, 0.15) 30%, transparent 65%) !important;
 }
 
 body.light-theme .contact-colophon-grid h4 {
-  color: #111827 !important;
+  color: #0f172a !important;
+  font-weight: 700 !important;
+  letter-spacing: .22em !important;
+  text-shadow: none !important;
 }
 
 body.light-theme .contact-colophon-grid li a {
-  color: #475569 !important;
+  color: #334155 !important;
+  font-weight: 500 !important;
+  text-shadow: none !important;
 }
 
 body.light-theme .contact-colophon-grid li a:hover {
@@ -2908,16 +3316,28 @@ body.light-theme .contact-colophon-grid li a:hover {
 }
 
 body.light-theme .colophon-brand p {
-  color: #374151 !important;
+  color: #334155 !important;
+  font-weight: 450 !important;
+  text-shadow: none !important;
 }
 
 body.light-theme .colophon-brand p b {
-  color: #111827 !important;
+  color: #0f172a !important;
+  font-weight: 700 !important;
+  text-shadow: none !important;
 }
 
 body.light-theme .colophon-base-bar {
-  border-top-color: rgba(15, 23, 42, 0.10) !important;
+  border-top: 1px solid rgba(15, 23, 42, 0.10) !important;
   color: #64748b !important;
+  text-shadow: none !important;
+}
+
+body.light-theme .colophon-pill {
+  background: rgba(220, 38, 38, 0.10) !important;
+  border: 1px solid rgba(220, 38, 38, 0.35) !important;
+  color: #b91c1c !important;
+  text-shadow: none !important;
 }
 
 /* Theme Toggle Button Style */
@@ -4235,9 +4655,10 @@ body.light-theme .theme-toggle .t-dark { display: none; }
     <div class="cert-vault-frame">
       <iframe
         id="ashen-press-shelf"
-        src="/landing-pages/ashen-press.html?v=4"
+        src="/landing-pages/ashen-press.html?v=8"
         title="My Certificates — 3D Makimono Scroll Vault"
         loading="lazy"
+        onload="try{this.contentWindow.postMessage({type:'THEME_CHANGE',theme:window.THEME?window.THEME.current:'dark'},'*')}catch(e){}"
         sandbox="allow-scripts allow-same-origin"
       ></iframe>
     </div>
@@ -5122,6 +5543,65 @@ function texSky() {
   return c;
 }
 
+/* Daylight Japanese sky: azure blue fading to warm golden daylight mist */
+function texSkyDay() {
+  const W = 512, H = 512, c = cvs(W, H), x = c.getContext('2d');
+  const g = x.createLinearGradient(0, 0, 0, H);
+  g.addColorStop(0, 'rgb(142, 186, 222)');
+  g.addColorStop(0.35, 'rgb(182, 212, 238)');
+  g.addColorStop(0.68, 'rgb(218, 234, 246)');
+  g.addColorStop(0.88, 'rgb(245, 238, 230)');
+  g.addColorStop(1.0, 'rgb(238, 230, 220)');
+  x.fillStyle = g;
+  x.fillRect(0, 0, W, H);
+
+  const sg = x.createRadialGradient(W * 0.70, H * 0.32, 10, W * 0.70, H * 0.32, W * 0.55);
+  sg.addColorStop(0, 'rgba(255, 245, 210, 0.45)');
+  sg.addColorStop(0.4, 'rgba(255, 230, 180, 0.20)');
+  sg.addColorStop(1.0, 'rgba(255, 255, 255, 0.0)');
+  x.fillStyle = sg;
+  x.fillRect(0, 0, W, H);
+
+  x.globalAlpha = 0.22;
+  x.globalCompositeOperation = 'screen';
+  x.drawImage(fbmCanvas(W, H, 313, 5, 3, 0.9), 0, 0);
+  x.globalAlpha = 1.0;
+  x.globalCompositeOperation = 'source-over';
+  return c;
+}
+
+/* Radiant sun disc with solar flare corona */
+function texSun() {
+  const W = 512, H = 512, c = cvs(W, H), x = c.getContext('2d');
+  const cx = W / 2, cy = H / 2, r = W * 0.44;
+  const g = x.createRadialGradient(cx, cy, 0, cx, cy, r);
+  g.addColorStop(0, 'rgba(255, 255, 255, 1.0)');
+  g.addColorStop(0.35, 'rgba(255, 250, 230, 1.0)');
+  g.addColorStop(0.70, 'rgba(255, 220, 140, 0.95)');
+  g.addColorStop(0.88, 'rgba(255, 175, 70, 0.75)');
+  g.addColorStop(0.96, 'rgba(255, 130, 40, 0.35)');
+  g.addColorStop(1.0, 'rgba(255, 110, 20, 0.0)');
+  x.fillStyle = g;
+  x.beginPath();
+  x.arc(cx, cy, r, 0, Math.PI * 2);
+  x.fill();
+  return c;
+}
+
+/* Wide golden solar aura halo */
+function texSunHalo() {
+  const W = 512, H = 512, c = cvs(W, H), x = c.getContext('2d');
+  const cx = W / 2, cy = H / 2, r = W * 0.48;
+  const g = x.createRadialGradient(cx, cy, 0, cx, cy, r);
+  g.addColorStop(0, 'rgba(255, 235, 180, 0.85)');
+  g.addColorStop(0.25, 'rgba(255, 200, 120, 0.45)');
+  g.addColorStop(0.60, 'rgba(255, 160, 70, 0.15)');
+  g.addColorStop(1.0, 'rgba(255, 130, 40, 0.0)');
+  x.fillStyle = g;
+  x.fillRect(0, 0, W, H);
+  return c;
+}
+
 /* the wooded ridge the valley closes with — black, ragged, mostly fog */
 function texRidge() {
   const W = 2048, H = 512, c = cvs(W, H), x = c.getContext('2d');
@@ -5134,9 +5614,9 @@ function texRidge() {
     x.lineTo(i, H - ridge * H * .84);
   }
   x.lineTo(W, H); x.closePath();
-  x.fillStyle = '#050809'; x.fill();
+  x.fillStyle = '#ffffff'; x.fill();
   /* conifer spikes along the crest so the silhouette reads as forest */
-  x.fillStyle = '#050809';
+  x.fillStyle = '#ffffff';
   for (let i = 0; i < 460; i++) {
     const px = rnd() * W, t = px / W;
     const ridge = .46 + .30 * (fbm(n, t * 2.4, .5, 4, 2.1, .55) * .5 + .5)
@@ -5832,24 +6312,24 @@ function buildShell() {
      nothing encloses the frame but the night, the ridge and the fog. */
 
   /* the sky, hung far enough back that the whole frustum sits inside it */
+  WORLD.texSkyNight = tx(texSky());
+  WORLD.texSkyDay = tx(texSkyDay());
   const sky = new THREE.Mesh(new THREE.PlaneGeometry(360, 190),
-    new THREE.MeshBasicMaterial({ color: hdr(.60, .70, .80), map: tx(texSky()),
+    new THREE.MeshBasicMaterial({ color: hdr(.60, .70, .80), map: WORLD.texSkyNight,
       depthWrite: false, fog: false, toneMapped: false }));
   sky.position.set(0, 62, -108); sky.renderOrder = 0; scene.add(sky);
   WORLD.sky = sky;
 
   /* the wooded ridge that closes the valley — three-quarters eaten by fog,
      which is the only reason the ground plane can just stop out there */
-  /* z, centre y, width, height, x — kept low: a crest that climbs past the
-     hall's eaves stops reading as distance and starts reading as a cut-out */
   const ridgeMap = tx(texRidge(), { wrap: THREE.RepeatWrapping, repeat: [1.7, 1] });
+  WORLD.ridges = [];
   [[-90, 13, 300, 26, 0], [-63, 9.5, 210, 19, 16]].forEach((r, i) => {
     const m = new THREE.Mesh(new THREE.PlaneGeometry(r[2], r[3]),
-      /* fog off: at a hundred metres it would lift a black silhouette to 80%
-         of the fog colour, and the treeline came back as a *pale* band */
       new THREE.MeshBasicMaterial({ map: i ? tx(texRidge()) : ridgeMap, transparent: true,
         color: i ? 0x0a1015 : 0x06090d, depthWrite: false, fog: false }));
     m.position.set(r[4], r[1], r[0]); m.renderOrder = 1; scene.add(m);
+    WORLD.ridges.push(m);
   });
 
   /* floor + podium */
@@ -6021,6 +6501,7 @@ function buildTemple() {
   });
 
   scene.add(g); WORLD.temple = g;
+  WORLD.templeMats = { timber, post, gold, tileMat, paper };
 
   /* the glow the hall pushes out over its own steps */
   const spill = new THREE.Mesh(new THREE.PlaneGeometry(30, 16),
@@ -6043,20 +6524,20 @@ function buildTemple() {
    against the buildings when the rig drifts.                             */
 const MOON = { x: 17.9, y: 31.9, z: -72, r: 8.6 };
 function buildMoon() {
+  WORLD.texMoon = tx(texMoon());
+  WORLD.texSun = tx(texSun());
+  WORLD.texMoonHalo = tx(texGlow('rgba(255,124,112,.90)', 'rgba(206,52,48,.26)'));
+  WORLD.texSunHalo = tx(texSunHalo());
+
   const disc = new THREE.Mesh(new THREE.PlaneGeometry(MOON.r * 2, MOON.r * 2),
-    /* The whole blood-moon grade lives here, on a near-neutral albedo. The
-       plate measures G/R ≈ B/R ≈ .48, but that is a *display* ratio: the map
-       is decoded out of sRGB before this multiplies it, so the tint has to be
-       written in linear, where the same look is ≈ .21. Reading the ratio
-       straight off the reference is what left the moon a pale pink. */
-    new THREE.MeshBasicMaterial({ map: tx(texMoon()), color: hdr(3.6, .64, .61),
+    new THREE.MeshBasicMaterial({ map: WORLD.texMoon, color: hdr(3.6, .64, .61),
       transparent: true, depthWrite: false, fog: false, toneMapped: false }));
   disc.position.set(MOON.x, MOON.y, MOON.z); disc.renderOrder = 1;
   scene.add(disc); WORLD.moon = disc;
 
-  /* the air around it — a wide, weak corona that the bloom picks up */
+  /* the air around it — a wide corona that the bloom picks up */
   const halo = new THREE.Mesh(new THREE.PlaneGeometry(MOON.r * 6.4, MOON.r * 6.4),
-    new THREE.MeshBasicMaterial({ map: tx(texGlow('rgba(255,124,112,.90)', 'rgba(206,52,48,.26)')),
+    new THREE.MeshBasicMaterial({ map: WORLD.texMoonHalo,
       transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, fog: false, opacity: .44 }));
   halo.position.set(MOON.x, MOON.y, MOON.z - .3); halo.renderOrder = 0;
   scene.add(halo); WORLD.moonHalo = halo;
@@ -6139,6 +6620,7 @@ function buildTorii() {
   const GS = .72;
   g.position.set(0, -BASE * GS, -8.6); g.scale.setScalar(GS);
   scene.add(g); WORLD.torii = g;
+  WORLD.toriiMats = { lac, gold };
 }
 
 function buildLantern(x, z, s, y) {
@@ -7277,7 +7759,7 @@ function initPost() {
   const O = { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, type: THREE.HalfFloatType, depthBuffer: false, stencilBuffer: false };
   POST.scene = new THREE.WebGLRenderTarget(w, h, Object.assign({}, O, { depthBuffer: true, samples: 0 }));
   let lw = Math.max(2, w >> 1), lh = Math.max(2, h >> 1);
-  const N = 4;
+  const N = 3;
   for (let i = 0; i < N; i++) {
     POST.levels.push({ a: new THREE.WebGLRenderTarget(lw, lh, O), b: new THREE.WebGLRenderTarget(lw, lh, O), w: lw, h: lh });
     lw = Math.max(2, lw >> 1); lh = Math.max(2, lh >> 1);
@@ -7686,7 +8168,10 @@ function wireHeroExit() {
     { el: $('.hero-side'), at: .70, span: .30 }   /* its transform is the centring -50% */
   ].filter(o => o.el);
   let on = false;
+  let isFullyExited = false;
+  let heroTicking = false;
   const apply = () => {
+    heroTicking = false;
     const t = clamp(scrollY / Math.max(1, vpH() * .58), 0, 1);
     if (t <= 0) {
       if (!on) return;
@@ -7694,7 +8179,15 @@ function wireHeroExit() {
         o.el.style.opacity = ''; o.el.style.transform = ''; o.el.style.filter = '';
         o.el.style.pointerEvents = ''; o.el.style.transition = '';
       });
-      on = false; return;
+      on = false;
+      isFullyExited = false;
+      return;
+    }
+    if (t >= 1) {
+      if (isFullyExited) return;
+      isFullyExited = true;
+    } else {
+      isFullyExited = false;
     }
     on = true;
     seq.forEach(o => {
@@ -7709,7 +8202,13 @@ function wireHeroExit() {
       o.el.style.pointerEvents = a < .05 ? 'none' : '';
     });
   };
-  addEventListener('scroll', apply, { passive: true });
+  const onScrollHero = () => {
+    if (!heroTicking) {
+      heroTicking = true;
+      requestAnimationFrame(apply);
+    }
+  };
+  addEventListener('scroll', onScrollHero, { passive: true });
   addEventListener('resize', apply, { passive: true });
   apply();
 }
@@ -7784,7 +8283,17 @@ function wireNav() {
     }
   }
 
-  window.addEventListener('scroll', updateNav, { passive: true });
+  let navTicking = false;
+  const onScrollNav = () => {
+    if (!navTicking) {
+      navTicking = true;
+      requestAnimationFrame(() => {
+        navTicking = false;
+        updateNav();
+      });
+    }
+  };
+  window.addEventListener('scroll', onScrollNav, { passive: true });
 
   const topTrigger = document.getElementById('nav-hover-trigger');
   if (topTrigger) {
@@ -7859,8 +8368,10 @@ function wireCursor() {
     el.addEventListener('mouseleave', () => dot.classList.remove('act'));
   });
   (function tick() {
-    x = lerp(x, tx2, .18); y = lerp(y, ty, .18);
-    dot.style.transform = 'translate3d(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px,0)';
+    if (Math.abs(x - tx2) > 0.05 || Math.abs(y - ty) > 0.05) {
+      x = lerp(x, tx2, .18); y = lerp(y, ty, .18);
+      dot.style.transform = 'translate3d(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px,0)';
+    }
     requestAnimationFrame(tick);
   })();
 }
@@ -7967,12 +8478,33 @@ function cardAlpha(el) {
   }
   return a;
 }
+let cardsNeedMeasure = true;
+function measureCards() {
+  const vh = vpH();
+  for (let i = 0; i < CARDS.length; i++) {
+    const C = CARDS[i];
+    const r = C.el.getBoundingClientRect();
+    C.rect = {
+      left: r.left,
+      bottom: r.bottom,
+      top: r.top,
+      width: r.width,
+      height: r.height,
+      inView: (r.bottom >= -40 && r.top <= vh + 40 && r.width >= 4)
+    };
+  }
+  cardsNeedMeasure = false;
+}
+window.addEventListener('scroll', () => { cardsNeedMeasure = true; }, { passive: true });
+window.addEventListener('resize', () => { cardsNeedMeasure = true; }, { passive: true });
+
 function renderCards(rt) {
   if (!CARDS.length) return;
+  if (cardsNeedMeasure) measureCards();
   let drew = false;
   for (let i = 0; i < CARDS.length; i++) {
-    const C = CARDS[i], r = C.el.getBoundingClientRect();
-    if (r.bottom < -40 || r.top > vpH() + 40 || r.width < 4) continue;
+    const C = CARDS[i], r = C.rect;
+    if (!r || !r.inView) continue;
     if (cardAlpha(C.el) < .995) continue;
     /* a card carrying cloth has no background left of its own, so the blit
        would show through the fabric's rounded corners and past its edges */
@@ -8108,25 +8640,25 @@ function render() {
 
 /* ======================================================== 13 · theme system (Kage / Hikari) */
 const DARK_BG = new THREE.Color(0x060a0d);
-const LIGHT_BG = new THREE.Color(0xedf1f5);
+const LIGHT_BG = new THREE.Color(0xdce8f2);
 
 const DARK_FOG = new THREE.Color(0x050a0e);
-const LIGHT_FOG = new THREE.Color(0xe4ebf0);
+const LIGHT_FOG = new THREE.Color(0xd8e6f2);
 
 const DARK_HEMI_SKY = new THREE.Color(0x53838f);
-const LIGHT_HEMI_SKY = new THREE.Color(0xdce7f4);
+const LIGHT_HEMI_SKY = new THREE.Color(0xb2d3ee);
 
 const DARK_HEMI_GND = new THREE.Color(0x060a08);
-const LIGHT_HEMI_GND = new THREE.Color(0xc0b4a8);
+const LIGHT_HEMI_GND = new THREE.Color(0x606a58);
 
 const DARK_KEY = new THREE.Color(0xb6dbe4);
-const LIGHT_KEY = new THREE.Color(0xfffaec);
+const LIGHT_KEY = new THREE.Color(0xfff7ea);
 
 const DARK_MOON_KEY = new THREE.Color(0xff6a42);
-const LIGHT_MOON_KEY = new THREE.Color(0xffe8c8);
+const LIGHT_MOON_KEY = new THREE.Color(0xffecd0);
 
 const DARK_FILL = new THREE.Color(0x86c6d2);
-const LIGHT_FILL = new THREE.Color(0xfff8ea);
+const LIGHT_FILL = new THREE.Color(0xfff5e6);
 
 const THEME = {
   current: (function() {
@@ -8153,6 +8685,12 @@ const THEME = {
     document.documentElement.classList.toggle('light-theme', isLight);
     document.body.classList.toggle('light-theme', isLight);
     this.updateToggleUI(isLight);
+    const iframe = document.getElementById('ashen-press-shelf');
+    if (iframe && iframe.contentWindow) {
+      try {
+        iframe.contentWindow.postMessage({ type: 'THEME_CHANGE', theme: theme }, '*');
+      } catch(e) {}
+    }
   },
 
   bindToggle() {
@@ -8201,73 +8739,172 @@ const THEME = {
   applyToThree(t) {
     if (!scene || !WORLD.key) return;
 
+    // 1. CELESTIAL DISC: MOON vs SUN
+    if (WORLD.moon && WORLD.texSun && WORLD.texMoon) {
+      if (t >= 0.5) {
+        if (WORLD.moon.material.map !== WORLD.texSun) {
+          WORLD.moon.material.map = WORLD.texSun;
+          WORLD.moon.material.needsUpdate = true;
+        }
+        if (WORLD.moonHalo && WORLD.texSunHalo && WORLD.moonHalo.material.map !== WORLD.texSunHalo) {
+          WORLD.moonHalo.material.map = WORLD.texSunHalo;
+          WORLD.moonHalo.material.needsUpdate = true;
+        }
+      } else {
+        if (WORLD.moon.material.map !== WORLD.texMoon) {
+          WORLD.moon.material.map = WORLD.texMoon;
+          WORLD.moon.material.needsUpdate = true;
+        }
+        if (WORLD.moonHalo && WORLD.texMoonHalo && WORLD.moonHalo.material.map !== WORLD.texMoonHalo) {
+          WORLD.moonHalo.material.map = WORLD.texMoonHalo;
+          WORLD.moonHalo.material.needsUpdate = true;
+        }
+      }
+      const r = 3.6 * (1.0 - t) + 3.8 * t;
+      const g = 0.64 * (1.0 - t) + 3.4 * t;
+      const b = 0.61 * (1.0 - t) + 2.5 * t;
+      WORLD.moon.material.color.setRGB(r, g, b);
+      if (WORLD.moonHalo) {
+        WORLD.moonHalo.material.opacity = 0.44 * (1.0 - t) + 0.65 * t;
+      }
+    }
+
+    // 2. 3D SKY BACKDROP MESH
+    if (WORLD.sky && WORLD.texSkyDay && WORLD.texSkyNight) {
+      if (t >= 0.5) {
+        if (WORLD.sky.material.map !== WORLD.texSkyDay) {
+          WORLD.sky.material.map = WORLD.texSkyDay;
+          WORLD.sky.material.needsUpdate = true;
+        }
+      } else {
+        if (WORLD.sky.material.map !== WORLD.texSkyNight) {
+          WORLD.sky.material.map = WORLD.texSkyNight;
+          WORLD.sky.material.needsUpdate = true;
+        }
+      }
+      const sr = 0.60 * (1.0 - t) + 1.15 * t;
+      const sg = 0.70 * (1.0 - t) + 1.20 * t;
+      const sb = 0.80 * (1.0 - t) + 1.25 * t;
+      WORLD.sky.material.color.setRGB(sr, sg, sb);
+    }
+
+    // 3. MOUNTAIN RIDGES
+    if (WORLD.ridges) {
+      const c0Dark = new THREE.Color(0x06090d), c0Light = new THREE.Color(0x40554c);
+      const c1Dark = new THREE.Color(0x0a1015), c1Light = new THREE.Color(0x4c6258);
+      if (WORLD.ridges[0]) WORLD.ridges[0].material.color.lerpColors(c0Dark, c0Light, t);
+      if (WORLD.ridges[1]) WORLD.ridges[1].material.color.lerpColors(c1Dark, c1Light, t);
+    }
+
+    // 3b. TEMPLE & TORII ARCHITECTURAL VIBRANCY
+    if (WORLD.templeMats) {
+      const { timber, post, gold, tileMat } = WORLD.templeMats;
+      const postDark = new THREE.Color(0x8a746d), postLight = new THREE.Color(0xba5234);
+      if (post && post.color) post.color.lerpColors(postDark, postLight, t);
+
+      const timberDark = new THREE.Color(0x565150), timberLight = new THREE.Color(0xa26d48);
+      if (timber && timber.color) timber.color.lerpColors(timberDark, timberLight, t);
+
+      const tileDark = new THREE.Color(0x2b343a), tileLight = new THREE.Color(0x425666);
+      if (tileMat && tileMat.color) tileMat.color.lerpColors(tileDark, tileLight, t);
+
+      const goldDark = new THREE.Color(0x8f6f2e), goldLight = new THREE.Color(0xfbc23a);
+      if (gold && gold.color) gold.color.lerpColors(goldDark, goldLight, t);
+    }
+
+    if (WORLD.toriiMats) {
+      const { lac, gold } = WORLD.toriiMats;
+      const lacDark = new THREE.Color(1.72, 1.02, 0.94), lacLight = new THREE.Color(2.85, 1.28, 1.08);
+      if (lac && lac.color) lac.color.lerpColors(lacDark, lacLight, t);
+
+      const goldDark = new THREE.Color(0x7a5d2a), goldLight = new THREE.Color(0xf8be3c);
+      if (gold && gold.color) gold.color.lerpColors(goldDark, goldLight, t);
+    }
+
+    // 4. RAIN (disable in bright day)
+    if (WORLD.rain) {
+      WORLD.rain.visible = (t < 0.35);
+    }
+
+    // 5. CLEAR COLOR & FOG
     if (scene.background) scene.background.lerpColors(DARK_BG, LIGHT_BG, t);
     if (scene.fog) {
       scene.fog.color.lerpColors(DARK_FOG, LIGHT_FOG, t);
-      scene.fog.density = 0.0168 * (1.0 - t) + 0.0118 * t;
+      scene.fog.density = 0.0168 * (1.0 - t) + 0.0035 * t;
     }
     if (renderer) {
       const clearCol = new THREE.Color().lerpColors(DARK_BG, LIGHT_BG, t);
       renderer.setClearColor(clearCol, 1);
     }
 
+    // 6. LIGHTING
     if (WORLD.hemi) {
       WORLD.hemi.color.lerpColors(DARK_HEMI_SKY, LIGHT_HEMI_SKY, t);
       WORLD.hemi.groundColor.lerpColors(DARK_HEMI_GND, LIGHT_HEMI_GND, t);
-      WORLD.hemi.intensity = 0.13 * (1.0 - t) + 0.88 * t;
+      WORLD.hemi.intensity = 0.13 * (1.0 - t) + 0.95 * t;
     }
     if (WORLD.key) {
       WORLD.key.color.lerpColors(DARK_KEY, LIGHT_KEY, t);
-      WORLD.key.intensity = 1.22 * (1.0 - t) + 1.85 * t;
+      WORLD.key.intensity = 1.22 * (1.0 - t) + 2.35 * t;
       WORLD.key.position.set(
-        2.6 * (1.0 - t) + 9.0 * t,
-        21 * (1.0 - t) + 26 * t,
-        2.5 * (1.0 - t) + 7.0 * t
+        2.6 * (1.0 - t) + 14.0 * t,
+        21 * (1.0 - t) + 28 * t,
+        2.5 * (1.0 - t) + 8.0 * t
       );
     }
     if (WORLD.moonKey) {
       WORLD.moonKey.color.lerpColors(DARK_MOON_KEY, LIGHT_MOON_KEY, t);
-      WORLD.moonKey.intensity = 0.52 * (1.0 - t) + 0.95 * t;
+      WORLD.moonKey.intensity = 0.52 * (1.0 - t) + 1.85 * t;
     }
     if (WORLD.fill) {
       WORLD.fill.color.lerpColors(DARK_FILL, LIGHT_FILL, t);
-      WORLD.fill.intensity = 0.95 * (1.0 - t) + 0.75 * t;
+      WORLD.fill.intensity = 0.95 * (1.0 - t) + 0.60 * t;
     }
+
+    // Extra dedicated sunbeam illuminating the pagoda / background hall
+    if (!WORLD.templeSun && scene) {
+      const ts = new THREE.DirectionalLight(0xfff6ea, 0);
+      ts.position.set(4, 28, TEMPLE_Z + 36);
+      ts.target.position.set(0, PODIUM + 5, TEMPLE_Z);
+      scene.add(ts.target);
+      scene.add(ts);
+      WORLD.templeSun = ts;
+    }
+    if (WORLD.templeSun) {
+      WORLD.templeSun.intensity = 1.75 * t;
+    }
+
     if (WORLD.stairL) {
-      WORLD.stairL.intensity = 4.2 * (1.0 - t) + 2.2 * t;
+      WORLD.stairL.intensity = 4.2 * (1.0 - t) + 0.15 * t;
     }
     if (WORLD.hallLight) {
-      WORLD.hallLight.intensity = 2.3 * (1.0 - t) + 1.4 * t;
+      WORLD.hallLight.intensity = 2.3 * (1.0 - t) + 0.25 * t;
     }
     if (WORLD.sideLamps) {
       for (let i = 0; i < WORLD.sideLamps.length; i++) {
-        WORLD.sideLamps[i].intensity = 2.2 * (1.0 - t) + 1.3 * t;
+        WORLD.sideLamps[i].intensity = 2.2 * (1.0 - t) + 0.2 * t;
       }
     }
 
-    if (WORLD.moon && WORLD.moon.material) {
-      const r = 3.6 * (1.0 - t) + 2.8 * t;
-      const g = 0.64 * (1.0 - t) + 2.4 * t;
-      const b = 0.61 * (1.0 - t) + 1.5 * t;
-      WORLD.moon.material.color.setRGB(r, g, b);
-    }
-    if (WORLD.moonHalo && WORLD.moonHalo.material) {
-      WORLD.moonHalo.material.opacity = 0.44 * (1.0 - t) + 0.62 * t;
-    }
-
+    // 7. 3D WORDMARK "VISHWAJEET"
     if (WORD && WORD.glyphs) {
-      const wr = 1.0 * (1.0 - t) + 0.12 * t;
-      const wg = 1.0 * (1.0 - t) + 0.15 * t;
-      const wb = 1.0 * (1.0 - t) + 0.18 * t;
+      // In light mode, illuminate with radiant carved alabaster white stone so it stands out bold & crisp against the dark steps
+      const wr = 1.0 * (1.0 - t) + 1.62 * t;
+      const wg = 1.0 * (1.0 - t) + 1.58 * t;
+      const wb = 1.0 * (1.0 - t) + 1.52 * t;
       for (let i = 0; i < WORD.glyphs.length; i++) {
         const glyph = WORD.glyphs[i];
-        if (glyph && glyph.material) glyph.material.color.setRGB(wr, wg, wb);
+        if (glyph && glyph.material) {
+          glyph.material.color.setRGB(wr, wg, wb);
+          glyph.material.fog = (t < 0.35); // in daylight, prevent atmospheric mist from blurring out the letters
+        }
       }
     }
 
+    // 8. POST COMPOSITING EXPOSURE & BLOOM
     if (POST && POST.comp && POST.comp.uniforms && POST.comp.uniforms.uExp) {
-      POST.comp.uniforms.uExp.value = 0.62 * (1.0 - t) + 0.96 * t;
-      POST.comp.uniforms.uBloom.value = 0.34 * (1.0 - t) + 0.24 * t;
+      POST.comp.uniforms.uExp.value = 0.62 * (1.0 - t) + 0.84 * t;
+      POST.comp.uniforms.uBloom.value = 0.34 * (1.0 - t) + 0.12 * t;
     }
   }
 };
@@ -9338,8 +9975,18 @@ else addEventListener('DOMContentLoaded', boot);
     let dragStartX = 0;
     let dragStartScroll = 0;
 
+    let maxShift = 0;
+    let totalScroll = 1;
+    let lessonsTop = 0;
+    let currentActiveIdx = -1;
+
+    function measureJourney() {
+      maxShift = Math.max(0, worldEl.scrollWidth - viewportEl.clientWidth);
+      totalScroll = Math.max(1, lessonsEl.offsetHeight - window.innerHeight);
+      lessonsTop = lessonsEl.offsetTop;
+    }
+
     function updateMapTransform(progress) {
-      const maxShift = Math.max(0, worldEl.scrollWidth - viewportEl.clientWidth);
       const shiftX = -progress * maxShift;
       worldEl.style.transform = `translate3d(${shiftX}px, 0, 0)`;
 
@@ -9354,32 +10001,48 @@ else addEventListener('DOMContentLoaded', boot);
 
       // Active Waypoint determination
       const activeIdx = Math.min(4, Math.max(0, Math.floor(progress * 4.99)));
-      const wp = WAYPOINTS_INFO[activeIdx];
-      if (counterEl && wp) {
-        counterEl.textContent = `WAYPOINT ${activeIdx + 1} OF 5 · ${wp.name}`;
+      if (activeIdx !== currentActiveIdx) {
+        currentActiveIdx = activeIdx;
+        const wp = WAYPOINTS_INFO[activeIdx];
+        if (counterEl && wp) {
+          counterEl.textContent = `WAYPOINT ${activeIdx + 1} OF 5 · ${wp.name}`;
+        }
+
+        // Update quick dots
+        quickDots.forEach((dot, idx) => {
+          dot.classList.toggle('is-active', idx === activeIdx);
+        });
+
+        // Update waypoint beacons illumination
+        waypoints.forEach((node, idx) => {
+          node.classList.toggle('is-current', idx === activeIdx);
+        });
       }
+    }
 
-      // Update quick dots
-      quickDots.forEach((dot, idx) => {
-        dot.classList.toggle('is-active', idx === activeIdx);
-      });
-
-      // Update waypoint beacons illumination
-      waypoints.forEach((node, idx) => {
-        node.classList.toggle('is-current', idx === activeIdx);
-      });
+    let journeyTicking = false;
+    let lastJourneyProgress = -1;
+    function computeJourney() {
+      journeyTicking = false;
+      const y = window.scrollY;
+      const scrolledInside = y - lessonsTop;
+      const progress = Math.max(0, Math.min(1, scrolledInside / totalScroll));
+      if (Math.abs(progress - lastJourneyProgress) > 0.0002) {
+        lastJourneyProgress = progress;
+        updateMapTransform(progress);
+      }
     }
 
     function onScroll() {
-      const rect = lessonsEl.getBoundingClientRect();
-      const totalScroll = lessonsEl.offsetHeight - window.innerHeight;
-      const scrolledInside = -rect.top;
-      const progress = Math.max(0, Math.min(1, scrolledInside / Math.max(1, totalScroll)));
-      updateMapTransform(progress);
+      if (!journeyTicking) {
+        journeyTicking = true;
+        requestAnimationFrame(computeJourney);
+      }
     }
 
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', () => {
+      measureJourney();
       if (activeTrail && activeTrail.getTotalLength) {
         try {
           trailTotalLength = activeTrail.getTotalLength();
@@ -9389,7 +10052,8 @@ else addEventListener('DOMContentLoaded', boot);
       onScroll();
     }, { passive: true });
 
-    onScroll();
+    measureJourney();
+    computeJourney();
 
     // Quick dot clicks to jump directly to any waypoint
     quickDots.forEach(dot => {
@@ -9485,6 +10149,27 @@ else addEventListener('DOMContentLoaded', boot);
         }
       });
     });
+
+    if ('IntersectionObserver' in window && iframe) {
+      const stage = document.getElementById('cert-vault-stage') || iframe;
+      const io = new IntersectionObserver(([entry]) => {
+        const isVisible = entry.isIntersecting;
+        if (iframe.contentWindow) {
+          try {
+            iframe.contentWindow.postMessage({ type: 'VISIBILITY', visible: isVisible }, '*');
+          } catch(e) {}
+        }
+      }, { rootMargin: '300px' });
+      io.observe(stage);
+
+      iframe.addEventListener('load', () => {
+        const rect = stage.getBoundingClientRect();
+        const isVis = rect.bottom > -300 && rect.top < window.innerHeight + 300;
+        try {
+          iframe.contentWindow.postMessage({ type: 'VISIBILITY', visible: isVis }, '*');
+        } catch(e) {}
+      });
+    }
   }
 
   if (document.readyState === 'complete' || document.readyState === 'interactive') {
@@ -9607,7 +10292,7 @@ else addEventListener('DOMContentLoaded', boot);
       const gl = canvas.getContext('webgl', { antialias: true, alpha: false, preserveDrawingBuffer: false });
       if (!gl) return;
 
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.25);
       function resize() {
         const colophonEl = document.querySelector('.footer-colophon-section') || document.querySelector('footer.foot');
         const w = Math.max(320, (colophonEl ? colophonEl.clientWidth : 0) || window.innerWidth);
@@ -9906,33 +10591,49 @@ else addEventListener('DOMContentLoaded', boot);
         my = 1.0 - (e.clientY / window.innerHeight);
       }, { passive: true });
 
-      let isVisible = true;
+      let isVisible = false;
+      let isLoopRunning = false;
+
+      function render(t) {
+        if (!isVisible) {
+          isLoopRunning = false;
+          return;
+        }
+        t *= 0.001;
+        smx += (mx - smx) * 0.04;
+        smy += (my - smy) * 0.04;
+
+        const curLight = window.CURRENT_THEME_MIX !== undefined ? window.CURRENT_THEME_MIX : (document.body.classList.contains('light-theme') ? 1.0 : 0.0);
+
+        gl.uniform2f(uRes, canvas.width, canvas.height);
+        gl.uniform1f(uTime, t);
+        gl.uniform2f(uMouse, smx, smy);
+        gl.uniform1f(uLight, curLight);
+
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+        requestAnimationFrame(render);
+      }
+
+      function startFooterLoop() {
+        if (isLoopRunning) return;
+        isLoopRunning = true;
+        requestAnimationFrame(render);
+      }
+
       if ('IntersectionObserver' in window) {
         const io = new IntersectionObserver(([entry]) => {
+          const wasVisible = isVisible;
           isVisible = entry.isIntersecting;
+          if (isVisible && !wasVisible) {
+            startFooterLoop();
+          }
         }, { rootMargin: '300px' });
         const colophonEl = document.querySelector('.footer-colophon-section') || document.querySelector('footer.foot');
         if (colophonEl) io.observe(colophonEl);
+      } else {
+        isVisible = true;
+        startFooterLoop();
       }
-
-      function render(t) {
-        if (isVisible) {
-          t *= 0.001;
-          smx += (mx - smx) * 0.04;
-          smy += (my - smy) * 0.04;
-
-          const curLight = window.CURRENT_THEME_MIX !== undefined ? window.CURRENT_THEME_MIX : (document.body.classList.contains('light-theme') ? 1.0 : 0.0);
-
-          gl.uniform2f(uRes, canvas.width, canvas.height);
-          gl.uniform1f(uTime, t);
-          gl.uniform2f(uMouse, smx, smy);
-          gl.uniform1f(uLight, curLight);
-
-          gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-        }
-        requestAnimationFrame(render);
-      }
-      requestAnimationFrame(render);
     }
 
     initFooterCloudShader();

@@ -4,6 +4,12 @@
 <meta charset="utf-8">
 <title>My Certificates — Vertical Kakemono Hanging Scroll Gallery</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<script>
+  try {
+    const t = localStorage.getItem('kage-theme');
+    if (t === 'light') document.documentElement.classList.add('light-theme');
+  } catch(e) {}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Onest:wght@300;400;500;600;700&family=EB+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
@@ -389,7 +395,118 @@
     background: rgba(255, 255, 255, 0.12);
   }
 
+  /* ================================= Light Theme (Hikari Washi Gallery) */
+  html.light-theme,
+  body.light-theme {
+    --bg: #fbf8f3;
+    --ink: #0f172a;
+    --ink-muted: #64748b;
+    background: #fbf8f3;
+    color: #0f172a;
+  }
+  body.light-theme .vignette {
+    background: radial-gradient(circle at 50% 48%, transparent 60%, rgba(180, 160, 140, 0.16) 100%);
+  }
 
+  body.light-theme header .brand-title {
+    color: #0f172a !important;
+    font-weight: 700 !important;
+  }
+  body.light-theme header .brand-sub {
+    color: #b45309 !important;
+    font-weight: 600 !important;
+  }
+  body.light-theme .header-badge {
+    background: rgba(255, 255, 255, 0.94) !important;
+    border: 1px solid rgba(180, 140, 60, 0.35) !important;
+    color: #0f172a !important;
+    box-shadow: 0 4px 16px rgba(100, 80, 50, 0.08) !important;
+  }
+  body.light-theme .shelf-hint {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border: 1px solid rgba(180, 140, 60, 0.35) !important;
+    color: #475569 !important;
+    box-shadow: 0 4px 16px rgba(100, 80, 50, 0.08) !important;
+  }
+  body.light-theme .nav-arrow {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border: 1px solid rgba(180, 140, 60, 0.40) !important;
+    color: #854d0e !important;
+    box-shadow: 0 8px 24px rgba(100, 80, 50, 0.14) !important;
+  }
+  body.light-theme .nav-arrow:hover {
+    background: #dc2626 !important;
+    border-color: #b91c1c !important;
+    color: #ffffff !important;
+    box-shadow: 0 10px 28px rgba(220, 38, 38, 0.4) !important;
+  }
+  body.light-theme .scroll-counter-pill {
+    background: rgba(255, 255, 255, 0.96) !important;
+    border: 1px solid rgba(180, 140, 60, 0.40) !important;
+    box-shadow: 0 8px 24px rgba(100, 80, 50, 0.12) !important;
+    color: #0f172a !important;
+  }
+  body.light-theme .counter-num {
+    color: #b45309 !important;
+    font-weight: 700 !important;
+  }
+  body.light-theme .counter-title {
+    color: #0f172a !important;
+    font-weight: 600 !important;
+  }
+
+  /* Light Theme - Modal */
+  body.light-theme .cert-modal-backdrop {
+    background: rgba(15, 23, 42, 0.45) !important;
+  }
+  body.light-theme .cert-modal-container {
+    background: #ffffff !important;
+    border: 1.5px solid rgba(180, 140, 60, 0.45) !important;
+    box-shadow: 0 35px 80px rgba(60, 45, 25, 0.22) !important;
+  }
+  body.light-theme .cert-modal-left {
+    background: #fbf9f5 !important;
+    border-right: 1px solid rgba(180, 140, 60, 0.25) !important;
+  }
+  body.light-theme .cert-modal-close {
+    background: #f1f5f9 !important;
+    color: #0f172a !important;
+    border-color: #cbd5e1 !important;
+  }
+  body.light-theme .cert-modal-close:hover {
+    background: #dc2626 !important;
+    color: #ffffff !important;
+    border-color: #b91c1c !important;
+  }
+  body.light-theme .cm-title {
+    color: #0f172a !important;
+  }
+  body.light-theme .cm-issuer {
+    color: #b45309 !important;
+  }
+  body.light-theme .cm-duration {
+    color: #64748b !important;
+  }
+  body.light-theme .cm-section-label {
+    color: #854d0e !important;
+  }
+  body.light-theme .cm-desc {
+    color: #334155 !important;
+  }
+  body.light-theme .cm-skill-tag {
+    background: #f1f5f9 !important;
+    border: 1px solid #cbd5e1 !important;
+    color: #334155 !important;
+  }
+  body.light-theme .cm-btn-close {
+    background: #f1f5f9 !important;
+    border: 1px solid #cbd5e1 !important;
+    color: #334155 !important;
+  }
+  body.light-theme .cm-btn-close:hover {
+    background: #e2e8f0 !important;
+    color: #0f172a !important;
+  }
 </style>
 </head>
 <body>
@@ -870,17 +987,34 @@ function createKakemonoTexture(cert) {
   return c;
 }
 
-function createWallTexture() {
+function createWallTexture(isLight) {
   const c = document.createElement('canvas');
   c.width = 512; c.height = 512;
   const g = c.getContext('2d');
-  g.fillStyle = '#05080d';
-  g.fillRect(0, 0, 512, 512);
+  if (isLight) {
+    g.fillStyle = '#f7f3eb';
+    g.fillRect(0, 0, 512, 512);
 
-  g.fillStyle = 'rgba(255, 255, 255, 0.02)';
-  for (let i = 0; i < 2000; i++) {
-    const x = Math.random() * 512, y = Math.random() * 512;
-    g.fillRect(x, y, 1.5, 1.5);
+    // Warm Japanese tokonoma alcove washi plaster texture
+    g.fillStyle = 'rgba(180, 140, 80, 0.04)';
+    for (let i = 0; i < 2500; i++) {
+      const x = Math.random() * 512, y = Math.random() * 512;
+      g.fillRect(x, y, 1.5, 1.5);
+    }
+    g.fillStyle = 'rgba(160, 120, 70, 0.025)';
+    for (let i = 0; i < 40; i++) {
+      const y = Math.random() * 512;
+      g.fillRect(0, y, 512, 1.5);
+    }
+  } else {
+    g.fillStyle = '#05080d';
+    g.fillRect(0, 0, 512, 512);
+
+    g.fillStyle = 'rgba(255, 255, 255, 0.02)';
+    for (let i = 0; i < 2000; i++) {
+      const x = Math.random() * 512, y = Math.random() * 512;
+      g.fillRect(x, y, 1.5, 1.5);
+    }
   }
   return c;
 }
@@ -904,7 +1038,7 @@ function initScene() {
     glCanvas = document.getElementById('gl');
     renderer = new THREE.WebGLRenderer({ canvas: glCanvas, antialias: true, alpha: false });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.35));
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.18;
@@ -919,18 +1053,22 @@ function initScene() {
     // Soft temple atmospheric lighting
     const ambient = new THREE.AmbientLight(0xfff6ea, 1.05);
     scene.add(ambient);
+    window.AMBIENT_LIGHT = ambient;
 
     const mainLight = new THREE.DirectionalLight(0xfff0dd, 2.1);
     mainLight.position.set(2.5, 5.0, 4.5);
     scene.add(mainLight);
+    window.MAIN_LIGHT = mainLight;
 
     const fillLight = new THREE.DirectionalLight(0x88bbff, 0.7);
     fillLight.position.set(-3.5, 1.5, 3.0);
     scene.add(fillLight);
+    window.FILL_LIGHT = fillLight;
 
     const goldRim = new THREE.PointLight(0xffb844, 1.8, 12);
     goldRim.position.set(0, 0.2, 2.2);
     scene.add(goldRim);
+    window.GOLD_RIM = goldRim;
 
     buildArchitecture();
     buildVerticalKakemonoScrolls();
@@ -940,12 +1078,48 @@ function initScene() {
     setupPointer();
     updateStatusUI();
 
+    function applyTheme(theme) {
+      const isLight = theme === 'light';
+      document.documentElement.setAttribute('data-theme', theme);
+      document.documentElement.classList.toggle('light-theme', isLight);
+      document.body.classList.toggle('light-theme', isLight);
+      if (scene) {
+        scene.background = new THREE.Color(isLight ? 0xfbf8f3 : 0x05080d);
+      }
+      if (renderer) {
+        renderer.setClearColor(isLight ? 0xfbf8f3 : 0x05080d, 1);
+      }
+      if (window.WALL_MAT) {
+        window.WALL_MAT.map = isLight ? window.WALL_TEX_LIGHT : window.WALL_TEX_DARK;
+        window.WALL_MAT.color = new THREE.Color(isLight ? 0xfffcf6 : 0xffffff);
+        window.WALL_MAT.needsUpdate = true;
+      }
+      if (window.MAIN_LIGHT) {
+        window.MAIN_LIGHT.color = new THREE.Color(isLight ? 0xfffaed : 0xfff0dd);
+        window.MAIN_LIGHT.intensity = isLight ? 2.6 : 2.1;
+      }
+      if (window.AMBIENT_LIGHT) {
+        window.AMBIENT_LIGHT.color = new THREE.Color(isLight ? 0xfffbf4 : 0xfff6ea);
+        window.AMBIENT_LIGHT.intensity = isLight ? 1.45 : 1.05;
+      }
+    }
+    window.applyTheme = applyTheme;
+    window.addEventListener('message', (e) => {
+      if (e.data && e.data.type === 'THEME_CHANGE') {
+        applyTheme(e.data.theme);
+      }
+    });
+    try {
+      const saved = localStorage.getItem('kage-theme');
+      if (saved) applyTheme(saved);
+    } catch(e) {}
+
     window.renderer = renderer;
     window.scene = scene;
     window.scrolls = scrolls;
     console.log('SCENE INITIALIZED SUCCESSFULLY, SCROLLS COUNT:', scrolls.length);
 
-    requestAnimationFrame(renderLoop);
+    startLoop();
   } catch (err) {
     console.error('ERROR INITIALIZING SCENE:', err);
   }
@@ -953,17 +1127,27 @@ function initScene() {
 
 /* ============================================================ 5 · ARCHITECTURE */
 function buildArchitecture() {
-  const wallTex = new THREE.CanvasTexture(createWallTexture());
-  wallTex.wrapS = wallTex.wrapT = THREE.RepeatWrapping;
-  wallTex.repeat.set(6, 4);
+  const wallTexDark = new THREE.CanvasTexture(createWallTexture(false));
+  wallTexDark.wrapS = wallTexDark.wrapT = THREE.RepeatWrapping;
+  wallTexDark.repeat.set(6, 4);
+
+  const wallTexLight = new THREE.CanvasTexture(createWallTexture(true));
+  wallTexLight.wrapS = wallTexLight.wrapT = THREE.RepeatWrapping;
+  wallTexLight.repeat.set(6, 4);
+
   const wallMat = new THREE.MeshStandardMaterial({
-    map: wallTex,
+    map: wallTexDark,
     roughness: 0.92,
     metalness: 0.05
   });
   const wall = new THREE.Mesh(new THREE.PlaneGeometry(24, 12), wallMat);
   wall.position.set(0, 0, K.wallZ);
   scene.add(wall);
+
+  window.WALL_MESH = wall;
+  window.WALL_MAT = wallMat;
+  window.WALL_TEX_DARK = wallTexDark;
+  window.WALL_TEX_LIGHT = wallTexLight;
 }
 
 /* ============================================================ 6 · BUILD VERTICAL KAKEMONO SCROLLS */
@@ -1253,7 +1437,26 @@ function onResize() {
 
 /* ============================================================ 9 · ANIMATION LOOP */
 let lastT = performance.now();
+let isLoopRunning = false;
+let isVisible = true;
+window.isLoopRunning = false;
+window.isVisible = true;
+
+function startLoop() {
+  if (isLoopRunning) return;
+  isLoopRunning = true;
+  window.isLoopRunning = true;
+  lastT = performance.now();
+  requestAnimationFrame(renderLoop);
+}
+
+function stopLoop() {
+  isLoopRunning = false;
+  window.isLoopRunning = false;
+}
+
 function renderLoop(t) {
+  if (!isLoopRunning) return;
   const dt = Math.min((t - lastT) / 1000, 0.1);
   lastT = t;
 
@@ -1290,9 +1493,14 @@ function renderLoop(t) {
   requestAnimationFrame(renderLoop);
 }
 
-/* ============================================================ 10 · PARENT POSTMESSAGE */
+/* ============================================================ 10 · PARENT POSTMESSAGE & LIFECYCLE */
 window.addEventListener('message', (e) => {
-  if (e.data && e.data.type === 'filter') {
+  if (!e.data) return;
+  if (e.data.type === 'VISIBILITY') {
+    window.isVisible = isVisible = Boolean(e.data.visible);
+    if (isVisible) startLoop();
+    else stopLoop();
+  } else if (e.data.type === 'filter') {
     const f = e.data.filter;
     const matchIdx = CERTS.findIndex(c => {
       if (f === 'all') return true;
@@ -1305,6 +1513,14 @@ window.addEventListener('message', (e) => {
     if (matchIdx !== -1) {
       goToIndex(matchIdx);
     }
+  }
+});
+
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    stopLoop();
+  } else if (isVisible) {
+    startLoop();
   }
 });
 
