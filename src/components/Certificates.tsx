@@ -143,19 +143,6 @@ export const CERTIFICATES_DATA: CertificateItem[] = [
     accent: "#86bc25",
   },
   {
-    id: "deloitte-forage",
-    title: "Deloitte Practical Engineering & Coding Simulation",
-    issuer: "Deloitte · Forage",
-    tag: "Deloitte",
-    category: "enterprise",
-    date: "04 July 2025",
-    certId: "4CxkrpXBa2bnLST8L",
-    skills: ["Full-Stack Development", "Code Optimization", "Business Logic", "Software Engineering"],
-    pdfUrl: "/certificates/deloitte-forage-job-simulation.pdf",
-    previewImg: "/certificates/previews/deloitte-forage-job-simulation.png",
-    accent: "#86bc25",
-  },
-  {
     id: "mathworks-matlab",
     title: "MATLAB Onramp",
     issuer: "MathWorks",
@@ -250,7 +237,7 @@ export default function Certificates() {
 
         <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-zinc-800 bg-zinc-900/60 text-xs text-zinc-300 w-fit">
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-          <span>11 Verified Accreditations · Date Sorted</span>
+          <span>10 Verified Accreditations · Date Sorted</span>
         </div>
       </div>
 
