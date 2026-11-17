@@ -2,8 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>My Certificates — 3D Makimono Scroll Vault</title>
+<title>My Certificates — Vertical Kakemono Hanging Scroll Gallery</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<script>
+  try {
+    const t = localStorage.getItem('kage-theme');
+    if (t === 'light') document.documentElement.classList.add('light-theme');
+  } catch(e) {}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Onest:wght@300;400;500;600;700&family=EB+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
@@ -39,10 +45,8 @@
     user-select: none;
     -webkit-user-select: none;
     z-index: 1;
-    opacity: 0;
-    transition: opacity 0.8s ease;
+    opacity: 1;
   }
-  canvas#gl.on { opacity: 1; }
 
   /* subtle ambient vignette */
   .vignette {
@@ -109,53 +113,65 @@
     backdrop-filter: blur(12px);
     transition: opacity 0.5s ease;
   }
-  .shelf-hint.hide { opacity: 0; }
 
-  /* bottom catalogue shelf rail */
-  footer {
-    position: fixed; left: 0; right: 0; bottom: 0;
-    z-index: 25; padding: 14px 0 12px;
-    background: linear-gradient(to top, rgba(3, 5, 8, 0.98) 65%, rgba(3, 5, 8, 0));
+  /* Navigation Arrows */
+  .nav-arrow {
+    position: fixed; top: 50%;
+    transform: translateY(-50%);
+    z-index: 25;
+    width: 50px; height: 50px;
+    border-radius: 50%;
+    background: rgba(12, 17, 26, 0.85);
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    color: var(--gold);
+    display: grid; place-items: center;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7), 0 0 16px rgba(212, 175, 55, 0.2);
+    backdrop-filter: blur(12px);
+    transition: all 0.25s var(--ease-out);
+    user-select: none;
+  }
+  .nav-arrow:hover {
+    background: rgba(224, 35, 28, 0.25);
+    border-color: var(--vermilion);
+    color: #fff;
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.85), 0 0 24px rgba(224, 35, 28, 0.5);
+  }
+  .nav-arrow:active { transform: translateY(-50%) scale(0.96); }
+  .nav-prev { left: clamp(14px, 3vw, 36px); }
+  .nav-next { right: clamp(14px, 3vw, 36px); }
+
+  /* Minimal bottom indicator bar */
+  .scroll-counter-pill {
+    position: fixed; bottom: 22px; left: 50%;
+    transform: translateX(-50%);
+    z-index: 20;
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 8px 20px; border-radius: 999px;
+    background: rgba(10, 15, 22, 0.88);
+    border: 1px solid rgba(212, 175, 55, 0.35);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.8);
+    font-size: 11.5px; letter-spacing: 0.08em;
+    color: var(--ink);
+    user-select: none;
     pointer-events: none;
   }
-  .rail {
-    display: flex; align-items: center; justify-content: center;
-    gap: clamp(6px, 1.1vw, 14px);
-    padding: 0 clamp(14px, 2.5vw, 36px);
-    overflow-x: auto; scrollbar-width: none;
-    pointer-events: auto;
+  .counter-num {
+    font-weight: 700; color: var(--gold);
   }
-  .rail::-webkit-scrollbar { display: none; }
-  .rail-item {
-    background: rgba(12, 17, 24, 0.9);
-    border: 1px solid rgba(223, 237, 224, 0.14);
-    border-radius: 9px;
-    padding: 7px 12px;
-    display: flex; align-items: center; gap: 9px;
-    cursor: pointer;
-    transition: all 0.25s var(--ease-out);
-    white-space: nowrap;
-    text-align: left;
-    color: inherit;
+  .counter-dot {
+    opacity: 0.4;
   }
-  .rail-item:hover, .rail-item.active {
-    background: rgba(22, 30, 44, 0.98);
-    border-color: rgba(212, 175, 55, 0.55);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 16px rgba(212, 175, 55, 0.22);
+  .counter-title {
+    color: rgba(223, 237, 224, 0.95);
+    font-weight: 500;
   }
-  .rail-badge-tag {
+  .counter-tag {
     font-size: 9.5px; font-weight: 700;
-    padding: 2px 6px; border-radius: 4px;
+    padding: 2px 7px; border-radius: 4px;
     letter-spacing: 0.05em;
-  }
-  .rail-txt h4 {
-    margin: 0; font-size: 11.5px; font-weight: 500;
-    color: var(--ink);
-  }
-  .rail-txt span {
-    font-size: 9.5px; color: var(--gold);
-    letter-spacing: 0.04em;
   }
 
   /* split-screen certificate modal */
@@ -248,104 +264,87 @@
     color: rgba(201, 160, 56, 0.07);
     line-height: 1; pointer-events: none;
     user-select: none;
-    font-family: 'EB Garamond', serif;
   }
-  .cc-top {
-    display: flex; justify-content: space-between;
-    align-items: flex-start; border-bottom: 1px solid rgba(201, 160, 56, 0.35);
-    padding-bottom: 8px;
+  .cc-header {
+    display: flex; align-items: flex-start;
+    justify-content: space-between; gap: 12px;
   }
-  .cc-issuer-tag {
-    font-size: 10px; font-weight: 700;
-    letter-spacing: 0.14em; text-transform: uppercase;
-    color: #8b6814;
+  .cc-issuer-row { display: flex; align-items: center; gap: 8px; }
+  .cc-issuer {
+    font-size: 13.5px; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: #4b5563;
   }
-  .cc-seal-pill {
-    font-size: 9px; font-weight: 600;
+  .cc-badge {
+    font-size: 9.5px; font-weight: 700;
     padding: 2px 7px; border-radius: 4px;
-    background: rgba(201, 160, 56, 0.15);
-    border: 1px solid rgba(201, 160, 56, 0.4);
-    color: #6b4e05;
+    letter-spacing: 0.06em;
+    background: #2563eb; color: #fff;
+  }
+  .cc-stamp {
+    width: 38px; height: 38px;
+    border: 2px solid #e0231c; border-radius: 6px;
+    color: #e0231c; font-size: 14px; font-weight: 700;
+    display: grid; place-items: center;
+    background: rgba(224, 35, 28, 0.06);
+    transform: rotate(-4deg);
+    flex-shrink: 0;
   }
   .cc-body { text-align: center; margin: 10px 0; }
-  .cc-honor-line {
-    font-size: 9px; letter-spacing: 0.2em;
-    text-transform: uppercase; color: #7a664d;
-    margin: 0 0 4px;
+  .cc-label {
+    font-size: 9.5px; letter-spacing: 0.16em;
+    text-transform: uppercase; color: #6b7280;
+    margin-bottom: 4px;
+  }
+  .cc-title {
+    font-family: 'EB Garamond', serif;
+    font-size: clamp(18px, 2.4vw, 25px);
+    font-weight: 600; line-height: 1.15;
+    color: #111827; margin: 0 0 6px;
   }
   .cc-recipient {
-    font-family: 'EB Garamond', Georgia, serif;
-    font-size: clamp(22px, 3.2vw, 28px);
-    font-weight: 600; color: #16120e;
-    margin: 2px 0 6px;
-    letter-spacing: 0.02em;
+    font-size: 14px; font-weight: 600;
+    letter-spacing: 0.04em; color: #1f2937;
   }
-  .cc-for-text {
-    font-size: 9.5px; color: #6e5c46;
-    margin: 0 0 4px;
-  }
-  .cc-cert-title {
-    font-size: clamp(13px, 1.8vw, 16px);
-    font-weight: 700; color: #872e12;
-    margin: 0; line-height: 1.25;
-  }
-  .cc-bottom {
-    display: flex; justify-content: space-between;
-    align-items: flex-end;
+  .cc-footer {
+    display: flex; align-items: flex-end;
+    justify-content: space-between;
     border-top: 1px solid rgba(201, 160, 56, 0.35);
     padding-top: 8px;
-    font-size: 9.5px; color: #5a4935;
+    font-size: 10px; color: #6b7280;
   }
-  .cc-id { font-family: monospace; font-size: 8.5px; color: #8a7356; }
-  .cc-sig {
-    text-align: right;
-    font-style: italic; font-family: 'EB Garamond', serif;
-    font-size: 11px; color: #1c150c;
-  }
+  .cc-date { font-weight: 500; }
+  .cc-id { font-family: monospace; letter-spacing: 0.05em; }
 
-  /* Right Side: Description, What I Learnt, Redirect Link */
+  /* Right Side: Credential Metadata */
   .cert-modal-right {
-    padding: clamp(20px, 3.2vw, 40px);
+    padding: clamp(20px, 3.2vw, 42px);
     display: flex; flex-direction: column;
     justify-content: space-between;
-    gap: 18px;
+    gap: 20px;
   }
-  .cm-header-meta {
-    display: flex; align-items: center; justify-content: space-between;
-    flex-wrap: wrap; gap: 8px;
+  .cm-meta-top {
+    display: flex; align-items: center;
+    justify-content: space-between; gap: 12px;
   }
   .cm-issuer {
-    font-size: 11px; font-weight: 700;
-    letter-spacing: 0.16em; text-transform: uppercase;
-    color: var(--amber);
-    display: flex; align-items: center; gap: 6px;
+    font-size: 12px; font-weight: 600;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--gold);
   }
   .cm-duration {
-    font-size: 11px; color: var(--gold);
-    display: flex; align-items: center; gap: 5px;
-    background: rgba(212, 175, 55, 0.1);
-    padding: 3px 10px; border-radius: 999px;
-    border: 1px solid rgba(212, 175, 55, 0.25);
+    font-size: 11.5px; color: var(--ink-muted);
   }
   .cm-title {
-    font-size: clamp(20px, 2.4vw, 28px);
-    font-weight: 500; color: var(--ink);
-    margin: 8px 0 0; line-height: 1.2;
-    letter-spacing: -0.01em;
-  }
-  .cm-verified-pill {
-    display: inline-flex; align-items: center; gap: 6px;
-    font-size: 10.5px; color: #00e676;
-    background: rgba(0, 230, 118, 0.1);
-    padding: 3px 10px; border-radius: 999px;
-    border: 1px solid rgba(0, 230, 118, 0.3);
-    width: fit-content; margin-top: 8px;
+    font-size: clamp(22px, 2.6vw, 32px);
+    font-weight: 600; line-height: 1.2;
+    color: #fff; margin: 0;
   }
   .cm-section {
-    display: flex; flex-direction: column; gap: 7px;
+    display: flex; flex-direction: column; gap: 8px;
   }
   .cm-section-label {
-    font-size: 10px; letter-spacing: 0.2em;
+    font-size: 10px; letter-spacing: 0.18em;
     text-transform: uppercase; color: var(--gold);
     margin: 0; font-weight: 600;
   }
@@ -368,12 +367,12 @@
     margin-top: 8px; flex-wrap: wrap;
   }
   .cm-btn-verify {
-    flex: 1; min-width: 190px;
+    flex: 1; min-width: 170px;
     display: inline-flex; align-items: center; justify-content: center; gap: 8px;
     background: linear-gradient(135deg, var(--vermilion), #b51711);
     color: #fff; text-decoration: none;
     font-size: 13px; font-weight: 500;
-    padding: 12px 20px; border-radius: 9px;
+    padding: 12px 18px; border-radius: 9px;
     box-shadow: 0 8px 24px rgba(224, 35, 28, 0.35);
     transition: all 0.25s var(--ease-out);
     cursor: pointer;
@@ -382,6 +381,22 @@
     background: linear-gradient(135deg, #f0322b, var(--vermilion));
     transform: translateY(-2px);
     box-shadow: 0 12px 30px rgba(224, 35, 28, 0.5);
+  }
+  .cm-btn-online {
+    background: rgba(203, 163, 56, 0.16) !important;
+    border: 1px solid rgba(203, 163, 56, 0.6) !important;
+    color: #f7d57f !important;
+    box-shadow: 0 4px 16px rgba(203, 163, 56, 0.2) !important;
+  }
+  .cm-btn-online:hover {
+    background: rgba(203, 163, 56, 0.28) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(203, 163, 56, 0.35) !important;
+  }
+  body.light-theme .cm-btn-online {
+    background: rgba(180, 130, 20, 0.12) !important;
+    border: 1px solid rgba(180, 130, 20, 0.5) !important;
+    color: #8b5700 !important;
   }
   .cm-btn-close {
     background: rgba(255, 255, 255, 0.06);
@@ -396,23 +411,118 @@
     background: rgba(255, 255, 255, 0.12);
   }
 
-  /* loader */
-  .loader {
-    position: fixed; inset: 0; z-index: 50;
-    display: grid; place-items: center;
-    background: var(--bg);
-    transition: opacity 0.6s linear;
-    pointer-events: none;
+  /* ================================= Light Theme (Hikari Washi Gallery) */
+  html.light-theme,
+  body.light-theme {
+    --bg: #fbf8f3;
+    --ink: #0f172a;
+    --ink-muted: #64748b;
+    background: #fbf8f3;
+    color: #0f172a;
   }
-  .loader.gone { opacity: 0; }
-  .loader-spinner {
-    width: 38px; height: 38px;
-    border: 2px solid rgba(212, 175, 55, 0.2);
-    border-top-color: var(--gold);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
+  body.light-theme .vignette {
+    background: radial-gradient(circle at 50% 48%, transparent 60%, rgba(180, 160, 140, 0.16) 100%);
   }
-  @keyframes spin { to { transform: rotate(360deg); } }
+
+  body.light-theme header .brand-title {
+    color: #0f172a !important;
+    font-weight: 700 !important;
+  }
+  body.light-theme header .brand-sub {
+    color: #b45309 !important;
+    font-weight: 600 !important;
+  }
+  body.light-theme .header-badge {
+    background: rgba(255, 255, 255, 0.94) !important;
+    border: 1px solid rgba(180, 140, 60, 0.35) !important;
+    color: #0f172a !important;
+    box-shadow: 0 4px 16px rgba(100, 80, 50, 0.08) !important;
+  }
+  body.light-theme .shelf-hint {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border: 1px solid rgba(180, 140, 60, 0.35) !important;
+    color: #475569 !important;
+    box-shadow: 0 4px 16px rgba(100, 80, 50, 0.08) !important;
+  }
+  body.light-theme .nav-arrow {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border: 1px solid rgba(180, 140, 60, 0.40) !important;
+    color: #854d0e !important;
+    box-shadow: 0 8px 24px rgba(100, 80, 50, 0.14) !important;
+  }
+  body.light-theme .nav-arrow:hover {
+    background: #dc2626 !important;
+    border-color: #b91c1c !important;
+    color: #ffffff !important;
+    box-shadow: 0 10px 28px rgba(220, 38, 38, 0.4) !important;
+  }
+  body.light-theme .scroll-counter-pill {
+    background: rgba(255, 255, 255, 0.96) !important;
+    border: 1px solid rgba(180, 140, 60, 0.40) !important;
+    box-shadow: 0 8px 24px rgba(100, 80, 50, 0.12) !important;
+    color: #0f172a !important;
+  }
+  body.light-theme .counter-num {
+    color: #b45309 !important;
+    font-weight: 700 !important;
+  }
+  body.light-theme .counter-title {
+    color: #0f172a !important;
+    font-weight: 600 !important;
+  }
+
+  /* Light Theme - Modal */
+  body.light-theme .cert-modal-backdrop {
+    background: rgba(15, 23, 42, 0.45) !important;
+  }
+  body.light-theme .cert-modal-container {
+    background: #ffffff !important;
+    border: 1.5px solid rgba(180, 140, 60, 0.45) !important;
+    box-shadow: 0 35px 80px rgba(60, 45, 25, 0.22) !important;
+  }
+  body.light-theme .cert-modal-left {
+    background: #fbf9f5 !important;
+    border-right: 1px solid rgba(180, 140, 60, 0.25) !important;
+  }
+  body.light-theme .cert-modal-close {
+    background: #f1f5f9 !important;
+    color: #0f172a !important;
+    border-color: #cbd5e1 !important;
+  }
+  body.light-theme .cert-modal-close:hover {
+    background: #dc2626 !important;
+    color: #ffffff !important;
+    border-color: #b91c1c !important;
+  }
+  body.light-theme .cm-title {
+    color: #0f172a !important;
+  }
+  body.light-theme .cm-issuer {
+    color: #b45309 !important;
+  }
+  body.light-theme .cm-duration {
+    color: #64748b !important;
+  }
+  body.light-theme .cm-section-label {
+    color: #854d0e !important;
+  }
+  body.light-theme .cm-desc {
+    color: #334155 !important;
+  }
+  body.light-theme .cm-skill-tag {
+    background: #f1f5f9 !important;
+    border: 1px solid #cbd5e1 !important;
+    color: #334155 !important;
+  }
+  body.light-theme .cm-btn-close {
+    background: #f1f5f9 !important;
+    border: 1px solid #cbd5e1 !important;
+    color: #334155 !important;
+  }
+  body.light-theme .cm-btn-close:hover {
+    background: #e2e8f0 !important;
+    color: #0f172a !important;
+  }
 </style>
 </head>
 <body>
@@ -425,7 +535,7 @@
     <div class="mark-seal">証</div>
     <div class="brand-text">
       <span class="brand-title">My Certificates</span>
-      <span class="brand-sub">3D Makimono Scroll Vault · 証書絵巻</span>
+      <span class="brand-sub">Vertical Kakemono Hanging Scroll Vault · 証書掛軸</span>
     </div>
   </div>
   <div class="header-badge">
@@ -434,11 +544,23 @@
   </div>
 </header>
 
-<div class="shelf-hint" id="shelf-hint">Click scroll to inspect certificate · Drag to orbit</div>
+<div class="shelf-hint" id="shelf-hint">Click vertical scroll to inspect certificate · Drag or use arrows to navigate</div>
 
-<footer>
-  <div class="rail" id="rail"></div>
-</footer>
+<!-- Sleek Navigational Arrows -->
+<button type="button" class="nav-arrow nav-prev" id="btn-prev" aria-label="Previous Certificate">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M15 18l-6-6 6-6"/></svg>
+</button>
+<button type="button" class="nav-arrow nav-next" id="btn-next" aria-label="Next Certificate">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 18l6-6-6-6"/></svg>
+</button>
+
+<!-- Minimal Bottom Status Bar -->
+<div class="scroll-counter-pill" id="scroll-status">
+  <span class="counter-num" id="counter-num">SCROLL 1 OF 10</span>
+  <span class="counter-dot">·</span>
+  <span class="counter-title" id="counter-title">AWS Certified Cloud Practitioner</span>
+  <span class="counter-tag" id="counter-tag" style="background:#ff990025; color:#ff9900; border:1px solid #ff990060;">AWS</span>
+</div>
 
 <!-- SPLIT-SCREEN CERTIFICATE MODAL -->
 <div class="cert-modal-backdrop" id="cert-modal">
@@ -448,55 +570,40 @@
       
       <!-- LEFT SIDE: RENDERED OFFICIAL CERTIFICATE PLATE -->
       <div class="cert-modal-left">
-        <div class="cert-card-preview" id="modal-cert-plate">
+        <div class="cert-card-preview" id="cert-card-plate">
           <div class="cc-watermark" id="m-watermark">雲</div>
-          <div class="cc-top">
-            <span class="cc-issuer-tag" id="m-card-issuer">AWS CERTIFICATION</span>
-            <span class="cc-seal-pill" id="m-card-badge">VERIFIED</span>
+          <div class="cc-header">
+            <div class="cc-issuer-row">
+              <span class="cc-issuer" id="m-card-issuer">AMAZON WEB SERVICES</span>
+              <span class="cc-badge" id="m-card-badge">AWS</span>
+            </div>
+            <div class="cc-stamp">検印</div>
           </div>
           <div class="cc-body">
-            <p class="cc-honor-line">Official Accreditation Credential</p>
-            <h2 class="cc-recipient">Vishwajeet Rawat</h2>
-            <p class="cc-for-text">has demonstrated verified competency in</p>
-            <h3 class="cc-cert-title" id="m-card-title">AWS Certified Cloud Practitioner</h3>
+            <div class="cc-label">OFFICIALLY ACCREDITED TO</div>
+            <div class="cc-recipient">Vishwajeet Rawat</div>
+            <div class="cc-label" style="margin-top:10px;">FOR DEMONSTRATED MASTERY IN</div>
+            <h3 class="cc-title" id="m-card-title">AWS Certified Cloud Practitioner</h3>
           </div>
-          <div class="cc-bottom">
-            <div>
-              <span id="m-card-date">17 Sept 2025</span><br>
-              <span class="cc-id" id="m-card-id">ID: AWS-CCP-2025-VR</span>
-            </div>
-            <div class="cc-sig">
-              <span>Official Verification</span><br>
-              <strong>Global Credentials Office</strong>
-            </div>
+          <div class="cc-footer">
+            <span class="cc-date" id="m-card-date">17 Sept 2025</span>
+            <span class="cc-id" id="m-card-id">ID: AWS-CCP-2025-VR9812</span>
           </div>
         </div>
       </div>
 
-      <!-- RIGHT SIDE: DETAILS, WHAT I LEARNT, REDIRECT LINK -->
+      <!-- RIGHT SIDE: METADATA & VERIFICATION ACTIONS -->
       <div class="cert-modal-right">
         <div>
-          <div class="cm-header-meta">
-            <span class="cm-issuer" id="m-issuer-tag">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-              <span id="m-issuer-name">Amazon Web Services</span>
-            </span>
-            <span class="cm-duration" id="m-duration-badge">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
-              <span id="m-duration-text">17 Sept 2025</span>
-            </span>
+          <div class="cm-meta-top">
+            <span class="cm-issuer" id="m-issuer-name">Amazon Web Services</span>
+            <span class="cm-duration" id="m-duration-text">Issued Sept 2025</span>
           </div>
-
           <h2 class="cm-title" id="m-title">AWS Certified Cloud Practitioner</h2>
-          
-          <div class="cm-verified-pill">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-            <span>Verified Industry Accreditation</span>
-          </div>
         </div>
 
         <div class="cm-section">
-          <h4 class="cm-section-label">WHAT I LEARNT</h4>
+          <h4 class="cm-section-label">ACCREDITATION DISCLOSURE</h4>
           <p class="cm-desc" id="m-desc"></p>
         </div>
 
@@ -507,8 +614,12 @@
 
         <div class="cm-actions">
           <a href="#" target="_blank" rel="noopener noreferrer" class="cm-btn-verify" id="m-redirect-link">
-            <span>Verify Credential / View PDF</span>
+            <span>View Certificate (PDF)</span>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M7 7h10v10"/></svg>
+          </a>
+          <a href="#" target="_blank" rel="noopener noreferrer" class="cm-btn-verify cm-btn-online" id="m-verify-online" style="display:none;">
+            <span>Verify Online</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
           </a>
           <button type="button" class="cm-btn-close" id="m-btn-close">Close Scroll</button>
         </div>
@@ -518,14 +629,9 @@
   </div>
 </div>
 
-<div class="loader" id="loader"><div class="loader-spinner"></div></div>
-
-<script type="importmap">
-{ "imports": { "three": "https://unpkg.com/three@0.181.0/build/three.module.js" } }
-</script>
 
 <script type="module">
-import * as THREE from 'three';
+import * as THREE from './three.module.js';
 
 /* ============================================================ 1 · DATA */
 const CERTS = [
@@ -535,17 +641,17 @@ const CERTS = [
     short: 'Cloud Practitioner',
     issuer: 'Amazon Web Services',
     tag: 'AWS',
+    category: 'cloud',
     date: '17 Sept 2025',
-    shelf: 0,
-    slot: 0,
     kanji: '雲',
     accent: '#ff9900',
-    brocade: '#2e1c08',
+    brocade: '#281a0b',
     silk: '#ff9900',
     desc: 'Mastered cloud architectural fundamentals, shared responsibility security models, IAM governance, global infrastructure resilience, and cloud economics across core AWS compute, storage, and networking services.',
     skills: ['Cloud Architecture', 'Security & IAM', 'EC2 / S3 / RDS', 'Billing & Economics'],
     certId: 'AWS-CCP-2025-VR9812',
-    pdfUrl: 'https://www.rawwat.com/certificates/aws-certified-cloud-practitioner.pdf'
+    pdfUrl: '/certificates/aws-certified-cloud-practitioner.pdf',
+    verifyUrl: null
   },
   {
     id: 'aws-te',
@@ -553,17 +659,35 @@ const CERTS = [
     short: 'Technical Essentials',
     issuer: 'Amazon Web Services',
     tag: 'AWS',
+    category: 'cloud',
     date: '17 Sept 2025',
-    shelf: 0,
-    slot: 1,
     kanji: '基',
     accent: '#ff9900',
-    brocade: '#281807',
+    brocade: '#241608',
     silk: '#e68a00',
     desc: 'Hands-on architectural proficiency in provisioning EC2 instances, configuring resilient EBS and S3 tiers, routing multi-tier traffic inside custom VPC subnets, and orchestrating managed RDS databases.',
     skills: ['Compute (EC2)', 'Storage (S3 / EBS)', 'Networking (VPC)', 'Database (RDS)'],
     certId: 'AWS-TE-2025-VR4410',
-    pdfUrl: 'https://www.rawwat.com/certificates/aws-technical-essentials.pdf'
+    pdfUrl: '/certificates/aws-technical-essentials.pdf',
+    verifyUrl: null
+  },
+  {
+    id: 'nptel-cloud',
+    title: 'Cloud Computing (Elite · 87%)',
+    short: 'Cloud Computing',
+    issuer: 'NPTEL · IIT',
+    tag: 'NPTEL',
+    category: 'cloud',
+    date: 'Jul–Oct 2026',
+    kanji: '宙',
+    accent: '#00b4d8',
+    brocade: '#0a2230',
+    silk: '#00b4d8',
+    desc: 'Completed rigorous 12-week advanced Cloud Computing curriculum administered by IIT with an 87% Elite score (Assignment 25/25, Proctored Exam 61.5/75, 4 credits). Covers distributed hypervisors, virtualization, AWS/GCP architectures, OpenStack, map-reduce engines, and cloud storage protocols.',
+    skills: ['Distributed Systems', 'Hypervisor & Virtualization', 'Cloud Storage Protocols', 'Serverless & SLA'],
+    certId: 'NPTEL26CS150MANUAL0020816',
+    pdfUrl: '/certificates/cloud-computing-nptel.pdf',
+    verifyUrl: null
   },
   {
     id: 'google-it',
@@ -571,17 +695,17 @@ const CERTS = [
     short: 'IT Support',
     issuer: 'Google',
     tag: 'Google',
-    date: 'February 2026',
-    shelf: 0,
-    slot: 2,
+    category: 'systems',
+    date: '02 February 2026',
     kanji: '系',
     accent: '#4285f4',
-    brocade: '#0d1a33',
+    brocade: '#0d1829',
     silk: '#4285f4',
     desc: 'Enterprise IT infrastructure operations spanning multi-platform operating systems (Linux kernel & Windows), CLI system diagnostics, automated incident recovery, active directory user administration, and system defense.',
     skills: ['Operating Systems', 'System Administration', 'Network Diagnostics', 'Security Protocols'],
-    certId: 'GOOG-IT-2026-VR7802',
-    pdfUrl: 'https://www.rawwat.com/certificates/google-it-support.pdf'
+    certId: 'ET2H2Avf',
+    pdfUrl: '/certificates/google-it-support.pdf',
+    verifyUrl: 'https://www.credly.com/go/ET2H2Avf'
   },
   {
     id: 'google-net',
@@ -589,17 +713,35 @@ const CERTS = [
     short: 'Networking',
     issuer: 'Google',
     tag: 'Google',
-    date: 'November 2025',
-    shelf: 0,
-    slot: 3,
+    category: 'systems',
+    date: '15 November 2025',
     kanji: '網',
     accent: '#34a853',
-    brocade: '#0b2314',
+    brocade: '#0a1d12',
     silk: '#34a853',
     desc: 'Deep dive into the 5-layer network model, TCP three-way handshakes, UDP streaming, CIDR subnetting, ARP, DHCP, DNS hierarchical resolution, routing table convergence, and packet-level inspection with Wireshark.',
     skills: ['TCP/IP Suite', 'Subnetting & CIDR', 'Routing & DNS', 'Network Security'],
-    certId: 'GOOG-NET-2025-VR3199',
-    pdfUrl: 'https://www.rawwat.com/certificates/bits-and-bytes-computer-networking.pdf'
+    certId: 'OA0HK850IQDX',
+    pdfUrl: '/certificates/bits-and-bytes-computer-networking.pdf',
+    verifyUrl: 'https://coursera.org/verify/OA0HK850IQDX'
+  },
+  {
+    id: 'oracle-fnd',
+    title: 'OCI Certified Foundations Associate',
+    short: 'OCI Foundations',
+    issuer: 'Oracle',
+    tag: 'Oracle',
+    category: 'enterprise',
+    date: '17 September 2026',
+    kanji: '礎',
+    accent: '#f80000',
+    brocade: '#2c0c0c',
+    silk: '#f80000',
+    desc: 'Certified by Oracle in core OCI architectural primitives: Virtual Cloud Networks (VCN), security lists, compute bare metal and VM orchestration, block/object storage tiers, identity domains, and governance compliance.',
+    skills: ['OCI Architecture', 'Virtual Cloud Network', 'Compute & Storage', 'Identity & Governance'],
+    certId: '102926422OCI26FNDCFA',
+    pdfUrl: '/certificates/oracle-cloud-infrastructure-foundations.pdf',
+    verifyUrl: null
   },
   {
     id: 'oracle-fa',
@@ -607,17 +749,17 @@ const CERTS = [
     short: 'AI Foundations',
     issuer: 'Oracle',
     tag: 'Oracle',
-    date: 'October 2025',
-    shelf: 1,
-    slot: 0,
-    kanji: '礎',
-    accent: '#f80000',
-    brocade: '#2c0c0c',
-    silk: '#f80000',
-    desc: 'Foundations of enterprise AI architectures, machine learning model lifecycles, neural network training paradigms, vector embeddings, natural language processing pipelines, and autonomous database integration.',
-    skills: ['Enterprise AI', 'Machine Learning', 'Data Modeling', 'Cloud AI Services'],
-    certId: 'ORCL-AI-2025-VR8821',
-    pdfUrl: 'https://www.rawwat.com/certificates/oracle-certified-foundation-associate.pdf'
+    category: 'enterprise',
+    date: '18 October 2025',
+    kanji: '智',
+    accent: '#c74634',
+    brocade: '#280c0c',
+    silk: '#c74634',
+    desc: 'Foundations of enterprise AI architectures, machine learning model lifecycles, neural network training paradigms, vector embeddings, natural language processing pipelines, autonomous databases, and Generative AI services.',
+    skills: ['Enterprise AI', 'Deep Learning & ML', 'Vector Embeddings', 'Generative AI & LLMs'],
+    certId: '102926422OCI25AICFA',
+    pdfUrl: '/certificates/oracle-certified-ai-foundations.pdf',
+    verifyUrl: null
   },
   {
     id: 'deloitte-sim',
@@ -625,256 +767,342 @@ const CERTS = [
     short: 'Tech Simulation',
     issuer: 'Deloitte',
     tag: 'Deloitte',
-    date: 'July 2025',
-    shelf: 1,
-    slot: 1,
+    category: 'enterprise',
+    date: '04 July 2025',
     kanji: '構',
     accent: '#86bc25',
-    brocade: '#17240c',
+    brocade: '#14200b',
     silk: '#86bc25',
-    desc: 'Delivered client-facing architectural feasibility assessments, modernized legacy codebase monoliths to microservices, formulated comprehensive data security compliance schemas, and analyzed forensic code issues.',
+    desc: 'Completed practical enterprise client simulation with Deloitte via Forage. Conducted forensic software reviews, evaluated cloud migration architectures, designed data privacy compliance frameworks, and modernized legacy service components.',
     skills: ['Software Architecture', 'Technology Consulting', 'Client Solutions', 'Forensic Code Review'],
-    certId: 'DEL-SIM-2025-VR5543',
-    pdfUrl: 'https://www.rawwat.com/certificates/deloitte-technology-job-simulation.pdf'
+    certId: '8WExfxS2YXNx6f6CQ',
+    pdfUrl: '/certificates/deloitte-technology-job-simulation.pdf',
+    verifyUrl: null
   },
   {
     id: 'nptel-mkt',
-    title: 'Marketing Analytics',
+    title: 'Marketing Analytics (Elite · Gold 90%)',
     short: 'Marketing Analytics',
     issuer: 'NPTEL · IIT',
     tag: 'NPTEL',
-    date: 'April 2026',
-    shelf: 1,
-    slot: 2,
+    category: 'analytics',
+    date: 'Jan–Apr 2026',
     kanji: '析',
     accent: '#ff7700',
-    brocade: '#2a1608',
+    brocade: '#251508',
     silk: '#ff7700',
-    desc: 'Applied statistical inference, predictive linear and logistic regression models, k-means clustering for market segmentation, conjoint analysis, customer lifetime value (CLV) optimization, and conversion analytics.',
+    desc: 'Awarded Elite + Gold medal with a 90% score (Assignment 25/25, Exam 64.5/75, 4 credits). Executed statistical modeling, multivariate linear/logistic regressions, k-means clustering for market segmentation, conjoint analysis, and customer lifetime value (CLV) optimization.',
     skills: ['Statistical Modeling', 'Predictive Analytics', 'Customer Clustering', 'Data Analytics'],
-    certId: 'NPTEL-MKT-2026-VR1094',
-    pdfUrl: 'https://www.rawwat.com/certificates/marketing-analytics.pdf'
+    certId: 'NPTEL26MG33S1052403096',
+    pdfUrl: '/certificates/marketing-analytics.pdf',
+    verifyUrl: null
+  },
+  {
+    id: 'mathworks-matlab',
+    title: 'MATLAB Onramp (100% Complete)',
+    short: 'MATLAB Onramp',
+    issuer: 'MathWorks',
+    tag: 'MathWorks',
+    category: 'analytics',
+    date: '23 August 2023',
+    kanji: '数',
+    accent: '#d9381e',
+    brocade: '#2b110b',
+    silk: '#d9381e',
+    desc: 'Completed comprehensive scientific computing curriculum in MATLAB R2023a: matrix algebra operations, array indexing, multi-dimensional calculations, automated function calls, 2D/3D plotting, and data import pipelines.',
+    skills: ['Scientific Computing', 'Matrix Operations', 'Data Visualization', 'Numerical Analysis'],
+    certId: 'MATHWORKS-MATLAB-2023',
+    pdfUrl: '/certificates/matlab-onramp.pdf',
+    verifyUrl: null
   }
 ];
 
 /* ============================================================ 2 · CONSTANTS & MATH */
 const K = {
-  scrollR: 0.165,
-  scrollH: 1.34,
-  lean: -0.16,
-  yaw: 0.10,
-  shelfTop: [0.38, -1.18],
-  plankHalf: 3.60, plankThick: 0.11, plankDepth: 0.90,
-  wallZ: -1.50, scrollZ: -1.20,
-  fov: 28,
-  camP: [0.0, -0.40, 8.4],
-  camT: [0.0, -0.40, -1.0],
-  orbitAz: 0.08, orbitEl: 0.045
+  scrollW: 1.68,
+  scrollH: 2.62,
+  spacing: 2.38,
+  wallZ: -1.65,
+  scrollZ: -1.18,
+  fov: 30,
+  camP: [0.0, 0.05, 6.6],
+  camT: [0.0, 0.05, -1.0]
 };
 
-function lerp(a,b,t){ return a + (b - a)*t; }
+function lerp(a, b, t) { return a + (b - a) * t; }
 
-/* ============================================================ 3 · CANVAS TEXTURES */
-function createScrollTexture(cert) {
+/* ============================================================ 3 · HIGH-RES VERTICAL KAKEMONO TEXTURE */
+function createKakemonoTexture(cert) {
   const c = document.createElement('canvas');
-  c.width = 1024; c.height = 1024;
+  c.width = 1024;
+  c.height = 1600;
   const g = c.getContext('2d');
 
-  // Background washi silk texture
-  const grad = g.createLinearGradient(0, 0, 1024, 0);
-  grad.addColorStop(0, '#0c1017');
-  grad.addColorStop(0.25, cert.brocade);
-  grad.addColorStop(0.5, '#1e2638');
-  grad.addColorStop(0.75, cert.brocade);
-  grad.addColorStop(1, '#0a0d14');
-  g.fillStyle = grad;
-  g.fillRect(0, 0, 1024, 1024);
+  // 1. Silk brocade outer border mounting
+  const bgGrad = g.createLinearGradient(0, 0, 1024, 1600);
+  bgGrad.addColorStop(0, '#0d1117');
+  bgGrad.addColorStop(0.3, cert.brocade);
+  bgGrad.addColorStop(0.7, '#151d27');
+  bgGrad.addColorStop(1, '#090d12');
+  g.fillStyle = bgGrad;
+  g.fillRect(0, 0, 1024, 1600);
 
-  // Woven silk weave micro-lines
-  g.fillStyle = 'rgba(255, 255, 255, 0.04)';
-  for (let y = 0; y < 1024; y += 4) {
+  // Silk weave micro-pattern
+  g.fillStyle = 'rgba(255, 255, 255, 0.035)';
+  for (let y = 0; y < 1600; y += 4) {
     g.fillRect(0, y, 1024, 1.5);
   }
   for (let x = 0; x < 1024; x += 4) {
-    g.fillRect(x, 0, 1.5, 1024);
+    g.fillRect(x, 0, 1.5, 1600);
   }
 
-  // Gold dust speckles
+  // Gold dust flecks
   g.fillStyle = 'rgba(212, 175, 55, 0.22)';
-  for (let i = 0; i < 500; i++) {
-    const sx = Math.random() * 1024, sy = Math.random() * 1024;
+  for (let i = 0; i < 350; i++) {
+    const sx = (Math.sin(i * 12.3) * 0.5 + 0.5) * 1024;
+    const sy = (Math.cos(i * 7.1) * 0.5 + 0.5) * 1600;
     g.fillRect(sx, sy, 2, 2);
   }
 
-  // Vertical silk accent runner (centered at x = 512)
-  const runnerW = 420;
-  const rx = (1024 - runnerW) / 2;
-  const rGrad = g.createLinearGradient(rx, 0, rx + runnerW, 0);
-  rGrad.addColorStop(0, 'rgba(0,0,0,0.7)');
-  rGrad.addColorStop(0.2, cert.silk);
-  rGrad.addColorStop(0.5, '#fff');
-  rGrad.addColorStop(0.8, cert.silk);
-  rGrad.addColorStop(1, 'rgba(0,0,0,0.7)');
-  g.fillStyle = 'rgba(10, 14, 20, 0.95)';
-  g.fillRect(rx, 0, runnerW, 1024);
-  g.fillStyle = rGrad;
-  g.fillRect(rx + 10, 0, runnerW - 20, 1024);
+  // Vertical silk accent side ribbons
+  const sideGradL = g.createLinearGradient(0, 0, 50, 0);
+  sideGradL.addColorStop(0, 'rgba(0,0,0,0.8)');
+  sideGradL.addColorStop(1, 'rgba(0,0,0,0)');
+  g.fillStyle = sideGradL;
+  g.fillRect(0, 0, 50, 1600);
 
-  // Border gold hairlines
+  const sideGradR = g.createLinearGradient(974, 0, 1024, 0);
+  sideGradR.addColorStop(0, 'rgba(0,0,0,0)');
+  sideGradR.addColorStop(1, 'rgba(0,0,0,0.8)');
+  g.fillStyle = sideGradR;
+  g.fillRect(974, 0, 50, 1600);
+
+  // Outer gold leaf frame
   g.strokeStyle = 'rgba(212, 175, 55, 0.9)';
   g.lineWidth = 4;
-  g.strokeRect(rx + 14, 16, runnerW - 28, 992);
-  g.strokeStyle = 'rgba(255, 255, 255, 0.45)';
-  g.lineWidth = 1.5;
-  g.strokeRect(rx + 20, 22, runnerW - 40, 980);
+  g.strokeRect(36, 42, 952, 1516);
 
-  // Front parchment placemat for certificate
-  g.fillStyle = 'rgba(253, 248, 238, 0.94)';
+  g.strokeStyle = 'rgba(255, 255, 255, 0.35)';
+  g.lineWidth = 1.5;
+  g.strokeRect(44, 50, 936, 1500);
+
+  // 2. Center Washi Parchment Certificate Sheet (FLAT, HIGH CONTRAST, 100% LEGIBLE)
+  const px = 64;
+  const py = 76;
+  const pw = 896;
+  const ph = 1448;
+
+  // Rich cream parchment plate
+  const pGrad = g.createLinearGradient(px, py, px + pw, py + ph);
+  pGrad.addColorStop(0, '#fffef8');
+  pGrad.addColorStop(0.5, '#fcf7ec');
+  pGrad.addColorStop(1, '#f7f0df');
+  g.fillStyle = pGrad;
   g.beginPath();
-  g.roundRect(rx + 28, 90, runnerW - 56, 840, 12);
+  g.roundRect(px, py, pw, ph, 16);
   g.fill();
-  g.strokeStyle = '#c9a038';
-  g.lineWidth = 2.5;
+
+  // Double gold accent border around certificate parchment
+  g.strokeStyle = '#cba338';
+  g.lineWidth = 3.5;
   g.stroke();
 
-  // Large Kanji Watermark
-  g.fillStyle = 'rgba(201, 160, 56, 0.16)';
-  g.font = 'bold 240px serif';
+  g.strokeStyle = 'rgba(203, 163, 56, 0.4)';
+  g.lineWidth = 1.5;
+  g.strokeRect(px + 12, py + 12, pw - 24, ph - 24);
+
+  // Large subtle Kanji watermark
+  g.fillStyle = 'rgba(203, 163, 56, 0.08)';
+  g.font = 'bold 360px serif';
   g.textAlign = 'center';
   g.textBaseline = 'middle';
-  g.fillText(cert.kanji, 512, 512);
+  g.fillText(cert.kanji, 512, 800);
 
-  // Top Issuer Tag
+  // Top decorative gold brackets
+  const cornerSize = 40;
+  g.strokeStyle = '#cba338';
+  g.lineWidth = 2.5;
+  // Top-left
+  g.beginPath();
+  g.moveTo(px + 24, py + 24 + cornerSize);
+  g.lineTo(px + 24, py + 24);
+  g.lineTo(px + 24 + cornerSize, py + 24);
+  g.stroke();
+  // Top-right
+  g.beginPath();
+  g.moveTo(px + pw - 24 - cornerSize, py + 24);
+  g.lineTo(px + pw - 24, py + 24);
+  g.lineTo(px + pw - 24, py + 24 + cornerSize);
+  g.stroke();
+  // Bottom-left
+  g.beginPath();
+  g.moveTo(px + 24, py + ph - 24 - cornerSize);
+  g.lineTo(px + 24, py + ph - 24);
+  g.lineTo(px + 24 + cornerSize, py + ph - 24);
+  g.stroke();
+  // Bottom-right
+  g.beginPath();
+  g.moveTo(px + pw - 24 - cornerSize, py + ph - 24);
+  g.lineTo(px + pw - 24, py + ph - 24);
+  g.lineTo(px + pw - 24, py + ph - 24 - cornerSize);
+  g.stroke();
+
+  // 3. Header: Issuer Brand Tag Pill
   g.fillStyle = cert.accent;
-  g.font = 'bold 28px sans-serif';
-  g.letterSpacing = '0.14em';
-  g.fillText(cert.tag, 512, 150);
+  g.beginPath();
+  g.roundRect(512 - 160, py + 48, 320, 56, 28);
+  g.fill();
 
-  // Red Hanko Seal Stamp
+  g.fillStyle = '#ffffff';
+  g.font = 'bold 24px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  g.letterSpacing = '0.1em';
+  g.textAlign = 'center';
+  g.textBaseline = 'middle';
+  g.fillText(cert.issuer.toUpperCase(), 512, py + 76);
+
+  // Official Red Hanko Vermilion Seal Stamp
   g.save();
-  g.translate(512, 235);
+  g.translate(512, py + 200);
   g.strokeStyle = '#e0231c';
   g.lineWidth = 4;
-  g.strokeRect(-36, -36, 72, 72);
+  g.strokeRect(-42, -42, 84, 84);
   g.fillStyle = 'rgba(224, 35, 28, 0.12)';
-  g.fillRect(-36, -36, 72, 72);
+  g.fillRect(-42, -42, 84, 84);
   g.fillStyle = '#e0231c';
-  g.font = 'bold 28px serif';
-  g.fillText('検印', 0, 9);
+  g.font = 'bold 34px serif';
+  g.textAlign = 'center';
+  g.textBaseline = 'middle';
+  g.fillText('検印', 0, 2);
   g.restore();
 
-  // Certificate Title (wrapped)
-  g.fillStyle = '#141820';
-  g.font = 'bold 24px sans-serif';
-  const words = cert.title.split(' ');
-  let ty = 340;
-  for (let w of words) {
-    g.fillText(w, 512, ty);
-    ty += 34;
-  }
-
-  // Recipient
-  g.fillStyle = '#6b5435';
-  g.font = '500 18px sans-serif';
-  g.fillText('Vishwajeet Rawat', 512, 760);
-
-  // Bottom seal / accreditation
-  g.fillStyle = '#9c7a26';
-  g.font = 'bold 16px sans-serif';
-  g.fillText(cert.date, 512, 880);
-
-  return c;
-}
-
-function createPlacardTexture(cert) {
-  const c = document.createElement('canvas');
-  c.width = 512; c.height = 128;
-  const g = c.getContext('2d');
-
-  // Obsidian lacquer plaque base
-  g.fillStyle = '#0a0e16';
-  g.fillRect(0, 0, 512, 128);
-
-  // Antique brass border
-  g.strokeStyle = 'rgba(212, 175, 55, 0.85)';
-  g.lineWidth = 3.5;
-  g.strokeRect(5, 5, 502, 118);
-  g.strokeStyle = 'rgba(255, 255, 255, 0.3)';
-  g.lineWidth = 1;
-  g.strokeRect(9, 9, 494, 110);
-
-  // Issuer Pill on left
-  g.fillStyle = cert.accent;
-  g.beginPath();
-  g.roundRect(22, 20, 80, 28, 6);
-  g.fill();
-  g.fillStyle = '#fff';
-  g.font = 'bold 14px sans-serif';
+  // Sub-badge: OFFICIAL ACCREDITATION
+  g.fillStyle = '#8f6f26';
+  g.font = '700 18px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  g.letterSpacing = '0.22em';
   g.textAlign = 'center';
-  g.fillText(cert.tag, 62, 39);
+  g.fillText('OFFICIAL CERTIFICATION · 認証', 512, py + 295);
 
-  // Status dot & verified
-  g.fillStyle = '#00e676';
-  g.beginPath();
-  g.arc(430, 34, 5, 0, Math.PI * 2);
-  g.fill();
-  g.fillStyle = '#bce6c6';
-  g.font = '600 12px sans-serif';
-  g.textAlign = 'right';
-  g.fillText('VERIFIED', 484, 38);
+  // 4. BIG, BOLD, 100% VISIBLE CERTIFICATE TITLE
+  g.fillStyle = '#0f141d';
+  g.font = 'bold 50px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  g.textAlign = 'center';
+  g.textBaseline = 'middle';
 
-  // Certificate Name
-  g.fillStyle = '#ffffff';
-  g.font = 'bold 23px sans-serif';
-  g.textAlign = 'left';
-  g.fillText(cert.short, 22, 82);
+  const words = cert.title.split(' ');
+  const lines = [];
+  let currentLine = words[0];
 
-  // Subtitle date
-  g.fillStyle = '#d4af37';
-  g.font = '500 13px sans-serif';
-  g.fillText(cert.date + ' · Official Accreditation', 22, 106);
+  for (let i = 1; i < words.length; i++) {
+    const testLine = currentLine + ' ' + words[i];
+    const metrics = g.measureText(testLine);
+    if (metrics.width < 720) {
+      currentLine = testLine;
+    } else {
+      lines.push(currentLine);
+      currentLine = words[i];
+    }
+  }
+  lines.push(currentLine);
 
-  return c;
-}
+  let titleY = py + 395;
+  if (lines.length === 1) titleY = py + 430;
+  else if (lines.length === 2) titleY = py + 400;
+  else if (lines.length >= 3) titleY = py + 375;
 
-function createShelfWoodTexture() {
-  const c = document.createElement('canvas');
-  c.width = 1024; c.height = 256;
-  const g = c.getContext('2d');
-
-  const grad = g.createLinearGradient(0, 0, 0, 256);
-  grad.addColorStop(0, '#1c1510');
-  grad.addColorStop(0.5, '#120d09');
-  grad.addColorStop(1, '#0a0705');
-  g.fillStyle = grad;
-  g.fillRect(0, 0, 1024, 256);
-
-  // Wood grain lines
-  g.fillStyle = 'rgba(235, 180, 110, 0.05)';
-  for (let i = 0; i < 180; i++) {
-    const y = Math.random() * 256;
-    const h = 1 + Math.random() * 2;
-    g.fillRect(0, y, 1024, h);
+  for (let line of lines) {
+    g.fillText(line, 512, titleY);
+    titleY += 66;
   }
 
-  // Front bevel highlight
-  g.fillStyle = 'rgba(212, 175, 55, 0.35)';
-  g.fillRect(0, 0, 1024, 3);
+  // Ornamental Divider
+  g.strokeStyle = 'rgba(203, 163, 56, 0.85)';
+  g.lineWidth = 2;
+  g.beginPath();
+  g.moveTo(512 - 180, titleY + 20);
+  g.lineTo(512 + 180, titleY + 20);
+  g.stroke();
+
+  g.fillStyle = '#cba338';
+  g.beginPath();
+  g.arc(512, titleY + 20, 5, 0, Math.PI * 2);
+  g.fill();
+
+  // Recipient Block
+  g.fillStyle = '#64748b';
+  g.font = '700 18px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  g.letterSpacing = '0.14em';
+  g.fillText('AWARDED TO', 512, py + 920);
+
+  g.fillStyle = '#0f172a';
+  g.font = 'bold 42px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  g.letterSpacing = '0.04em';
+  g.fillText('Vishwajeet Rawat', 512, py + 975);
+
+  // Gold Star Badge Icon
+  g.fillStyle = '#d97706';
+  g.font = 'bold 24px serif';
+  g.fillText('✦ ✦ ✦', 512, py + 1045);
+
+  // Competency Summary Pill
+  g.fillStyle = 'rgba(15, 23, 42, 0.05)';
+  g.beginPath();
+  g.roundRect(512 - 290, py + 1100, 580, 74, 12);
+  g.fill();
+  g.strokeStyle = 'rgba(203, 163, 56, 0.35)';
+  g.lineWidth = 1;
+  g.stroke();
+
+  g.fillStyle = '#334155';
+  g.font = '600 20px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  g.fillText(cert.skills.slice(0, 3).join('  ·  '), 512, py + 1137);
+
+  // Bottom Metadata: Date & ID
+  g.fillStyle = '#b45309';
+  g.font = 'bold 28px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  g.fillText(cert.date, 512, py + 1250);
+
+  g.fillStyle = '#475569';
+  g.font = '600 21px monospace';
+  g.letterSpacing = '0.08em';
+  g.fillText('ID: ' + cert.certId, 512, py + 1305);
+
+  // Click to inspect hint at the base
+  g.fillStyle = '#94a3b8';
+  g.font = '600 16px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  g.letterSpacing = '0.14em';
+  g.fillText('CLICK TO EXPAND CREDENTIAL', 512, py + 1375);
 
   return c;
 }
 
-function createWallTexture() {
+function createWallTexture(isLight) {
   const c = document.createElement('canvas');
   c.width = 512; c.height = 512;
   const g = c.getContext('2d');
-  g.fillStyle = '#05080d';
-  g.fillRect(0, 0, 512, 512);
+  if (isLight) {
+    g.fillStyle = '#f7f3eb';
+    g.fillRect(0, 0, 512, 512);
 
-  g.fillStyle = 'rgba(255, 255, 255, 0.025)';
-  for (let i = 0; i < 2000; i++) {
-    const x = Math.random() * 512, y = Math.random() * 512;
-    g.fillRect(x, y, 1.5, 1.5);
+    // Warm Japanese tokonoma alcove washi plaster texture
+    g.fillStyle = 'rgba(180, 140, 80, 0.04)';
+    for (let i = 0; i < 2500; i++) {
+      const x = Math.random() * 512, y = Math.random() * 512;
+      g.fillRect(x, y, 1.5, 1.5);
+    }
+    g.fillStyle = 'rgba(160, 120, 70, 0.025)';
+    for (let i = 0; i < 40; i++) {
+      const y = Math.random() * 512;
+      g.fillRect(0, y, 512, 1.5);
+    }
+  } else {
+    g.fillStyle = '#05080d';
+    g.fillRect(0, 0, 512, 512);
+
+    g.fillStyle = 'rgba(255, 255, 255, 0.02)';
+    for (let i = 0; i < 2000; i++) {
+      const x = Math.random() * 512, y = Math.random() * 512;
+      g.fillRect(x, y, 1.5, 1.5);
+    }
   }
   return c;
 }
@@ -883,240 +1111,311 @@ function createWallTexture() {
 let scene, camera, renderer, glCanvas;
 const scrolls = [];
 let activeScroll = null;
-let hoveredScroll = null;
+let currentIndex = 0;
+let targetOffset = 0;
+let currentOffset = 0;
+let isDragging = false;
+let startDragX = 0;
+let startDragOffset = 0;
 let mouse = { x: 0, y: 0, targetX: 0, targetY: 0 };
+const raycaster = new THREE.Raycaster();
+const pointerVec = new THREE.Vector2();
 
 function initScene() {
-  glCanvas = document.getElementById('gl');
-  renderer = new THREE.WebGLRenderer({ canvas: glCanvas, antialias: true, alpha: false });
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.outputColorSpace = THREE.SRGBColorSpace;
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.18;
+  try {
+    glCanvas = document.getElementById('gl');
+    renderer = new THREE.WebGLRenderer({ canvas: glCanvas, antialias: true, alpha: false });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.35));
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.18;
 
-  scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x05080d);
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x05080d);
 
-  camera = new THREE.PerspectiveCamera(K.fov, window.innerWidth / window.innerHeight, 0.1, 50);
-  camera.position.set(...K.camP);
-  camera.lookAt(...K.camT);
+    camera = new THREE.PerspectiveCamera(K.fov, window.innerWidth / window.innerHeight, 0.1, 50);
+    camera.position.set(...K.camP);
+    camera.lookAt(...K.camT);
 
-  // Lighting
-  const ambient = new THREE.AmbientLight(0xfff5e6, 0.85);
-  scene.add(ambient);
+    // Soft temple atmospheric lighting
+    const ambient = new THREE.AmbientLight(0xfff6ea, 1.05);
+    scene.add(ambient);
+    window.AMBIENT_LIGHT = ambient;
 
-  const mainLight = new THREE.DirectionalLight(0xffeedd, 1.8);
-  mainLight.position.set(2.5, 4.2, 4.0);
-  scene.add(mainLight);
+    const mainLight = new THREE.DirectionalLight(0xfff0dd, 2.1);
+    mainLight.position.set(2.5, 5.0, 4.5);
+    scene.add(mainLight);
+    window.MAIN_LIGHT = mainLight;
 
-  const fillLight = new THREE.DirectionalLight(0x88bbff, 0.65);
-  fillLight.position.set(-3.0, 1.2, 2.5);
-  scene.add(fillLight);
+    const fillLight = new THREE.DirectionalLight(0x88bbff, 0.7);
+    fillLight.position.set(-3.5, 1.5, 3.0);
+    scene.add(fillLight);
+    window.FILL_LIGHT = fillLight;
 
-  const goldRim = new THREE.PointLight(0xffaa33, 1.6, 9);
-  goldRim.position.set(0, 0, 1.8);
-  scene.add(goldRim);
+    const goldRim = new THREE.PointLight(0xffb844, 1.8, 12);
+    goldRim.position.set(0, 0.2, 2.2);
+    scene.add(goldRim);
+    window.GOLD_RIM = goldRim;
 
-  buildArchitecture();
-  buildScrolls();
+    buildArchitecture();
+    buildVerticalKakemonoScrolls();
 
-  window.addEventListener('resize', onResize);
-  setupPointer();
-  buildRail();
+    window.addEventListener('resize', onResize);
+    setupNavigation();
+    setupPointer();
+    updateStatusUI();
 
-  setTimeout(() => {
-    glCanvas.classList.add('on');
-    document.getElementById('loader').classList.add('gone');
-  }, 120);
+    function applyTheme(theme) {
+      const isLight = theme === 'light';
+      document.documentElement.setAttribute('data-theme', theme);
+      document.documentElement.classList.toggle('light-theme', isLight);
+      document.body.classList.toggle('light-theme', isLight);
+      if (scene) {
+        scene.background = new THREE.Color(isLight ? 0xfbf8f3 : 0x05080d);
+      }
+      if (renderer) {
+        renderer.setClearColor(isLight ? 0xfbf8f3 : 0x05080d, 1);
+      }
+      if (window.WALL_MAT) {
+        window.WALL_MAT.map = isLight ? window.WALL_TEX_LIGHT : window.WALL_TEX_DARK;
+        window.WALL_MAT.color = new THREE.Color(isLight ? 0xfffcf6 : 0xffffff);
+        window.WALL_MAT.needsUpdate = true;
+      }
+      if (window.MAIN_LIGHT) {
+        window.MAIN_LIGHT.color = new THREE.Color(isLight ? 0xfffaed : 0xfff0dd);
+        window.MAIN_LIGHT.intensity = isLight ? 2.6 : 2.1;
+      }
+      if (window.AMBIENT_LIGHT) {
+        window.AMBIENT_LIGHT.color = new THREE.Color(isLight ? 0xfffbf4 : 0xfff6ea);
+        window.AMBIENT_LIGHT.intensity = isLight ? 1.45 : 1.05;
+      }
+    }
+    window.applyTheme = applyTheme;
+    window.addEventListener('message', (e) => {
+      if (e.data && e.data.type === 'THEME_CHANGE') {
+        applyTheme(e.data.theme);
+      }
+    });
+    try {
+      const saved = localStorage.getItem('kage-theme');
+      if (saved) applyTheme(saved);
+    } catch(e) {}
 
-  requestAnimationFrame(renderLoop);
+    window.renderer = renderer;
+    window.scene = scene;
+    window.scrolls = scrolls;
+    console.log('SCENE INITIALIZED SUCCESSFULLY, SCROLLS COUNT:', scrolls.length);
+
+    startLoop();
+  } catch (err) {
+    console.error('ERROR INITIALIZING SCENE:', err);
+  }
 }
 
 /* ============================================================ 5 · ARCHITECTURE */
 function buildArchitecture() {
-  // Back Wall
-  const wallTex = new THREE.CanvasTexture(createWallTexture());
-  wallTex.wrapS = wallTex.wrapT = THREE.RepeatWrapping;
-  wallTex.repeat.set(4, 3);
+  const wallTexDark = new THREE.CanvasTexture(createWallTexture(false));
+  wallTexDark.wrapS = wallTexDark.wrapT = THREE.RepeatWrapping;
+  wallTexDark.repeat.set(14, 4);
+
+  const wallTexLight = new THREE.CanvasTexture(createWallTexture(true));
+  wallTexLight.wrapS = wallTexLight.wrapT = THREE.RepeatWrapping;
+  wallTexLight.repeat.set(14, 4);
+
   const wallMat = new THREE.MeshStandardMaterial({
-    map: wallTex,
-    roughness: 0.88,
+    map: wallTexDark,
+    roughness: 0.92,
     metalness: 0.05
   });
-  const wall = new THREE.Mesh(new THREE.PlaneGeometry(16, 10), wallMat);
+  const wall = new THREE.Mesh(new THREE.PlaneGeometry(54, 14), wallMat);
   wall.position.set(0, 0, K.wallZ);
   scene.add(wall);
 
-  // Shelves
-  const woodTex = new THREE.CanvasTexture(createShelfWoodTexture());
+  window.WALL_MESH = wall;
+  window.WALL_MAT = wallMat;
+  window.WALL_TEX_DARK = wallTexDark;
+  window.WALL_TEX_LIGHT = wallTexLight;
+}
+
+/* ============================================================ 6 · BUILD VERTICAL KAKEMONO SCROLLS */
+function buildVerticalKakemonoScrolls() {
+  // 1. Hanging Scroll Body (Vertical Flat / Subtle Arc Plane)
+  const bannerGeo = new THREE.PlaneGeometry(K.scrollW, K.scrollH, 20, 20);
+
+  // 2. Top Suspension Stave (Horizontal wooden rod with gold finials)
+  const topRodGeo = new THREE.CylinderGeometry(0.045, 0.045, K.scrollW + 0.22, 32);
+  topRodGeo.rotateZ(Math.PI / 2);
+
+  const finialGeo = new THREE.CylinderGeometry(0.07, 0.05, 0.09, 24);
+  finialGeo.rotateZ(Math.PI / 2);
+
+  // 3. Bottom Weighted Roller Bar (Horizontal roller rod with gold ends)
+  const botRollerGeo = new THREE.CylinderGeometry(0.065, 0.065, K.scrollW + 0.26, 32);
+  botRollerGeo.rotateZ(Math.PI / 2);
+
+  const botFinialGeo = new THREE.CylinderGeometry(0.095, 0.075, 0.12, 24);
+  botFinialGeo.rotateZ(Math.PI / 2);
+
+  // Materials
   const woodMat = new THREE.MeshStandardMaterial({
-    map: woodTex,
+    color: 0x1a120c,
     roughness: 0.35,
-    metalness: 0.15,
-    color: 0x221a14
-  });
-
-  const plankGeo = new THREE.BoxGeometry(K.plankHalf * 2, K.plankThick, K.plankDepth);
-
-  K.shelfTop.forEach((yTop) => {
-    const p = new THREE.Mesh(plankGeo, woodMat);
-    p.position.set(0, yTop - K.plankThick / 2, K.wallZ + K.plankDepth / 2);
-    scene.add(p);
-  });
-}
-
-/* ============================================================ 6 · BUILD SCROLLS */
-function getScrollBasePos(data) {
-  let x = 0;
-  if (data.shelf === 0) {
-    x = (data.slot - 1.5) * 1.40;
-  } else {
-    x = (data.slot - 1.0) * 1.58;
-  }
-  const y = K.shelfTop[data.shelf] + (K.scrollH / 2) * Math.cos(K.lean) + 0.02;
-  const z = K.scrollZ;
-  return [x, y, z];
-}
-
-function buildScrolls() {
-  const scrollGeo = new THREE.CylinderGeometry(K.scrollR, K.scrollR, K.scrollH, 40);
-  const knobGeo = new THREE.CylinderGeometry(K.scrollR * 1.30, K.scrollR * 1.05, 0.12, 28);
-  const capGeo = new THREE.CylinderGeometry(K.scrollR * 1.20, K.scrollR * 1.20, 0.038, 28);
-  const tieGeo = new THREE.CylinderGeometry(K.scrollR + 0.009, K.scrollR + 0.009, 0.16, 40);
-
-  const knobMat = new THREE.MeshStandardMaterial({
-    color: 0x18120c,
-    roughness: 0.25,
-    metalness: 0.4
+    metalness: 0.25
   });
 
   const goldMat = new THREE.MeshStandardMaterial({
     color: 0xd4af37,
-    roughness: 0.20,
+    roughness: 0.22,
     metalness: 0.88
   });
 
-  const tieMat = new THREE.MeshStandardMaterial({
+  const cordMat = new THREE.MeshStandardMaterial({
     color: 0xe0231c,
     roughness: 0.45,
-    metalness: 0.15
+    metalness: 0.1
   });
 
+  // Silk hanger cord geometry (triangle arch above top rod)
+  const cordPts = [
+    new THREE.Vector3(-K.scrollW * 0.42, K.scrollH / 2, 0.02),
+    new THREE.Vector3(0, K.scrollH / 2 + 0.38, 0.02),
+    new THREE.Vector3(K.scrollW * 0.42, K.scrollH / 2, 0.02)
+  ];
+  const cordCurve = new THREE.CatmullRomCurve3(cordPts);
+  const cordGeo = new THREE.TubeGeometry(cordCurve, 20, 0.012, 8, false);
+
   CERTS.forEach((cert, i) => {
-    const basePos = getScrollBasePos(cert);
     const gRoot = new THREE.Group();
-    gRoot.position.set(...basePos);
-
     const gHover = new THREE.Group();
-    const gTilt = new THREE.Group();
-    gTilt.rotation.x = K.lean;
-    gTilt.rotation.y = K.yaw * (i % 2 === 0 ? 1 : -0.7);
-    gTilt.rotation.z = (Math.random() - 0.5) * 0.02;
 
-    // Scroll Core Cylinder (rotated so front face points forward)
-    const tex = new THREE.CanvasTexture(createScrollTexture(cert));
+    // High-res flat vertical texture
+    const tex = new THREE.CanvasTexture(createKakemonoTexture(cert));
     tex.colorSpace = THREE.SRGBColorSpace;
-    const scrollMat = new THREE.MeshStandardMaterial({
+    const bannerMat = new THREE.MeshStandardMaterial({
       map: tex,
-      roughness: 0.38,
-      metalness: 0.12
+      roughness: 0.42,
+      metalness: 0.1,
+      side: THREE.DoubleSide
     });
-    const scrollMesh = new THREE.Mesh(scrollGeo, scrollMat);
-    scrollMesh.rotation.y = Math.PI; // Face the decorated runner forward!
 
-    // End Knobs (Top & Bottom)
-    const knobTop = new THREE.Mesh(knobGeo, knobMat);
-    knobTop.position.y = K.scrollH / 2 + 0.06;
-    const capTop = new THREE.Mesh(capGeo, goldMat);
-    capTop.position.y = K.scrollH / 2 + 0.12 + 0.019;
+    const bannerMesh = new THREE.Mesh(bannerGeo, bannerMat);
 
-    const knobBot = new THREE.Mesh(knobGeo, knobMat);
-    knobBot.position.y = -K.scrollH / 2 - 0.06;
-    const capBot = new THREE.Mesh(capGeo, goldMat);
-    capBot.position.y = -K.scrollH / 2 - 0.12 - 0.019;
+    // Top Stave
+    const topRod = new THREE.Mesh(topRodGeo, woodMat);
+    topRod.position.set(0, K.scrollH / 2 + 0.02, 0.01);
 
-    // Tie Cord around waist
-    const tieMesh = new THREE.Mesh(tieGeo, tieMat);
+    const topFinL = new THREE.Mesh(finialGeo, goldMat);
+    topFinL.position.set(-(K.scrollW + 0.22) / 2 - 0.045, K.scrollH / 2 + 0.02, 0.01);
+    const topFinR = new THREE.Mesh(finialGeo, goldMat);
+    topFinR.position.set((K.scrollW + 0.22) / 2 + 0.045, K.scrollH / 2 + 0.02, 0.01);
 
-    gTilt.add(scrollMesh);
-    gTilt.add(knobTop);
-    gTilt.add(capTop);
-    gTilt.add(knobBot);
-    gTilt.add(capBot);
-    gTilt.add(tieMesh);
+    const cordMesh = new THREE.Mesh(cordGeo, cordMat);
 
-    gHover.add(gTilt);
+    // Bottom Roller
+    const botRoller = new THREE.Mesh(botRollerGeo, woodMat);
+    botRoller.position.set(0, -K.scrollH / 2 - 0.03, 0.02);
+
+    const botFinL = new THREE.Mesh(botFinialGeo, goldMat);
+    botFinL.position.set(-(K.scrollW + 0.26) / 2 - 0.06, -K.scrollH / 2 - 0.03, 0.02);
+    const botFinR = new THREE.Mesh(botFinialGeo, goldMat);
+    botFinR.position.set((K.scrollW + 0.26) / 2 + 0.06, -K.scrollH / 2 - 0.03, 0.02);
+
+    gHover.add(bannerMesh);
+    gHover.add(topRod);
+    gHover.add(topFinL);
+    gHover.add(topFinR);
+    gHover.add(cordMesh);
+    gHover.add(botRoller);
+    gHover.add(botFinL);
+    gHover.add(botFinR);
+
     gRoot.add(gHover);
+    gRoot.position.set(i * K.spacing, 0.05, K.scrollZ);
     scene.add(gRoot);
 
-    // 3D BADGE BELOW SCROLL ON SHELF
-    const placardTex = new THREE.CanvasTexture(createPlacardTexture(cert));
-    placardTex.colorSpace = THREE.SRGBColorSpace;
-    const placardMat = new THREE.MeshStandardMaterial({
-      map: placardTex,
-      roughness: 0.28,
-      metalness: 0.22
-    });
-    const placardGeo = new THREE.BoxGeometry(0.78, 0.15, 0.30);
-    const placard = new THREE.Mesh(placardGeo, placardMat);
-    placard.position.set(basePos[0], K.shelfTop[cert.shelf] + 0.08, K.scrollZ + 0.38);
-    placard.rotation.x = -0.22; // Ergonomic angle tilted toward viewer
-    scene.add(placard);
-
-    // Hit Box for pointer detection
-    const hitGeo = new THREE.CylinderGeometry(K.scrollR * 1.8, K.scrollR * 1.8, K.scrollH * 1.15, 16);
+    // Large responsive hit box for easy clicking
+    const hitGeo = new THREE.BoxGeometry(K.scrollW * 1.05, K.scrollH * 1.15, 0.25);
     const hitMat = new THREE.MeshBasicMaterial({ visible: false });
     const hit = new THREE.Mesh(hitGeo, hitMat);
-    hit.position.copy(gRoot.position);
-    hit.rotation.copy(gTilt.rotation);
-    scene.add(hit);
+    hit.position.set(0, 0, 0);
+    gRoot.add(hit);
 
     const item = {
       data: cert,
       index: i,
-      basePos,
       gRoot,
       gHover,
-      gTilt,
       hit,
-      placard,
       lift: 0,
-      targetLift: 0,
-      active: false
+      targetLift: 0
     };
 
     hit.userData.item = item;
-    placard.userData.item = item;
     scrolls.push(item);
   });
 }
 
-/* ============================================================ 7 · RAIL & UI */
-function buildRail() {
-  const railEl = document.getElementById('rail');
-  CERTS.forEach((c, idx) => {
-    const btn = document.createElement('div');
-    btn.className = 'rail-item';
-    btn.dataset.idx = idx;
-    btn.innerHTML = `
-      <span class="rail-badge-tag" style="background:${c.accent}25; color:${c.accent}; border:1px solid ${c.accent}60;">${c.tag}</span>
-      <div class="rail-txt">
-        <h4>${c.short}</h4>
-        <span>${c.date}</span>
-      </div>
-    `;
-    btn.addEventListener('click', () => {
-      openCertificate(scrolls[idx]);
-    });
-    btn.addEventListener('pointerenter', () => {
-      if (!activeScroll) highlightScroll(scrolls[idx]);
-    });
-    btn.addEventListener('pointerleave', () => {
-      if (!activeScroll) unhighlightScroll();
-    });
-    railEl.appendChild(btn);
+/* ============================================================ 7 · NAVIGATION & STATUS */
+function updateStatusUI() {
+  const activeCert = CERTS[currentIndex];
+  if (!activeCert) return;
+
+  const numEl = document.getElementById('counter-num');
+  const titleEl = document.getElementById('counter-title');
+  const tagEl = document.getElementById('counter-tag');
+
+  if (numEl) numEl.textContent = `SCROLL ${currentIndex + 1} OF ${CERTS.length}`;
+  if (titleEl) titleEl.textContent = activeCert.title;
+  if (tagEl) {
+    tagEl.textContent = activeCert.tag;
+    tagEl.style.background = `${activeCert.accent}25`;
+    tagEl.style.color = activeCert.accent;
+    tagEl.style.borderColor = `${activeCert.accent}60`;
+  }
+}
+
+function goToIndex(idx) {
+  currentIndex = Math.max(0, Math.min(CERTS.length - 1, idx));
+  targetOffset = -currentIndex * K.spacing;
+  updateStatusUI();
+}
+
+function nextScroll() {
+  goToIndex((currentIndex + 1) % CERTS.length);
+}
+
+function prevScroll() {
+  goToIndex((currentIndex - 1 + CERTS.length) % CERTS.length);
+}
+
+function setupNavigation() {
+  const btnPrev = document.getElementById('btn-prev');
+  const btnNext = document.getElementById('btn-next');
+
+  if (btnPrev) btnPrev.addEventListener('click', prevScroll);
+  if (btnNext) btnNext.addEventListener('click', nextScroll);
+
+  window.addEventListener('keydown', (e) => {
+    if (activeScroll) {
+      if (e.key === 'Escape') closeCertificate();
+      return;
+    }
+    if (e.key === 'ArrowRight' || e.key === 'd') nextScroll();
+    if (e.key === 'ArrowLeft' || e.key === 'a') prevScroll();
+    if (e.key === 'Enter' || e.key === ' ') {
+      openCertificate(scrolls[currentIndex]);
+    }
   });
+
+  // Wheel horizontal navigation
+  window.addEventListener('wheel', (e) => {
+    if (activeScroll) return;
+    if (Math.abs(e.deltaX) > 25 || Math.abs(e.deltaY) > 35) {
+      if (e.deltaX > 25 || e.deltaY > 35) nextScroll();
+      else prevScroll();
+    }
+  }, { passive: true });
 }
 
 /* ============================================================ 8 · MODAL & INTERACTIONS */
@@ -1155,85 +1454,73 @@ function openCertificate(item) {
   const verifyBtn = document.getElementById('m-redirect-link');
   verifyBtn.href = d.pdfUrl;
 
-  // Open modal
+  const onlineBtn = document.getElementById('m-verify-online');
+  if (onlineBtn) {
+    if (d.verifyUrl) {
+      onlineBtn.href = d.verifyUrl;
+      onlineBtn.style.display = 'inline-flex';
+    } else {
+      onlineBtn.style.display = 'none';
+    }
+  }
+
   const modal = document.getElementById('cert-modal');
   modal.classList.add('open');
-  document.getElementById('shelf-hint').classList.add('hide');
-
-  // Highlight active in rail
-  document.querySelectorAll('.rail-item').forEach((b, i) => {
-    b.classList.toggle('active', i === item.index);
-  });
 }
 
 function closeCertificate() {
-  activeScroll = null;
   const modal = document.getElementById('cert-modal');
   modal.classList.remove('open');
-  document.getElementById('shelf-hint').classList.remove('hide');
-  document.querySelectorAll('.rail-item').forEach(b => b.classList.remove('active'));
+  activeScroll = null;
 }
-
-document.getElementById('cert-modal-close').addEventListener('click', closeCertificate);
-document.getElementById('m-btn-close').addEventListener('click', closeCertificate);
-document.getElementById('cert-modal').addEventListener('click', (e) => {
-  if (e.target.id === 'cert-modal') closeCertificate();
-});
-window.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') closeCertificate();
-});
-
-function highlightScroll(item) {
-  hoveredScroll = item;
-  scrolls.forEach(s => {
-    s.targetLift = (s === item) ? 0.22 : 0;
-  });
-}
-
-function unhighlightScroll() {
-  hoveredScroll = null;
-  scrolls.forEach(s => { s.targetLift = 0; });
-}
-
-/* ============================================================ 9 · RAYCASTING & POINTER */
-const raycaster = new THREE.Raycaster();
-const pointerVec = new THREE.Vector2();
 
 function setupPointer() {
+  document.getElementById('cert-modal-close').addEventListener('click', closeCertificate);
+  document.getElementById('m-btn-close').addEventListener('click', closeCertificate);
+  document.getElementById('cert-modal').addEventListener('click', (e) => {
+    if (e.target.id === 'cert-modal') closeCertificate();
+  });
+
+  window.addEventListener('pointerdown', (e) => {
+    if (activeScroll || e.target.closest('button, a, header, .cert-modal-container')) return;
+    isDragging = true;
+    startDragX = e.clientX;
+    startDragOffset = currentOffset;
+  });
+
   window.addEventListener('pointermove', (e) => {
-    pointerVec.x = (e.clientX / window.innerWidth) * 2 - 1;
-    pointerVec.y = -(e.clientY / window.innerHeight) * 2 + 1;
+    const nx = (e.clientX / window.innerWidth) * 2 - 1;
+    const ny = -(e.clientY / window.innerHeight) * 2 + 1;
+    mouse.targetX = nx * 0.45;
+    mouse.targetY = ny * 0.35;
+    pointerVec.set(nx, ny);
 
-    mouse.targetX = pointerVec.x * K.orbitAz;
-    mouse.targetY = pointerVec.y * K.orbitEl;
+    if (isDragging) {
+      const dx = (e.clientX - startDragX) * 0.005;
+      targetOffset = startDragOffset + dx;
+    }
+  });
 
-    if (!activeScroll) {
-      raycaster.setFromCamera(pointerVec, camera);
-      const hits = raycaster.intersectObjects(scene.children, true);
-      let found = null;
-      for (let h of hits) {
-        if (h.object.userData && h.object.userData.item) {
-          found = h.object.userData.item;
-          break;
-        }
-      }
-      if (found) {
-        document.body.style.cursor = 'pointer';
-        highlightScroll(found);
-      } else {
-        document.body.style.cursor = 'default';
-        unhighlightScroll();
-      }
+  window.addEventListener('pointerup', (e) => {
+    if (isDragging) {
+      isDragging = false;
+      const nearestIdx = Math.round(-targetOffset / K.spacing);
+      goToIndex(nearestIdx);
     }
   });
 
   window.addEventListener('click', (e) => {
-    if (activeScroll) return;
+    if (activeScroll || isDragging || e.target.closest('button, a, header')) return;
     raycaster.setFromCamera(pointerVec, camera);
     const hits = raycaster.intersectObjects(scene.children, true);
     for (let h of hits) {
       if (h.object.userData && h.object.userData.item) {
-        openCertificate(h.object.userData.item);
+        const item = h.object.userData.item;
+        if (item.index === currentIndex) {
+          openCertificate(item);
+        } else {
+          goToIndex(item.index);
+        }
         break;
       }
     }
@@ -1246,34 +1533,100 @@ function onResize() {
   renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
-/* ============================================================ 10 · ANIMATION LOOP */
+/* ============================================================ 9 · ANIMATION LOOP */
 let lastT = performance.now();
+let isLoopRunning = false;
+let isVisible = true;
+window.isLoopRunning = false;
+window.isVisible = true;
+
+function startLoop() {
+  if (isLoopRunning) return;
+  isLoopRunning = true;
+  window.isLoopRunning = true;
+  lastT = performance.now();
+  requestAnimationFrame(renderLoop);
+}
+
+function stopLoop() {
+  isLoopRunning = false;
+  window.isLoopRunning = false;
+}
+
 function renderLoop(t) {
+  if (!isLoopRunning) return;
   const dt = Math.min((t - lastT) / 1000, 0.1);
   lastT = t;
 
-  // Camera parallax
+  // Smooth gallery easing
+  currentOffset = lerp(currentOffset, targetOffset, 0.08);
+
+  // Subtle camera parallax
   mouse.x = lerp(mouse.x, mouse.targetX, 0.05);
   mouse.y = lerp(mouse.y, mouse.targetY, 0.05);
-  camera.position.x = K.camP[0] + mouse.x * 2.8;
-  camera.position.y = K.camP[1] + mouse.y * 1.6;
-  camera.lookAt(K.camT[0] + mouse.x * 0.5, K.camT[1], K.camT[2]);
+  camera.position.x = K.camP[0] + mouse.x * 1.8;
+  camera.position.y = K.camP[1] + mouse.y * 1.1;
+  camera.lookAt(K.camT[0] + mouse.x * 0.3, K.camT[1], K.camT[2]);
 
-  // Scroll animations
-  scrolls.forEach(s => {
-    s.lift = lerp(s.lift, s.targetLift, 0.12);
-    s.gHover.position.y = s.lift;
-    s.gHover.position.z = s.lift * 0.6;
-    if (s.placard) {
-      s.placard.position.y = K.shelfTop[s.data.shelf] + 0.08 + s.lift * 0.04;
-    }
+  // Update scrolls layout and focus elevation
+  scrolls.forEach((s, idx) => {
+    const xPos = currentOffset + idx * K.spacing;
+    s.gRoot.position.x = xPos;
+
+    const distFromCenter = Math.abs(xPos);
+    const isFocused = distFromCenter < 1.2;
+
+    // Gentle breathing and scale for focused scroll
+    const targetScale = isFocused ? 1.04 : 0.96;
+    const targetZ = isFocused ? K.scrollZ + 0.25 : K.scrollZ;
+    s.gRoot.position.z = lerp(s.gRoot.position.z, targetZ, 0.08);
+    s.gHover.scale.setScalar(lerp(s.gHover.scale.x, targetScale, 0.08));
+
+    // Subtle gentle float
+    const floatY = Math.sin(t * 0.0018 + idx * 0.8) * 0.025;
+    s.gHover.position.y = floatY;
   });
 
   renderer.render(scene, camera);
   requestAnimationFrame(renderLoop);
 }
 
-window.addEventListener('DOMContentLoaded', initScene);
+/* ============================================================ 10 · PARENT POSTMESSAGE & LIFECYCLE */
+window.addEventListener('message', (e) => {
+  if (!e.data) return;
+  if (e.data.type === 'VISIBILITY') {
+    window.isVisible = isVisible = Boolean(e.data.visible);
+    if (isVisible) startLoop();
+    else stopLoop();
+  } else if (e.data.type === 'filter') {
+    const f = e.data.filter;
+    const matchIdx = CERTS.findIndex(c => {
+      if (f === 'all') return true;
+      if (f === 'cloud') return c.category === 'cloud' || c.tag === 'AWS';
+      if (f === 'systems') return c.category === 'systems' || c.tag === 'Google';
+      if (f === 'enterprise') return c.category === 'enterprise' || c.tag === 'Oracle' || c.tag === 'Deloitte';
+      if (f === 'analytics') return c.category === 'analytics' || c.tag === 'NPTEL' || c.tag === 'MathWorks';
+      return false;
+    });
+    if (matchIdx !== -1) {
+      goToIndex(matchIdx);
+    }
+  }
+});
+
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    stopLoop();
+  } else if (isVisible) {
+    startLoop();
+  }
+});
+
+if (document.readyState === 'complete' || document.readyState === 'interactive') {
+  initScene();
+} else {
+  window.addEventListener('DOMContentLoaded', initScene);
+}
 </script>
 </body>
 </html>

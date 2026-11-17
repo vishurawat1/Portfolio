@@ -367,12 +367,12 @@
     margin-top: 8px; flex-wrap: wrap;
   }
   .cm-btn-verify {
-    flex: 1; min-width: 190px;
+    flex: 1; min-width: 170px;
     display: inline-flex; align-items: center; justify-content: center; gap: 8px;
     background: linear-gradient(135deg, var(--vermilion), #b51711);
     color: #fff; text-decoration: none;
     font-size: 13px; font-weight: 500;
-    padding: 12px 20px; border-radius: 9px;
+    padding: 12px 18px; border-radius: 9px;
     box-shadow: 0 8px 24px rgba(224, 35, 28, 0.35);
     transition: all 0.25s var(--ease-out);
     cursor: pointer;
@@ -381,6 +381,22 @@
     background: linear-gradient(135deg, #f0322b, var(--vermilion));
     transform: translateY(-2px);
     box-shadow: 0 12px 30px rgba(224, 35, 28, 0.5);
+  }
+  .cm-btn-online {
+    background: rgba(203, 163, 56, 0.16) !important;
+    border: 1px solid rgba(203, 163, 56, 0.6) !important;
+    color: #f7d57f !important;
+    box-shadow: 0 4px 16px rgba(203, 163, 56, 0.2) !important;
+  }
+  .cm-btn-online:hover {
+    background: rgba(203, 163, 56, 0.28) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(203, 163, 56, 0.35) !important;
+  }
+  body.light-theme .cm-btn-online {
+    background: rgba(180, 130, 20, 0.12) !important;
+    border: 1px solid rgba(180, 130, 20, 0.5) !important;
+    color: #8b5700 !important;
   }
   .cm-btn-close {
     background: rgba(255, 255, 255, 0.06);
@@ -540,7 +556,7 @@
 
 <!-- Minimal Bottom Status Bar -->
 <div class="scroll-counter-pill" id="scroll-status">
-  <span class="counter-num" id="counter-num">SCROLL 1 OF 7</span>
+  <span class="counter-num" id="counter-num">SCROLL 1 OF 10</span>
   <span class="counter-dot">·</span>
   <span class="counter-title" id="counter-title">AWS Certified Cloud Practitioner</span>
   <span class="counter-tag" id="counter-tag" style="background:#ff990025; color:#ff9900; border:1px solid #ff990060;">AWS</span>
@@ -598,8 +614,12 @@
 
         <div class="cm-actions">
           <a href="#" target="_blank" rel="noopener noreferrer" class="cm-btn-verify" id="m-redirect-link">
-            <span>Verify Credential / View PDF</span>
+            <span>View Certificate (PDF)</span>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M7 7h10v10"/></svg>
+          </a>
+          <a href="#" target="_blank" rel="noopener noreferrer" class="cm-btn-verify cm-btn-online" id="m-verify-online" style="display:none;">
+            <span>Verify Online</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
           </a>
           <button type="button" class="cm-btn-close" id="m-btn-close">Close Scroll</button>
         </div>
@@ -621,6 +641,7 @@ const CERTS = [
     short: 'Cloud Practitioner',
     issuer: 'Amazon Web Services',
     tag: 'AWS',
+    category: 'cloud',
     date: '17 Sept 2025',
     kanji: '雲',
     accent: '#ff9900',
@@ -629,7 +650,8 @@ const CERTS = [
     desc: 'Mastered cloud architectural fundamentals, shared responsibility security models, IAM governance, global infrastructure resilience, and cloud economics across core AWS compute, storage, and networking services.',
     skills: ['Cloud Architecture', 'Security & IAM', 'EC2 / S3 / RDS', 'Billing & Economics'],
     certId: 'AWS-CCP-2025-VR9812',
-    pdfUrl: 'https://www.rawwat.com/certificates/aws-certified-cloud-practitioner.pdf'
+    pdfUrl: '/certificates/aws-certified-cloud-practitioner.pdf',
+    verifyUrl: null
   },
   {
     id: 'aws-te',
@@ -637,6 +659,7 @@ const CERTS = [
     short: 'Technical Essentials',
     issuer: 'Amazon Web Services',
     tag: 'AWS',
+    category: 'cloud',
     date: '17 Sept 2025',
     kanji: '基',
     accent: '#ff9900',
@@ -645,7 +668,26 @@ const CERTS = [
     desc: 'Hands-on architectural proficiency in provisioning EC2 instances, configuring resilient EBS and S3 tiers, routing multi-tier traffic inside custom VPC subnets, and orchestrating managed RDS databases.',
     skills: ['Compute (EC2)', 'Storage (S3 / EBS)', 'Networking (VPC)', 'Database (RDS)'],
     certId: 'AWS-TE-2025-VR4410',
-    pdfUrl: 'https://www.rawwat.com/certificates/aws-technical-essentials.pdf'
+    pdfUrl: '/certificates/aws-technical-essentials.pdf',
+    verifyUrl: null
+  },
+  {
+    id: 'nptel-cloud',
+    title: 'Cloud Computing (Elite · 87%)',
+    short: 'Cloud Computing',
+    issuer: 'NPTEL · IIT',
+    tag: 'NPTEL',
+    category: 'cloud',
+    date: 'Jul–Oct 2026',
+    kanji: '宙',
+    accent: '#00b4d8',
+    brocade: '#0a2230',
+    silk: '#00b4d8',
+    desc: 'Completed rigorous 12-week advanced Cloud Computing curriculum administered by IIT with an 87% Elite score (Assignment 25/25, Proctored Exam 61.5/75, 4 credits). Covers distributed hypervisors, virtualization, AWS/GCP architectures, OpenStack, map-reduce engines, and cloud storage protocols.',
+    skills: ['Distributed Systems', 'Hypervisor & Virtualization', 'Cloud Storage Protocols', 'Serverless & SLA'],
+    certId: 'NPTEL26CS150MANUAL0020816',
+    pdfUrl: '/certificates/cloud-computing-nptel.pdf',
+    verifyUrl: null
   },
   {
     id: 'google-it',
@@ -653,15 +695,17 @@ const CERTS = [
     short: 'IT Support',
     issuer: 'Google',
     tag: 'Google',
-    date: 'February 2026',
+    category: 'systems',
+    date: '02 February 2026',
     kanji: '系',
     accent: '#4285f4',
     brocade: '#0d1829',
     silk: '#4285f4',
     desc: 'Enterprise IT infrastructure operations spanning multi-platform operating systems (Linux kernel & Windows), CLI system diagnostics, automated incident recovery, active directory user administration, and system defense.',
     skills: ['Operating Systems', 'System Administration', 'Network Diagnostics', 'Security Protocols'],
-    certId: 'GOOG-IT-2026-VR7802',
-    pdfUrl: 'https://www.rawwat.com/certificates/google-it-support.pdf'
+    certId: 'ET2H2Avf',
+    pdfUrl: '/certificates/google-it-support.pdf',
+    verifyUrl: 'https://www.credly.com/go/ET2H2Avf'
   },
   {
     id: 'google-net',
@@ -669,15 +713,35 @@ const CERTS = [
     short: 'Networking',
     issuer: 'Google',
     tag: 'Google',
-    date: 'November 2025',
+    category: 'systems',
+    date: '15 November 2025',
     kanji: '網',
     accent: '#34a853',
     brocade: '#0a1d12',
     silk: '#34a853',
     desc: 'Deep dive into the 5-layer network model, TCP three-way handshakes, UDP streaming, CIDR subnetting, ARP, DHCP, DNS hierarchical resolution, routing table convergence, and packet-level inspection with Wireshark.',
     skills: ['TCP/IP Suite', 'Subnetting & CIDR', 'Routing & DNS', 'Network Security'],
-    certId: 'GOOG-NET-2025-VR3199',
-    pdfUrl: 'https://www.rawwat.com/certificates/bits-and-bytes-computer-networking.pdf'
+    certId: 'OA0HK850IQDX',
+    pdfUrl: '/certificates/bits-and-bytes-computer-networking.pdf',
+    verifyUrl: 'https://coursera.org/verify/OA0HK850IQDX'
+  },
+  {
+    id: 'oracle-fnd',
+    title: 'OCI Certified Foundations Associate',
+    short: 'OCI Foundations',
+    issuer: 'Oracle',
+    tag: 'Oracle',
+    category: 'enterprise',
+    date: '17 September 2026',
+    kanji: '礎',
+    accent: '#f80000',
+    brocade: '#2c0c0c',
+    silk: '#f80000',
+    desc: 'Certified by Oracle in core OCI architectural primitives: Virtual Cloud Networks (VCN), security lists, compute bare metal and VM orchestration, block/object storage tiers, identity domains, and governance compliance.',
+    skills: ['OCI Architecture', 'Virtual Cloud Network', 'Compute & Storage', 'Identity & Governance'],
+    certId: '102926422OCI26FNDCFA',
+    pdfUrl: '/certificates/oracle-cloud-infrastructure-foundations.pdf',
+    verifyUrl: null
   },
   {
     id: 'oracle-fa',
@@ -685,15 +749,17 @@ const CERTS = [
     short: 'AI Foundations',
     issuer: 'Oracle',
     tag: 'Oracle',
-    date: 'October 2025',
-    kanji: '礎',
-    accent: '#f80000',
+    category: 'enterprise',
+    date: '18 October 2025',
+    kanji: '智',
+    accent: '#c74634',
     brocade: '#280c0c',
-    silk: '#f80000',
-    desc: 'Foundations of enterprise AI architectures, machine learning model lifecycles, neural network training paradigms, vector embeddings, natural language processing pipelines, and autonomous database integration.',
-    skills: ['Enterprise AI', 'Machine Learning', 'Data Modeling', 'Cloud AI Services'],
-    certId: 'ORCL-AI-2025-VR8821',
-    pdfUrl: 'https://www.rawwat.com/certificates/oracle-certified-foundation-associate.pdf'
+    silk: '#c74634',
+    desc: 'Foundations of enterprise AI architectures, machine learning model lifecycles, neural network training paradigms, vector embeddings, natural language processing pipelines, autonomous databases, and Generative AI services.',
+    skills: ['Enterprise AI', 'Deep Learning & ML', 'Vector Embeddings', 'Generative AI & LLMs'],
+    certId: '102926422OCI25AICFA',
+    pdfUrl: '/certificates/oracle-certified-ai-foundations.pdf',
+    verifyUrl: null
   },
   {
     id: 'deloitte-sim',
@@ -701,31 +767,53 @@ const CERTS = [
     short: 'Tech Simulation',
     issuer: 'Deloitte',
     tag: 'Deloitte',
-    date: 'July 2025',
+    category: 'enterprise',
+    date: '04 July 2025',
     kanji: '構',
     accent: '#86bc25',
     brocade: '#14200b',
     silk: '#86bc25',
-    desc: 'Delivered client-facing architectural feasibility assessments, modernized legacy codebase monoliths to microservices, formulated comprehensive data security compliance schemas, and analyzed forensic code issues.',
+    desc: 'Completed practical enterprise client simulation with Deloitte via Forage. Conducted forensic software reviews, evaluated cloud migration architectures, designed data privacy compliance frameworks, and modernized legacy service components.',
     skills: ['Software Architecture', 'Technology Consulting', 'Client Solutions', 'Forensic Code Review'],
-    certId: 'DEL-SIM-2025-VR5543',
-    pdfUrl: 'https://www.rawwat.com/certificates/deloitte-technology-job-simulation.pdf'
+    certId: '8WExfxS2YXNx6f6CQ',
+    pdfUrl: '/certificates/deloitte-technology-job-simulation.pdf',
+    verifyUrl: null
   },
   {
     id: 'nptel-mkt',
-    title: 'Marketing Analytics',
+    title: 'Marketing Analytics (Elite · Gold 90%)',
     short: 'Marketing Analytics',
     issuer: 'NPTEL · IIT',
     tag: 'NPTEL',
-    date: 'April 2026',
+    category: 'analytics',
+    date: 'Jan–Apr 2026',
     kanji: '析',
     accent: '#ff7700',
     brocade: '#251508',
     silk: '#ff7700',
-    desc: 'Applied statistical inference, predictive linear and logistic regression models, k-means clustering for market segmentation, conjoint analysis, customer lifetime value (CLV) optimization, and conversion analytics.',
+    desc: 'Awarded Elite + Gold medal with a 90% score (Assignment 25/25, Exam 64.5/75, 4 credits). Executed statistical modeling, multivariate linear/logistic regressions, k-means clustering for market segmentation, conjoint analysis, and customer lifetime value (CLV) optimization.',
     skills: ['Statistical Modeling', 'Predictive Analytics', 'Customer Clustering', 'Data Analytics'],
-    certId: 'NPTEL-MKT-2026-VR1094',
-    pdfUrl: 'https://www.rawwat.com/certificates/marketing-analytics.pdf'
+    certId: 'NPTEL26MG33S1052403096',
+    pdfUrl: '/certificates/marketing-analytics.pdf',
+    verifyUrl: null
+  },
+  {
+    id: 'mathworks-matlab',
+    title: 'MATLAB Onramp (100% Complete)',
+    short: 'MATLAB Onramp',
+    issuer: 'MathWorks',
+    tag: 'MathWorks',
+    category: 'analytics',
+    date: '23 August 2023',
+    kanji: '数',
+    accent: '#d9381e',
+    brocade: '#2b110b',
+    silk: '#d9381e',
+    desc: 'Completed comprehensive scientific computing curriculum in MATLAB R2023a: matrix algebra operations, array indexing, multi-dimensional calculations, automated function calls, 2D/3D plotting, and data import pipelines.',
+    skills: ['Scientific Computing', 'Matrix Operations', 'Data Visualization', 'Numerical Analysis'],
+    certId: 'MATHWORKS-MATLAB-2023',
+    pdfUrl: '/certificates/matlab-onramp.pdf',
+    verifyUrl: null
   }
 ];
 
@@ -1129,18 +1217,18 @@ function initScene() {
 function buildArchitecture() {
   const wallTexDark = new THREE.CanvasTexture(createWallTexture(false));
   wallTexDark.wrapS = wallTexDark.wrapT = THREE.RepeatWrapping;
-  wallTexDark.repeat.set(6, 4);
+  wallTexDark.repeat.set(14, 4);
 
   const wallTexLight = new THREE.CanvasTexture(createWallTexture(true));
   wallTexLight.wrapS = wallTexLight.wrapT = THREE.RepeatWrapping;
-  wallTexLight.repeat.set(6, 4);
+  wallTexLight.repeat.set(14, 4);
 
   const wallMat = new THREE.MeshStandardMaterial({
     map: wallTexDark,
     roughness: 0.92,
     metalness: 0.05
   });
-  const wall = new THREE.Mesh(new THREE.PlaneGeometry(24, 12), wallMat);
+  const wall = new THREE.Mesh(new THREE.PlaneGeometry(54, 14), wallMat);
   wall.position.set(0, 0, K.wallZ);
   scene.add(wall);
 
@@ -1366,6 +1454,16 @@ function openCertificate(item) {
   const verifyBtn = document.getElementById('m-redirect-link');
   verifyBtn.href = d.pdfUrl;
 
+  const onlineBtn = document.getElementById('m-verify-online');
+  if (onlineBtn) {
+    if (d.verifyUrl) {
+      onlineBtn.href = d.verifyUrl;
+      onlineBtn.style.display = 'inline-flex';
+    } else {
+      onlineBtn.style.display = 'none';
+    }
+  }
+
   const modal = document.getElementById('cert-modal');
   modal.classList.add('open');
 }
@@ -1504,10 +1602,10 @@ window.addEventListener('message', (e) => {
     const f = e.data.filter;
     const matchIdx = CERTS.findIndex(c => {
       if (f === 'all') return true;
-      if (f === 'cloud') return c.tag === 'AWS';
-      if (f === 'systems') return c.tag === 'Google';
-      if (f === 'enterprise') return c.tag === 'Oracle' || c.tag === 'Deloitte';
-      if (f === 'analytics') return c.tag === 'NPTEL';
+      if (f === 'cloud') return c.category === 'cloud' || c.tag === 'AWS';
+      if (f === 'systems') return c.category === 'systems' || c.tag === 'Google';
+      if (f === 'enterprise') return c.category === 'enterprise' || c.tag === 'Oracle' || c.tag === 'Deloitte';
+      if (f === 'analytics') return c.category === 'analytics' || c.tag === 'NPTEL' || c.tag === 'MathWorks';
       return false;
     });
     if (matchIdx !== -1) {
