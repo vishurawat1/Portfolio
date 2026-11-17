@@ -15,35 +15,12 @@ export interface CertificateItem {
   certId: string;
   skills: string[];
   pdfUrl: string;
+  previewImg: string;
   verifyUrl?: string;
   accent: string;
 }
 
 export const CERTIFICATES_DATA: CertificateItem[] = [
-  {
-    id: "aws-ccp",
-    title: "AWS Certified Cloud Practitioner",
-    issuer: "Amazon Web Services",
-    tag: "AWS",
-    category: "cloud",
-    date: "17 Sept 2025",
-    certId: "AWS-CCP-2025-VR9812",
-    skills: ["Cloud Architecture", "Security & IAM", "EC2 / S3 / RDS", "Billing & Economics"],
-    pdfUrl: "/certificates/aws-certified-cloud-practitioner.pdf",
-    accent: "#ff9900",
-  },
-  {
-    id: "aws-te",
-    title: "AWS Technical Essentials",
-    issuer: "Amazon Web Services",
-    tag: "AWS",
-    category: "cloud",
-    date: "17 Sept 2025",
-    certId: "AWS-TE-2025-VR4410",
-    skills: ["Compute (EC2)", "Storage (S3 / EBS)", "Networking (VPC)", "Database (RDS)"],
-    pdfUrl: "/certificates/aws-technical-essentials.pdf",
-    accent: "#ff9900",
-  },
   {
     id: "nptel-cloud",
     title: "Cloud Computing",
@@ -55,7 +32,35 @@ export const CERTIFICATES_DATA: CertificateItem[] = [
     certId: "NPTEL26CS150MANUAL0020816",
     skills: ["Distributed Systems", "Hypervisors & Virtualization", "Cloud Storage Protocols", "Serverless & SLA"],
     pdfUrl: "/certificates/cloud-computing-nptel.pdf",
+    previewImg: "/certificates/previews/cloud-computing-nptel.png",
     accent: "#00b4d8",
+  },
+  {
+    id: "oracle-fnd",
+    title: "OCI Certified Foundations Associate",
+    issuer: "Oracle",
+    tag: "Oracle",
+    category: "enterprise",
+    date: "17 Sept 2026",
+    certId: "102926422OCI26FNDCFA",
+    skills: ["OCI Core Services", "Virtual Cloud Network", "Compute & Storage", "Identity & Governance"],
+    pdfUrl: "/certificates/oracle-cloud-infrastructure-foundations.pdf",
+    previewImg: "/certificates/previews/oracle-cloud-infrastructure-foundations.png",
+    accent: "#f80000",
+  },
+  {
+    id: "nptel-mkt",
+    title: "Marketing Analytics",
+    issuer: "NPTEL · IIT",
+    tag: "NPTEL",
+    category: "analytics",
+    date: "Jan–Apr 2026",
+    score: "90% (Elite · Gold)",
+    certId: "NPTEL26MG33S1052403096",
+    skills: ["Statistical Modeling", "Predictive Analytics", "K-Means Clustering", "Conjoint Analysis"],
+    pdfUrl: "/certificates/marketing-analytics.pdf",
+    previewImg: "/certificates/previews/marketing-analytics.png",
+    accent: "#ff7700",
   },
   {
     id: "google-it",
@@ -67,6 +72,7 @@ export const CERTIFICATES_DATA: CertificateItem[] = [
     certId: "ET2H2Avf",
     skills: ["Operating Systems", "Linux & CLI", "Active Directory", "System Defense"],
     pdfUrl: "/certificates/google-it-support.pdf",
+    previewImg: "/certificates/previews/google-it-support.png",
     verifyUrl: "https://www.credly.com/go/ET2H2Avf",
     accent: "#4285f4",
   },
@@ -80,20 +86,9 @@ export const CERTIFICATES_DATA: CertificateItem[] = [
     certId: "OA0HK850IQDX",
     skills: ["TCP/IP Model", "CIDR Subnetting", "Routing & DNS", "Packet Analysis"],
     pdfUrl: "/certificates/bits-and-bytes-computer-networking.pdf",
+    previewImg: "/certificates/previews/bits-and-bytes-computer-networking.png",
     verifyUrl: "https://coursera.org/verify/OA0HK850IQDX",
     accent: "#34a853",
-  },
-  {
-    id: "oracle-fnd",
-    title: "OCI Certified Foundations Associate",
-    issuer: "Oracle",
-    tag: "Oracle",
-    category: "enterprise",
-    date: "17 Sept 2026",
-    certId: "102926422OCI26FNDCFA",
-    skills: ["OCI Core Services", "Virtual Cloud Network", "Compute & Storage", "Identity & Governance"],
-    pdfUrl: "/certificates/oracle-cloud-infrastructure-foundations.pdf",
-    accent: "#f80000",
   },
   {
     id: "oracle-ai",
@@ -105,7 +100,34 @@ export const CERTIFICATES_DATA: CertificateItem[] = [
     certId: "102926422OCI25AICFA",
     skills: ["Enterprise AI", "Deep Learning & ML", "Vector Embeddings", "Generative AI & LLMs"],
     pdfUrl: "/certificates/oracle-certified-ai-foundations.pdf",
+    previewImg: "/certificates/previews/oracle-certified-ai-foundations.png",
     accent: "#c74634",
+  },
+  {
+    id: "aws-ccp",
+    title: "AWS Certified Cloud Practitioner",
+    issuer: "Amazon Web Services",
+    tag: "AWS",
+    category: "cloud",
+    date: "17 Sept 2025",
+    certId: "AWS-CCP-2025-VR9812",
+    skills: ["Cloud Architecture", "Security & IAM", "EC2 / S3 / RDS", "Billing & Economics"],
+    pdfUrl: "/certificates/aws-certified-cloud-practitioner.pdf",
+    previewImg: "/certificates/previews/aws-certified-cloud-practitioner.png",
+    accent: "#ff9900",
+  },
+  {
+    id: "aws-te",
+    title: "AWS Technical Essentials",
+    issuer: "Amazon Web Services",
+    tag: "AWS",
+    category: "cloud",
+    date: "17 Sept 2025",
+    certId: "AWS-TE-2025-VR4410",
+    skills: ["Compute (EC2)", "Storage (S3 / EBS)", "Networking (VPC)", "Database (RDS)"],
+    pdfUrl: "/certificates/aws-technical-essentials.pdf",
+    previewImg: "/certificates/previews/aws-technical-essentials.png",
+    accent: "#ff9900",
   },
   {
     id: "deloitte-sim",
@@ -117,20 +139,8 @@ export const CERTIFICATES_DATA: CertificateItem[] = [
     certId: "8WExfxS2YXNx6f6CQ",
     skills: ["Software Architecture", "Technology Consulting", "Client Solutions", "Forensic Code Review"],
     pdfUrl: "/certificates/deloitte-technology-job-simulation.pdf",
+    previewImg: "/certificates/previews/deloitte-technology-job-simulation.png",
     accent: "#86bc25",
-  },
-  {
-    id: "nptel-mkt",
-    title: "Marketing Analytics",
-    issuer: "NPTEL · IIT",
-    tag: "NPTEL",
-    category: "analytics",
-    date: "Jan–Apr 2026",
-    score: "90% (Elite · Gold)",
-    certId: "NPTEL26MG33S1052403096",
-    skills: ["Statistical Modeling", "Predictive Analytics", "K-Means Clustering", "Conjoint Analysis"],
-    pdfUrl: "/certificates/marketing-analytics.pdf",
-    accent: "#ff7700",
   },
   {
     id: "mathworks-matlab",
@@ -143,6 +153,7 @@ export const CERTIFICATES_DATA: CertificateItem[] = [
     certId: "MATHWORKS-MATLAB-2023",
     skills: ["Scientific Computing", "Matrix Operations", "Data Visualization", "Numerical Analysis"],
     pdfUrl: "/certificates/matlab-onramp.pdf",
+    previewImg: "/certificates/previews/matlab-onramp.png",
     accent: "#d9381e",
   },
 ];
@@ -226,7 +237,7 @@ export default function Certificates() {
 
         <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-zinc-800 bg-zinc-900/60 text-xs text-zinc-300 w-fit">
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-          <span>10 Verified Accreditations</span>
+          <span>10 Verified Accreditations · Date Sorted</span>
         </div>
       </div>
 
@@ -271,11 +282,21 @@ export default function Certificates() {
               initial="hidden"
               animate="visible"
               exit={{ opacity: 0, scale: 0.95 }}
-              className="group relative flex flex-col justify-between rounded-xl border border-zinc-800/80 bg-zinc-950/60 backdrop-blur-md p-6 hover:border-zinc-700 transition-colors"
+              className="group relative flex flex-col justify-between rounded-xl border border-zinc-800/80 bg-zinc-950/60 backdrop-blur-md p-5 hover:border-zinc-700 transition-colors"
             >
               <div>
+                {/* Real Certificate Image Preview */}
+                <div className="relative w-full aspect-[4/2.8] rounded-lg overflow-hidden border border-zinc-800/80 bg-zinc-900/70 mb-4 group-hover:border-amber-500/30 transition-colors shadow-inner">
+                  <img
+                    src={cert.previewImg}
+                    alt={cert.title}
+                    className="w-full h-full object-contain p-1 transition-transform duration-300 group-hover:scale-[1.02]"
+                    loading="lazy"
+                  />
+                </div>
+
                 {/* Header Row */}
-                <div className="flex items-center justify-between gap-3 mb-4">
+                <div className="flex items-center justify-between gap-3 mb-2.5">
                   <span
                     className="text-[11px] font-mono font-medium px-2.5 py-0.5 rounded border"
                     style={{
@@ -290,10 +311,10 @@ export default function Certificates() {
                 </div>
 
                 {/* Title & Issuer */}
-                <h3 className="text-lg font-medium text-zinc-100 group-hover:text-white transition-colors mb-1.5 leading-snug">
+                <h3 className="text-base font-medium text-zinc-100 group-hover:text-white transition-colors mb-1 leading-snug">
                   {cert.title}
                 </h3>
-                <div className="flex items-center gap-2 text-xs text-zinc-400 mb-4">
+                <div className="flex items-center gap-2 text-xs text-zinc-400 mb-3.5">
                   <span>{cert.issuer}</span>
                   {cert.score && (
                     <>
@@ -304,7 +325,7 @@ export default function Certificates() {
                 </div>
 
                 {/* Skills Chips */}
-                <div className="flex flex-wrap gap-1.5 mb-6">
+                <div className="flex flex-wrap gap-1.5 mb-5">
                   {cert.skills.map((skill) => (
                     <span
                       key={skill}
@@ -317,8 +338,8 @@ export default function Certificates() {
               </div>
 
               {/* Bottom Actions */}
-              <div className="pt-4 border-t border-zinc-800/60 flex items-center justify-between gap-3">
-                <span className="text-[10px] font-mono text-zinc-400 truncate max-w-[150px]">
+              <div className="pt-3.5 border-t border-zinc-800/60 flex items-center justify-between gap-3">
+                <span className="text-[10px] font-mono text-zinc-400 truncate max-w-[130px]">
                   ID: {cert.certId}
                 </span>
 
@@ -327,7 +348,7 @@ export default function Certificates() {
                     href={cert.pdfUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 text-xs font-medium text-zinc-200 hover:text-white px-3 py-1.5 rounded-md bg-zinc-800/60 hover:bg-zinc-700/80 transition-colors"
+                    className="inline-flex items-center gap-1.5 text-xs font-medium text-zinc-200 hover:text-white px-3 py-1.5 rounded-md bg-zinc-800/70 hover:bg-zinc-700/80 transition-colors"
                   >
                     <FileText className="w-3.5 h-3.5" />
                     <span>View PDF</span>

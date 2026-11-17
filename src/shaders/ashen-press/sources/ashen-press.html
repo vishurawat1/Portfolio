@@ -234,7 +234,7 @@
     .cert-modal-layout { grid-template-columns: 1fr; }
   }
 
-  /* Left Side: Certificate Canvas Plate */
+  /* Left Side: Real Certificate Showcase */
   .cert-modal-left {
     padding: clamp(18px, 3vw, 36px);
     background: radial-gradient(circle at 50% 50%, rgba(20, 27, 38, 0.7), rgba(9, 12, 18, 0.95));
@@ -243,78 +243,93 @@
     align-items: center; justify-content: center;
     gap: 14px;
   }
-  .cert-card-preview {
-    width: 100%; max-width: 460px;
-    aspect-ratio: 1.414 / 1;
-    background: #fdfaf3;
-    border-radius: 8px;
-    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.75), 0 0 30px rgba(212, 175, 55, 0.2);
+  .cert-real-showcase {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    max-width: 490px;
+  }
+  .cert-real-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--gold);
+    background: rgba(203, 163, 56, 0.12);
+    border: 1px solid rgba(203, 163, 56, 0.35);
+    padding: 4px 12px;
+    border-radius: 999px;
+  }
+  .cert-real-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #10b981;
+    box-shadow: 0 0 8px #10b981;
+  }
+  .cert-real-frame {
     position: relative;
+    width: 100%;
+    border-radius: 10px;
     overflow: hidden;
-    color: #1a1612;
-    padding: clamp(14px, 2.5vw, 24px);
-    display: flex; flex-direction: column;
-    justify-content: space-between;
-    box-sizing: border-box;
-    border: 6px double #c9a038;
+    background: #0f131a;
+    border: 2px solid rgba(203, 163, 56, 0.5);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 35px rgba(203, 163, 56, 0.18);
+    cursor: pointer;
+    transition: transform 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out), border-color 0.3s var(--ease-out);
   }
-  .cc-watermark {
-    position: absolute; right: 12px; bottom: 8px;
-    font-size: 110px; font-weight: 700;
-    color: rgba(201, 160, 56, 0.07);
-    line-height: 1; pointer-events: none;
-    user-select: none;
+  .cert-real-frame:hover {
+    transform: translateY(-2px) scale(1.015);
+    border-color: rgba(203, 163, 56, 0.9);
+    box-shadow: 0 25px 65px rgba(0, 0, 0, 0.9), 0 0 45px rgba(203, 163, 56, 0.35);
   }
-  .cc-header {
-    display: flex; align-items: flex-start;
-    justify-content: space-between; gap: 12px;
+  .cert-real-frame img {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 440px;
+    object-fit: contain;
+    background: #fff;
   }
-  .cc-issuer-row { display: flex; align-items: center; gap: 8px; }
-  .cc-issuer {
-    font-size: 13.5px; font-weight: 700;
-    letter-spacing: 0.12em; text-transform: uppercase;
-    color: #4b5563;
+  .cert-real-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(4, 7, 12, 0.6);
+    opacity: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.25s ease;
   }
-  .cc-badge {
-    font-size: 9.5px; font-weight: 700;
-    padding: 2px 7px; border-radius: 4px;
-    letter-spacing: 0.06em;
-    background: #2563eb; color: #fff;
+  .cert-real-frame:hover .cert-real-overlay {
+    opacity: 1;
   }
-  .cc-stamp {
-    width: 38px; height: 38px;
-    border: 2px solid #e0231c; border-radius: 6px;
-    color: #e0231c; font-size: 14px; font-weight: 700;
-    display: grid; place-items: center;
-    background: rgba(224, 35, 28, 0.06);
-    transform: rotate(-4deg);
-    flex-shrink: 0;
+  .cert-real-zoom-hint {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, var(--vermilion), #b51711);
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
   }
-  .cc-body { text-align: center; margin: 10px 0; }
-  .cc-label {
-    font-size: 9.5px; letter-spacing: 0.16em;
-    text-transform: uppercase; color: #6b7280;
-    margin-bottom: 4px;
+  .cert-real-caption {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-family: monospace;
+    color: var(--ink-muted);
   }
-  .cc-title {
-    font-family: 'EB Garamond', serif;
-    font-size: clamp(18px, 2.4vw, 25px);
-    font-weight: 600; line-height: 1.15;
-    color: #111827; margin: 0 0 6px;
-  }
-  .cc-recipient {
-    font-size: 14px; font-weight: 600;
-    letter-spacing: 0.04em; color: #1f2937;
-  }
-  .cc-footer {
-    display: flex; align-items: flex-end;
-    justify-content: space-between;
-    border-top: 1px solid rgba(201, 160, 56, 0.35);
-    padding-top: 8px;
-    font-size: 10px; color: #6b7280;
-  }
-  .cc-date { font-weight: 500; }
-  .cc-id { font-family: monospace; letter-spacing: 0.05em; }
+  .caption-dot { opacity: 0.4; }
 
   /* Right Side: Credential Metadata */
   .cert-modal-right {
@@ -558,8 +573,8 @@
 <div class="scroll-counter-pill" id="scroll-status">
   <span class="counter-num" id="counter-num">SCROLL 1 OF 10</span>
   <span class="counter-dot">·</span>
-  <span class="counter-title" id="counter-title">AWS Certified Cloud Practitioner</span>
-  <span class="counter-tag" id="counter-tag" style="background:#ff990025; color:#ff9900; border:1px solid #ff990060;">AWS</span>
+  <span class="counter-title" id="counter-title">Cloud Computing (Elite · 87%)</span>
+  <span class="counter-tag" id="counter-tag" style="background:#00b4d825; color:#00b4d8; border:1px solid #00b4d860;">NPTEL</span>
 </div>
 
 <!-- SPLIT-SCREEN CERTIFICATE MODAL -->
@@ -568,26 +583,26 @@
     <button class="cert-modal-close" id="cert-modal-close" aria-label="Close Modal">✕</button>
     <div class="cert-modal-layout">
       
-      <!-- LEFT SIDE: RENDERED OFFICIAL CERTIFICATE PLATE -->
+      <!-- LEFT SIDE: AUTHENTIC REAL CERTIFICATE SHOWCASE -->
       <div class="cert-modal-left">
-        <div class="cert-card-preview" id="cert-card-plate">
-          <div class="cc-watermark" id="m-watermark">雲</div>
-          <div class="cc-header">
-            <div class="cc-issuer-row">
-              <span class="cc-issuer" id="m-card-issuer">AMAZON WEB SERVICES</span>
-              <span class="cc-badge" id="m-card-badge">AWS</span>
+        <div class="cert-real-showcase" id="cert-real-showcase">
+          <div class="cert-real-badge">
+            <span class="cert-real-dot"></span>
+            <span id="m-real-badge-txt">OFFICIAL ACCREDITATION · 正式認定証</span>
+          </div>
+          <div class="cert-real-frame" id="m-cert-frame" title="Click to view full original PDF">
+            <img id="m-real-cert-img" src="/certificates/previews/cloud-computing-nptel.png" alt="Official Certificate" />
+            <div class="cert-real-overlay">
+              <span class="cert-real-zoom-hint">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+                <span>Click to Open Fullscreen PDF</span>
+              </span>
             </div>
-            <div class="cc-stamp">検印</div>
           </div>
-          <div class="cc-body">
-            <div class="cc-label">OFFICIALLY ACCREDITED TO</div>
-            <div class="cc-recipient">Vishwajeet Rawat</div>
-            <div class="cc-label" style="margin-top:10px;">FOR DEMONSTRATED MASTERY IN</div>
-            <h3 class="cc-title" id="m-card-title">AWS Certified Cloud Practitioner</h3>
-          </div>
-          <div class="cc-footer">
-            <span class="cc-date" id="m-card-date">17 Sept 2025</span>
-            <span class="cc-id" id="m-card-id">ID: AWS-CCP-2025-VR9812</span>
+          <div class="cert-real-caption">
+            <span id="m-real-caption-id">ID: NPTEL26CS150MANUAL0020816</span>
+            <span class="caption-dot">·</span>
+            <span id="m-real-caption-date">Jul–Oct 2026</span>
           </div>
         </div>
       </div>
@@ -596,10 +611,10 @@
       <div class="cert-modal-right">
         <div>
           <div class="cm-meta-top">
-            <span class="cm-issuer" id="m-issuer-name">Amazon Web Services</span>
-            <span class="cm-duration" id="m-duration-text">Issued Sept 2025</span>
+            <span class="cm-issuer" id="m-issuer-name">NPTEL · IIT</span>
+            <span class="cm-duration" id="m-duration-text">Jul–Oct 2026</span>
           </div>
-          <h2 class="cm-title" id="m-title">AWS Certified Cloud Practitioner</h2>
+          <h2 class="cm-title" id="m-title">Cloud Computing (Elite · 87%)</h2>
         </div>
 
         <div class="cm-section">
@@ -613,15 +628,15 @@
         </div>
 
         <div class="cm-actions">
-          <a href="#" target="_blank" rel="noopener noreferrer" class="cm-btn-verify" id="m-redirect-link">
-            <span>View Certificate (PDF)</span>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M7 7h10v10"/></svg>
-          </a>
-          <a href="#" target="_blank" rel="noopener noreferrer" class="cm-btn-verify cm-btn-online" id="m-verify-online" style="display:none;">
-            <span>Verify Online</span>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
-          </a>
-          <button type="button" class="cm-btn-close" id="m-btn-close">Close Scroll</button>
+          <button type="button" class="cm-btn-verify" id="m-btn-view-pdf">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            <span>Open Certificate (PDF)</span>
+          </button>
+          <button type="button" class="cm-btn-verify cm-btn-online" id="m-btn-verify-online" style="display:none;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
+            <span>Verify Credential Online</span>
+          </button>
+          <button type="button" class="cm-btn-close" id="m-btn-close">Close</button>
         </div>
       </div>
 
@@ -633,44 +648,8 @@
 <script type="module">
 import * as THREE from './three.module.js';
 
-/* ============================================================ 1 · DATA */
+/* ============================================================ 1 · DATA (SORTED DATE-WISE, REVERSE CHRONOLOGICAL) */
 const CERTS = [
-  {
-    id: 'aws-ccp',
-    title: 'AWS Certified Cloud Practitioner',
-    short: 'Cloud Practitioner',
-    issuer: 'Amazon Web Services',
-    tag: 'AWS',
-    category: 'cloud',
-    date: '17 Sept 2025',
-    kanji: '雲',
-    accent: '#ff9900',
-    brocade: '#281a0b',
-    silk: '#ff9900',
-    desc: 'Mastered cloud architectural fundamentals, shared responsibility security models, IAM governance, global infrastructure resilience, and cloud economics across core AWS compute, storage, and networking services.',
-    skills: ['Cloud Architecture', 'Security & IAM', 'EC2 / S3 / RDS', 'Billing & Economics'],
-    certId: 'AWS-CCP-2025-VR9812',
-    pdfUrl: '/certificates/aws-certified-cloud-practitioner.pdf',
-    verifyUrl: null
-  },
-  {
-    id: 'aws-te',
-    title: 'AWS Technical Essentials',
-    short: 'Technical Essentials',
-    issuer: 'Amazon Web Services',
-    tag: 'AWS',
-    category: 'cloud',
-    date: '17 Sept 2025',
-    kanji: '基',
-    accent: '#ff9900',
-    brocade: '#241608',
-    silk: '#e68a00',
-    desc: 'Hands-on architectural proficiency in provisioning EC2 instances, configuring resilient EBS and S3 tiers, routing multi-tier traffic inside custom VPC subnets, and orchestrating managed RDS databases.',
-    skills: ['Compute (EC2)', 'Storage (S3 / EBS)', 'Networking (VPC)', 'Database (RDS)'],
-    certId: 'AWS-TE-2025-VR4410',
-    pdfUrl: '/certificates/aws-technical-essentials.pdf',
-    verifyUrl: null
-  },
   {
     id: 'nptel-cloud',
     title: 'Cloud Computing (Elite · 87%)',
@@ -687,6 +666,45 @@ const CERTS = [
     skills: ['Distributed Systems', 'Hypervisor & Virtualization', 'Cloud Storage Protocols', 'Serverless & SLA'],
     certId: 'NPTEL26CS150MANUAL0020816',
     pdfUrl: '/certificates/cloud-computing-nptel.pdf',
+    previewImg: '/certificates/previews/cloud-computing-nptel.png',
+    verifyUrl: null
+  },
+  {
+    id: 'oracle-fnd',
+    title: 'OCI Certified Foundations Associate',
+    short: 'OCI Foundations',
+    issuer: 'Oracle',
+    tag: 'Oracle',
+    category: 'enterprise',
+    date: '17 Sept 2026',
+    kanji: '礎',
+    accent: '#f80000',
+    brocade: '#2c0c0c',
+    silk: '#f80000',
+    desc: 'Certified by Oracle in core OCI architectural primitives: Virtual Cloud Networks (VCN), security lists, compute bare metal and VM orchestration, block/object storage tiers, identity domains, and governance compliance.',
+    skills: ['OCI Architecture', 'Virtual Cloud Network', 'Compute & Storage', 'Identity & Governance'],
+    certId: '102926422OCI26FNDCFA',
+    pdfUrl: '/certificates/oracle-cloud-infrastructure-foundations.pdf',
+    previewImg: '/certificates/previews/oracle-cloud-infrastructure-foundations.png',
+    verifyUrl: null
+  },
+  {
+    id: 'nptel-mkt',
+    title: 'Marketing Analytics (Elite · Gold 90%)',
+    short: 'Marketing Analytics',
+    issuer: 'NPTEL · IIT',
+    tag: 'NPTEL',
+    category: 'analytics',
+    date: 'Jan–Apr 2026',
+    kanji: '析',
+    accent: '#ff7700',
+    brocade: '#251508',
+    silk: '#ff7700',
+    desc: 'Awarded Elite + Gold medal with a 90% score (Assignment 25/25, Exam 64.5/75, 4 credits). Executed statistical modeling, multivariate linear/logistic regressions, k-means clustering for market segmentation, conjoint analysis, and customer lifetime value (CLV) optimization.',
+    skills: ['Statistical Modeling', 'Predictive Analytics', 'K-Means Clustering', 'Conjoint Analysis'],
+    certId: 'NPTEL26MG33S1052403096',
+    pdfUrl: '/certificates/marketing-analytics.pdf',
+    previewImg: '/certificates/previews/marketing-analytics.png',
     verifyUrl: null
   },
   {
@@ -705,6 +723,7 @@ const CERTS = [
     skills: ['Operating Systems', 'System Administration', 'Network Diagnostics', 'Security Protocols'],
     certId: 'ET2H2Avf',
     pdfUrl: '/certificates/google-it-support.pdf',
+    previewImg: '/certificates/previews/google-it-support.png',
     verifyUrl: 'https://www.credly.com/go/ET2H2Avf'
   },
   {
@@ -723,25 +742,8 @@ const CERTS = [
     skills: ['TCP/IP Suite', 'Subnetting & CIDR', 'Routing & DNS', 'Network Security'],
     certId: 'OA0HK850IQDX',
     pdfUrl: '/certificates/bits-and-bytes-computer-networking.pdf',
+    previewImg: '/certificates/previews/bits-and-bytes-computer-networking.png',
     verifyUrl: 'https://coursera.org/verify/OA0HK850IQDX'
-  },
-  {
-    id: 'oracle-fnd',
-    title: 'OCI Certified Foundations Associate',
-    short: 'OCI Foundations',
-    issuer: 'Oracle',
-    tag: 'Oracle',
-    category: 'enterprise',
-    date: '17 September 2026',
-    kanji: '礎',
-    accent: '#f80000',
-    brocade: '#2c0c0c',
-    silk: '#f80000',
-    desc: 'Certified by Oracle in core OCI architectural primitives: Virtual Cloud Networks (VCN), security lists, compute bare metal and VM orchestration, block/object storage tiers, identity domains, and governance compliance.',
-    skills: ['OCI Architecture', 'Virtual Cloud Network', 'Compute & Storage', 'Identity & Governance'],
-    certId: '102926422OCI26FNDCFA',
-    pdfUrl: '/certificates/oracle-cloud-infrastructure-foundations.pdf',
-    verifyUrl: null
   },
   {
     id: 'oracle-fa',
@@ -759,6 +761,45 @@ const CERTS = [
     skills: ['Enterprise AI', 'Deep Learning & ML', 'Vector Embeddings', 'Generative AI & LLMs'],
     certId: '102926422OCI25AICFA',
     pdfUrl: '/certificates/oracle-certified-ai-foundations.pdf',
+    previewImg: '/certificates/previews/oracle-certified-ai-foundations.png',
+    verifyUrl: null
+  },
+  {
+    id: 'aws-ccp',
+    title: 'AWS Certified Cloud Practitioner',
+    short: 'Cloud Practitioner',
+    issuer: 'Amazon Web Services',
+    tag: 'AWS',
+    category: 'cloud',
+    date: '17 Sept 2025',
+    kanji: '雲',
+    accent: '#ff9900',
+    brocade: '#281a0b',
+    silk: '#ff9900',
+    desc: 'Mastered cloud architectural fundamentals, shared responsibility security models, IAM governance, global infrastructure resilience, and cloud economics across core AWS compute, storage, and networking services.',
+    skills: ['Cloud Architecture', 'Security & IAM', 'EC2 / S3 / RDS', 'Billing & Economics'],
+    certId: 'AWS-CCP-2025-VR9812',
+    pdfUrl: '/certificates/aws-certified-cloud-practitioner.pdf',
+    previewImg: '/certificates/previews/aws-certified-cloud-practitioner.png',
+    verifyUrl: null
+  },
+  {
+    id: 'aws-te',
+    title: 'AWS Technical Essentials',
+    short: 'Technical Essentials',
+    issuer: 'Amazon Web Services',
+    tag: 'AWS',
+    category: 'cloud',
+    date: '17 Sept 2025',
+    kanji: '基',
+    accent: '#ff9900',
+    brocade: '#241608',
+    silk: '#e68a00',
+    desc: 'Hands-on architectural proficiency in provisioning EC2 instances, configuring resilient EBS and S3 tiers, routing multi-tier traffic inside custom VPC subnets, and orchestrating managed RDS databases.',
+    skills: ['Compute (EC2)', 'Storage (S3 / EBS)', 'Networking (VPC)', 'Database (RDS)'],
+    certId: 'AWS-TE-2025-VR4410',
+    pdfUrl: '/certificates/aws-technical-essentials.pdf',
+    previewImg: '/certificates/previews/aws-technical-essentials.png',
     verifyUrl: null
   },
   {
@@ -777,24 +818,7 @@ const CERTS = [
     skills: ['Software Architecture', 'Technology Consulting', 'Client Solutions', 'Forensic Code Review'],
     certId: '8WExfxS2YXNx6f6CQ',
     pdfUrl: '/certificates/deloitte-technology-job-simulation.pdf',
-    verifyUrl: null
-  },
-  {
-    id: 'nptel-mkt',
-    title: 'Marketing Analytics (Elite · Gold 90%)',
-    short: 'Marketing Analytics',
-    issuer: 'NPTEL · IIT',
-    tag: 'NPTEL',
-    category: 'analytics',
-    date: 'Jan–Apr 2026',
-    kanji: '析',
-    accent: '#ff7700',
-    brocade: '#251508',
-    silk: '#ff7700',
-    desc: 'Awarded Elite + Gold medal with a 90% score (Assignment 25/25, Exam 64.5/75, 4 credits). Executed statistical modeling, multivariate linear/logistic regressions, k-means clustering for market segmentation, conjoint analysis, and customer lifetime value (CLV) optimization.',
-    skills: ['Statistical Modeling', 'Predictive Analytics', 'Customer Clustering', 'Data Analytics'],
-    certId: 'NPTEL26MG33S1052403096',
-    pdfUrl: '/certificates/marketing-analytics.pdf',
+    previewImg: '/certificates/previews/deloitte-technology-job-simulation.png',
     verifyUrl: null
   },
   {
@@ -813,6 +837,7 @@ const CERTS = [
     skills: ['Scientific Computing', 'Matrix Operations', 'Data Visualization', 'Numerical Analysis'],
     certId: 'MATHWORKS-MATLAB-2023',
     pdfUrl: '/certificates/matlab-onramp.pdf',
+    previewImg: '/certificates/previews/matlab-onramp.png',
     verifyUrl: null
   }
 ];
@@ -832,7 +857,7 @@ const K = {
 function lerp(a, b, t) { return a + (b - a) * t; }
 
 /* ============================================================ 3 · HIGH-RES VERTICAL KAKEMONO TEXTURE */
-function createKakemonoTexture(cert) {
+function createKakemonoTexture(cert, onUpdate) {
   const c = document.createElement('canvas');
   c.width = 1024;
   c.height = 1600;
@@ -950,26 +975,26 @@ function createKakemonoTexture(cert) {
   // 3. Header: Issuer Brand Tag Pill
   g.fillStyle = cert.accent;
   g.beginPath();
-  g.roundRect(512 - 160, py + 48, 320, 56, 28);
+  g.roundRect(512 - 160, py + 36, 320, 50, 25);
   g.fill();
 
   g.fillStyle = '#ffffff';
-  g.font = 'bold 24px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  g.font = 'bold 22px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
   g.letterSpacing = '0.1em';
   g.textAlign = 'center';
   g.textBaseline = 'middle';
-  g.fillText(cert.issuer.toUpperCase(), 512, py + 76);
+  g.fillText(cert.issuer.toUpperCase(), 512, py + 61);
 
   // Official Red Hanko Vermilion Seal Stamp
   g.save();
-  g.translate(512, py + 200);
+  g.translate(512, py + 140);
   g.strokeStyle = '#e0231c';
-  g.lineWidth = 4;
-  g.strokeRect(-42, -42, 84, 84);
+  g.lineWidth = 3.5;
+  g.strokeRect(-32, -32, 64, 64);
   g.fillStyle = 'rgba(224, 35, 28, 0.12)';
-  g.fillRect(-42, -42, 84, 84);
+  g.fillRect(-32, -32, 64, 64);
   g.fillStyle = '#e0231c';
-  g.font = 'bold 34px serif';
+  g.font = 'bold 26px serif';
   g.textAlign = 'center';
   g.textBaseline = 'middle';
   g.fillText('検印', 0, 2);
@@ -977,14 +1002,14 @@ function createKakemonoTexture(cert) {
 
   // Sub-badge: OFFICIAL ACCREDITATION
   g.fillStyle = '#8f6f26';
-  g.font = '700 18px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  g.font = '700 15px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
   g.letterSpacing = '0.22em';
   g.textAlign = 'center';
-  g.fillText('OFFICIAL CERTIFICATION · 認証', 512, py + 295);
+  g.fillText('OFFICIAL CERTIFICATION · 認証', 512, py + 205);
 
-  // 4. BIG, BOLD, 100% VISIBLE CERTIFICATE TITLE
+  // 4. CERTIFICATE TITLE
   g.fillStyle = '#0f141d';
-  g.font = 'bold 50px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  g.font = 'bold 38px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
   g.textAlign = 'center';
   g.textBaseline = 'middle';
 
@@ -1004,73 +1029,132 @@ function createKakemonoTexture(cert) {
   }
   lines.push(currentLine);
 
-  let titleY = py + 395;
-  if (lines.length === 1) titleY = py + 430;
-  else if (lines.length === 2) titleY = py + 400;
-  else if (lines.length >= 3) titleY = py + 375;
-
+  let titleY = py + 265;
+  if (lines.length === 1) titleY = py + 280;
   for (let line of lines) {
     g.fillText(line, 512, titleY);
-    titleY += 66;
+    titleY += 46;
   }
 
   // Ornamental Divider
   g.strokeStyle = 'rgba(203, 163, 56, 0.85)';
   g.lineWidth = 2;
   g.beginPath();
-  g.moveTo(512 - 180, titleY + 20);
-  g.lineTo(512 + 180, titleY + 20);
+  g.moveTo(512 - 180, titleY + 12);
+  g.lineTo(512 + 180, titleY + 12);
   g.stroke();
 
   g.fillStyle = '#cba338';
   g.beginPath();
-  g.arc(512, titleY + 20, 5, 0, Math.PI * 2);
+  g.arc(512, titleY + 12, 4.5, 0, Math.PI * 2);
   g.fill();
 
-  // Recipient Block
+  // 5. CENTER REAL MINI CERTIFICATE (Authentic Display)
+  const imgW = 620;
+  const imgH = 430;
+  const imgX = 512 - imgW / 2;
+  const imgY = titleY + 30;
+
+  // Outer shadow backing
+  g.save();
+  g.shadowColor = 'rgba(0, 0, 0, 0.45)';
+  g.shadowBlur = 24;
+  g.shadowOffsetY = 12;
+  g.fillStyle = '#ffffff';
+  g.beginPath();
+  g.roundRect(imgX - 6, imgY - 6, imgW + 12, imgH + 12, 8);
+  g.fill();
+  g.restore();
+
+  // Gold border frame
+  g.strokeStyle = '#cba338';
+  g.lineWidth = 3;
+  g.beginPath();
+  g.roundRect(imgX - 6, imgY - 6, imgW + 12, imgH + 12, 8);
+  g.stroke();
+
+  g.strokeStyle = 'rgba(203, 163, 56, 0.45)';
+  g.lineWidth = 1.5;
+  g.strokeRect(imgX - 2, imgY - 2, imgW + 4, imgH + 4);
+
+  // Real Certificate Image drawing function
+  const certImg = new Image();
+  certImg.crossOrigin = 'anonymous';
+
+  function renderMiniImg() {
+    g.save();
+    g.beginPath();
+    g.roundRect(imgX, imgY, imgW, imgH, 5);
+    g.clip();
+    g.drawImage(certImg, imgX, imgY, imgW, imgH);
+    g.restore();
+
+    // Subtle glossy protective layer
+    const gloss = g.createLinearGradient(imgX, imgY, imgX + imgW, imgY + imgH);
+    gloss.addColorStop(0, 'rgba(255, 255, 255, 0.12)');
+    gloss.addColorStop(0.35, 'rgba(255, 255, 255, 0)');
+    gloss.addColorStop(1, 'rgba(0, 0, 0, 0.08)');
+    g.fillStyle = gloss;
+    g.beginPath();
+    g.roundRect(imgX, imgY, imgW, imgH, 5);
+    g.fill();
+
+    if (onUpdate) onUpdate();
+  }
+
+  certImg.onload = renderMiniImg;
+  certImg.src = cert.previewImg;
+  if (certImg.complete && certImg.naturalWidth > 0) {
+    renderMiniImg();
+  }
+
+  // 6. Lower Recipient & Competency Block
+  const lowerY = imgY + imgH + 34;
+
   g.fillStyle = '#64748b';
-  g.font = '700 18px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  g.letterSpacing = '0.14em';
-  g.fillText('AWARDED TO', 512, py + 920);
+  g.font = '700 16px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  g.letterSpacing = '0.16em';
+  g.textAlign = 'center';
+  g.fillText('ACCREDITED RECIPIENT · 認定者', 512, lowerY);
 
   g.fillStyle = '#0f172a';
-  g.font = 'bold 42px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  g.font = 'bold 36px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
   g.letterSpacing = '0.04em';
-  g.fillText('Vishwajeet Rawat', 512, py + 975);
+  g.fillText('Vishwajeet Rawat', 512, lowerY + 42);
 
   // Gold Star Badge Icon
   g.fillStyle = '#d97706';
-  g.font = 'bold 24px serif';
-  g.fillText('✦ ✦ ✦', 512, py + 1045);
+  g.font = 'bold 20px serif';
+  g.fillText('✦ ✦ ✦', 512, lowerY + 80);
 
   // Competency Summary Pill
   g.fillStyle = 'rgba(15, 23, 42, 0.05)';
   g.beginPath();
-  g.roundRect(512 - 290, py + 1100, 580, 74, 12);
+  g.roundRect(512 - 290, lowerY + 104, 580, 58, 12);
   g.fill();
   g.strokeStyle = 'rgba(203, 163, 56, 0.35)';
   g.lineWidth = 1;
   g.stroke();
 
   g.fillStyle = '#334155';
-  g.font = '600 20px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  g.fillText(cert.skills.slice(0, 3).join('  ·  '), 512, py + 1137);
+  g.font = '600 18px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  g.fillText(cert.skills.slice(0, 3).join('  ·  '), 512, lowerY + 133);
 
   // Bottom Metadata: Date & ID
   g.fillStyle = '#b45309';
-  g.font = 'bold 28px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  g.fillText(cert.date, 512, py + 1250);
+  g.font = 'bold 24px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  g.fillText(cert.date, 512, lowerY + 202);
 
   g.fillStyle = '#475569';
-  g.font = '600 21px monospace';
+  g.font = '600 19px monospace';
   g.letterSpacing = '0.08em';
-  g.fillText('ID: ' + cert.certId, 512, py + 1305);
+  g.fillText('ID: ' + cert.certId, 512, lowerY + 242);
 
   // Click to inspect hint at the base
-  g.fillStyle = '#94a3b8';
-  g.font = '600 16px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  g.fillStyle = '#8f6f26';
+  g.font = '700 14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
   g.letterSpacing = '0.14em';
-  g.fillText('CLICK TO EXPAND CREDENTIAL', 512, py + 1375);
+  g.fillText('▾ CLICK TO OPEN REAL CERTIFICATE & VERIFY ▾', 512, lowerY + 288);
 
   return c;
 }
@@ -1289,8 +1373,12 @@ function buildVerticalKakemonoScrolls() {
     const gRoot = new THREE.Group();
     const gHover = new THREE.Group();
 
-    // High-res flat vertical texture
-    const tex = new THREE.CanvasTexture(createKakemonoTexture(cert));
+    // High-res flat vertical texture with real mini certificate in center
+    let tex;
+    const canvas = createKakemonoTexture(cert, () => {
+      if (tex) tex.needsUpdate = true;
+    });
+    tex = new THREE.CanvasTexture(canvas);
     tex.colorSpace = THREE.SRGBColorSpace;
     const bannerMat = new THREE.MeshStandardMaterial({
       map: tex,
@@ -1418,21 +1506,45 @@ function setupNavigation() {
   }, { passive: true });
 }
 
-/* ============================================================ 8 · MODAL & INTERACTIONS */
+/* ============================================================ 8 · ROBUST EXTERNAL OPENER (NO SANDBOX BLOCK) */
+function openExternal(url) {
+  if (!url) return;
+  // 1. Send to parent window (kage.html) so top context opens the tab
+  try {
+    window.parent.postMessage({ type: 'OPEN_URL', url: url }, '*');
+  } catch(e) {}
+
+  // 2. Window.top.open directly
+  try {
+    if (window.top && window.top !== window) {
+      const win = window.top.open(url, '_blank', 'noopener,noreferrer');
+      if (win) return;
+    }
+  } catch(e) {}
+
+  // 3. Fallback standard window.open
+  try {
+    window.open(url, '_blank', 'noopener,noreferrer');
+  } catch(e) {}
+}
+
+/* ============================================================ 9 · MODAL & INTERACTIONS */
 function openCertificate(item) {
   if (!item) return;
   activeScroll = item;
 
   const d = item.data;
 
-  // Left Side: Card Preview Fill
-  document.getElementById('m-watermark').textContent = d.kanji;
-  document.getElementById('m-card-issuer').textContent = d.issuer.toUpperCase();
-  document.getElementById('m-card-badge').textContent = d.tag;
-  document.getElementById('m-card-title').textContent = d.title;
-  document.getElementById('m-card-title').style.color = d.accent;
-  document.getElementById('m-card-date').textContent = d.date;
-  document.getElementById('m-card-id').textContent = 'CREDENTIAL ID: ' + d.certId;
+  // Real Certificate Showcase Fill
+  const realImg = document.getElementById('m-real-cert-img');
+  if (realImg) {
+    realImg.src = d.previewImg;
+    realImg.alt = d.title;
+  }
+  const realCaptionId = document.getElementById('m-real-caption-id');
+  if (realCaptionId) realCaptionId.textContent = 'CREDENTIAL ID: ' + d.certId;
+  const realCaptionDate = document.getElementById('m-real-caption-date');
+  if (realCaptionDate) realCaptionDate.textContent = d.date;
 
   // Right Side: Details Fill
   document.getElementById('m-issuer-name').textContent = d.issuer;
@@ -1450,15 +1562,28 @@ function openCertificate(item) {
     skillsContainer.appendChild(chip);
   });
 
-  // Action links
-  const verifyBtn = document.getElementById('m-redirect-link');
-  verifyBtn.href = d.pdfUrl;
+  // Action buttons
+  const pdfBtn = document.getElementById('m-btn-view-pdf');
+  if (pdfBtn) {
+    pdfBtn.onclick = (e) => {
+      e.preventDefault();
+      openExternal(d.pdfUrl);
+    };
+  }
 
-  const onlineBtn = document.getElementById('m-verify-online');
+  const certFrame = document.getElementById('m-cert-frame');
+  if (certFrame) {
+    certFrame.onclick = () => openExternal(d.pdfUrl);
+  }
+
+  const onlineBtn = document.getElementById('m-btn-verify-online');
   if (onlineBtn) {
     if (d.verifyUrl) {
-      onlineBtn.href = d.verifyUrl;
       onlineBtn.style.display = 'inline-flex';
+      onlineBtn.onclick = (e) => {
+        e.preventDefault();
+        openExternal(d.verifyUrl);
+      };
     } else {
       onlineBtn.style.display = 'none';
     }

@@ -57,7 +57,7 @@ export function AshenPress({ className = "", style }: AshenPressProps) {
         <iframe
           title="My Certificates — 3D Scroll Archive"
           srcDoc={ashenPressSource}
-          sandbox="allow-scripts allow-same-origin"
+          sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation"
           loading="eager"
           onLoad={() => setReady(true)}
           style={{

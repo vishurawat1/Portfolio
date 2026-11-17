@@ -4655,11 +4655,11 @@ body.light-theme .theme-toggle .t-dark { display: none; }
     <div class="cert-vault-frame">
       <iframe
         id="ashen-press-shelf"
-        src="/landing-pages/ashen-press.html?v=9"
+        src="/landing-pages/ashen-press.html?v=11"
         title="My Certificates — 3D Makimono Scroll Vault"
         loading="lazy"
         onload="try{this.contentWindow.postMessage({type:'THEME_CHANGE',theme:window.THEME?window.THEME.current:'dark'},'*')}catch(e){}"
-        sandbox="allow-scripts allow-same-origin"
+        sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation"
       ></iframe>
     </div>
   </div>
@@ -10138,6 +10138,12 @@ else addEventListener('DOMContentLoaded', boot);
   function initCertificatesEngine() {
     const filterBtns = document.querySelectorAll('.cert-filter-btn');
     const iframe = document.getElementById('ashen-press-shelf');
+
+    window.addEventListener('message', (e) => {
+      if (e.data && e.data.type === 'OPEN_URL' && e.data.url) {
+        window.open(e.data.url, '_blank', 'noopener,noreferrer');
+      }
+    });
 
     filterBtns.forEach(btn => {
       btn.addEventListener('click', () => {
