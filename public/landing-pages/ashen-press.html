@@ -555,7 +555,7 @@
   </div>
   <div class="header-badge">
     <span class="h-dot"></span>
-    <span>7 Verified Accreditations</span>
+    <span id="header-cert-count">10 Verified Accreditations</span>
   </div>
 </header>
 
@@ -1208,9 +1208,9 @@ const pointerVec = new THREE.Vector2();
 function initScene() {
   try {
     glCanvas = document.getElementById('gl');
-    renderer = new THREE.WebGLRenderer({ canvas: glCanvas, antialias: true, alpha: false });
+    renderer = new THREE.WebGLRenderer({ canvas: glCanvas, antialias: true, alpha: false, powerPreference: 'high-performance' });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.35));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.15));
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.18;
@@ -1289,9 +1289,21 @@ function initScene() {
     window.renderer = renderer;
     window.scene = scene;
     window.scrolls = scrolls;
-    console.log('SCENE INITIALIZED SUCCESSFULLY, SCROLLS COUNT:', scrolls.length);
 
-    startLoop();
+    // Dynamically update count badge to always reflect CERTS.length accurately
+    const countBadge = document.getElementById('header-cert-count');
+    if (countBadge) countBadge.textContent = `${CERTS.length} Verified Accreditations`;
+
+    // If running in an iframe, request visibility from parent
+    if (window.self !== window.top) {
+      try {
+        window.parent.postMessage({ type: 'REQUEST_VISIBILITY' }, '*');
+      } catch(e) {}
+    }
+
+    if (isVisible) {
+      startLoop();
+    }
   } catch (err) {
     console.error('ERROR INITIALIZING SCENE:', err);
   }
@@ -1591,12 +1603,14 @@ function openCertificate(item) {
 
   const modal = document.getElementById('cert-modal');
   modal.classList.add('open');
+  stopLoop();
 }
 
 function closeCertificate() {
   const modal = document.getElementById('cert-modal');
   modal.classList.remove('open');
   activeScroll = null;
+  if (isVisible) startLoop();
 }
 
 function setupPointer() {
@@ -1661,12 +1675,12 @@ function onResize() {
 /* ============================================================ 9 · ANIMATION LOOP */
 let lastT = performance.now();
 let isLoopRunning = false;
-let isVisible = true;
+let isVisible = window.self === window.top; // Only run by default if opened directly, otherwise wait for parent visibility
 window.isLoopRunning = false;
-window.isVisible = true;
+window.isVisible = isVisible;
 
 function startLoop() {
-  if (isLoopRunning) return;
+  if (isLoopRunning || !isVisible || activeScroll) return;
   isLoopRunning = true;
   window.isLoopRunning = true;
   lastT = performance.now();
@@ -1679,7 +1693,10 @@ function stopLoop() {
 }
 
 function renderLoop(t) {
-  if (!isLoopRunning) return;
+  if (!isLoopRunning || !isVisible || activeScroll) {
+    stopLoop();
+    return;
+  }
   const dt = Math.min((t - lastT) / 1000, 0.1);
   lastT = t;
 
@@ -1738,6 +1755,23 @@ window.addEventListener('message', (e) => {
     }
   }
 });
+
+// Self-contained IntersectionObserver fallback if iframe supports it
+if ('IntersectionObserver' in window) {
+  try {
+    const io = new IntersectionObserver(([entry]) => {
+      if (entry) {
+        const vis = entry.isIntersecting;
+        if (vis !== isVisible) {
+          isVisible = window.isVisible = vis;
+          if (isVisible) startLoop();
+          else stopLoop();
+        }
+      }
+    }, { threshold: 0.05 });
+    io.observe(document.documentElement);
+  } catch(e) {}
+}
 
 document.addEventListener('visibilitychange', () => {
   if (document.hidden) {

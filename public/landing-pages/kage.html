@@ -4655,7 +4655,7 @@ body.light-theme .theme-toggle .t-dark { display: none; }
     <div class="cert-vault-frame">
       <iframe
         id="ashen-press-shelf"
-        src="/landing-pages/ashen-press.html?v=11"
+        src="/landing-pages/ashen-press.html?v=12"
         title="My Certificates — 3D Makimono Scroll Vault"
         loading="lazy"
         onload="try{this.contentWindow.postMessage({type:'THEME_CHANGE',theme:window.THEME?window.THEME.current:'dark'},'*')}catch(e){}"
@@ -7624,13 +7624,16 @@ function createCloth(output, plate, options) {
     if (visible) start();
   });
   io.observe(output);
+  let cachedWrapRect = null;
+  const onEnter = () => { cachedWrapRect = wrapper.getBoundingClientRect(); };
   const onMove = e => {
-    const r = wrapper.getBoundingClientRect();
-    const x = e.clientX - r.left, y = e.clientY - r.top;
+    if (!cachedWrapRect) cachedWrapRect = wrapper.getBoundingClientRect();
+    const x = e.clientX - cachedWrapRect.left, y = e.clientY - cachedWrapRect.top;
     if (touch.s < .01) { touch.x = x; touch.y = y; touch.vx = touch.vy = 0; }
     ptr.x = x; ptr.y = y; ptr.inside = true; start();
   };
-  const onLeave = () => { ptr.inside = false; };
+  const onLeave = () => { ptr.inside = false; cachedWrapRect = null; };
+  wrapper.addEventListener('pointerenter', onEnter, { passive: true });
   wrapper.addEventListener('pointermove', onMove, { passive: true });
   wrapper.addEventListener('pointerleave', onLeave, { passive: true });
   const onHidden = () => { if (document.hidden) { running = false; cancelAnimationFrame(raf); } else start(); };
@@ -8500,15 +8503,15 @@ window.addEventListener('resize', () => { cardsNeedMeasure = true; }, { passive:
 
 function renderCards(rt) {
   if (!CARDS.length) return;
-  if (cardsNeedMeasure) measureCards();
   let drew = false;
   for (let i = 0; i < CARDS.length; i++) {
-    const C = CARDS[i], r = C.rect;
+    const C = CARDS[i];
+    /* a card carrying cloth has no background left of its own, so skip before any DOM style/layout queries */
+    if (C.el.classList.contains('on-cloth')) continue;
+    if (cardsNeedMeasure) measureCards();
+    const r = C.rect;
     if (!r || !r.inView) continue;
     if (cardAlpha(C.el) < .995) continue;
-    /* a card carrying cloth has no background left of its own, so the blit
-       would show through the fabric's rounded corners and past its edges */
-    if (C.el.classList.contains('on-cloth')) continue;
     if (!WANT_POST) {                              /* debug path: straight in */
       setRegion(rt, r.left, vpH() - r.bottom, r.width, r.height);
       renderer.clear(true, true, false);
@@ -9464,7 +9467,7 @@ else addEventListener('DOMContentLoaded', boot);
     let canvasH = 0;
     let dpr = 1;
     let animId = null;
-    let isVisible = true;
+    let isVisible = false;
     let mousePos = { x: -1000, y: -1000, active: false };
 
     // Kyoto ambient floating embers & dynamic interactive sparks
@@ -9543,33 +9546,29 @@ else addEventListener('DOMContentLoaded', boot);
 
     // Cache card center coordinates relative to wrapperEl with high-efficiency memoization
     let cachedCenters = {};
-    let lastCentersUpdate = 0;
-    function invalidateCenters() { lastCentersUpdate = 0; }
+    function invalidateCenters() { cachedCenters = {}; }
     window.addEventListener('resize', invalidateCenters, { passive: true });
 
     function getCardCenters() {
-      const now = performance.now();
-      if (now - lastCentersUpdate > 280 || Object.keys(cachedCenters).length === 0) {
-        lastCentersUpdate = now;
-        if (!wrapperEl) return cachedCenters;
-        const wrapRect = wrapperEl.getBoundingClientRect();
-        const centers = {};
-        const cards = matrixGridEl.querySelectorAll('.skill-card:not(.is-hidden)');
+      if (Object.keys(cachedCenters).length > 0) return cachedCenters;
+      if (!wrapperEl || !matrixGridEl) return cachedCenters;
+      const wrapRect = wrapperEl.getBoundingClientRect();
+      const centers = {};
+      const cards = matrixGridEl.querySelectorAll('.skill-card:not(.is-hidden)');
 
-        cards.forEach(card => {
-          const id = card.dataset.skillId;
-          if (!id) return;
-          const rect = card.getBoundingClientRect();
-          centers[id] = {
-            x: rect.left - wrapRect.left + rect.width / 2,
-            y: rect.top - wrapRect.top + rect.height / 2,
-            w: rect.width,
-            h: rect.height,
-            el: card
-          };
-        });
-        cachedCenters = centers;
-      }
+      cards.forEach(card => {
+        const id = card.dataset.skillId;
+        if (!id) return;
+        const rect = card.getBoundingClientRect();
+        centers[id] = {
+          x: rect.left - wrapRect.left + rect.width / 2,
+          y: rect.top - wrapRect.top + rect.height / 2,
+          w: rect.width,
+          h: rect.height,
+          el: card
+        };
+      });
+      cachedCenters = centers;
       return cachedCenters;
     }
 
@@ -9636,85 +9635,81 @@ else addEventListener('DOMContentLoaded', boot);
         ctx.shadowBlur = 0;
       }
 
-      // 3. Draw Interactive Resonance Lines & Constellation
-      const centers = getCardCenters();
+      // 3. Draw Interactive Resonance Lines & Constellation strictly ONLY when a technology card is clicked/selected
+      if (activeSkillId) {
+        const centers = getCardCenters();
+        if (centers[activeSkillId]) {
+          function drawInteractiveResonanceLine(origin, target, idx) {
+            if (!origin || !target) return;
+            const dx = target.x - origin.x;
+            const dy = target.y - origin.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 8) return;
 
-      function drawInteractiveResonanceLine(origin, target, idx, isAmbient) {
-        if (!origin || !target) return;
-        const dx = target.x - origin.x;
-        const dy = target.y - origin.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < 8) return;
+            // Clean, direct, taut straight connection line (NO hanging or sagging rope curve)
+            ctx.beginPath();
+            ctx.moveTo(origin.x, origin.y);
+            ctx.lineTo(target.x, target.y);
 
-        // Clean, direct, taut straight connection line (NO hanging or sagging rope curve)
-        ctx.beginPath();
-        ctx.moveTo(origin.x, origin.y);
-        ctx.lineTo(target.x, target.y);
+            const grad = ctx.createLinearGradient(origin.x, origin.y, target.x, target.y);
+            grad.addColorStop(0, 'rgba(224, 35, 28, 0.95)');
+            grad.addColorStop(0.5, 'rgba(255, 145, 55, 0.98)');
+            grad.addColorStop(1, 'rgba(255, 205, 110, 0.95)');
 
-        const grad = ctx.createLinearGradient(origin.x, origin.y, target.x, target.y);
-        grad.addColorStop(0, 'rgba(224, 35, 28, 0.95)');
-        grad.addColorStop(0.5, 'rgba(255, 145, 55, 0.98)');
-        grad.addColorStop(1, 'rgba(255, 205, 110, 0.95)');
+            ctx.lineWidth = 2.2;
+            ctx.shadowColor = 'rgba(224, 35, 28, 0.9)';
+            ctx.shadowBlur = 14;
+            ctx.strokeStyle = grad;
+            ctx.stroke();
 
-        ctx.lineWidth = 2.2;
-        ctx.shadowColor = 'rgba(224, 35, 28, 0.9)';
-        ctx.shadowBlur = 14;
-        ctx.strokeStyle = grad;
-        ctx.stroke();
+            // Traveling direct photon energy packet along the straight line
+            const photonProg = ((globalPulsePhase * 0.75 + idx * 0.22) % 1);
+            const px = origin.x + dx * photonProg;
+            const py = origin.y + dy * photonProg;
 
-        // Traveling direct photon energy packet along the straight line
-        const photonProg = ((globalPulsePhase * 0.75 + idx * 0.22) % 1);
-        const px = origin.x + dx * photonProg;
-        const py = origin.y + dy * photonProg;
+            ctx.fillStyle = '#ffffff';
+            ctx.shadowColor = '#ff6a42';
+            ctx.shadowBlur = 14;
+            ctx.beginPath();
+            ctx.arc(px, py, 3.4, 0, Math.PI * 2);
+            ctx.fill();
 
-        ctx.fillStyle = '#ffffff';
-        ctx.shadowColor = '#ff6a42';
-        ctx.shadowBlur = 14;
-        ctx.beginPath();
-        ctx.arc(px, py, 3.4, 0, Math.PI * 2);
-        ctx.fill();
+            // Target node halo
+            ctx.strokeStyle = 'rgba(255, 140, 70, 0.75)';
+            ctx.lineWidth = 1.4;
+            ctx.beginPath();
+            ctx.arc(target.x, target.y, 7 + Math.sin(globalPulsePhase + idx) * 2.2, 0, Math.PI * 2);
+            ctx.stroke();
 
-        // Target node halo
-        ctx.strokeStyle = 'rgba(255, 140, 70, 0.75)';
-        ctx.lineWidth = 1.4;
-        ctx.beginPath();
-        ctx.arc(target.x, target.y, 7 + Math.sin(globalPulsePhase + idx) * 2.2, 0, Math.PI * 2);
-        ctx.stroke();
+            ctx.shadowBlur = 0; // reset
+          }
 
-        ctx.shadowBlur = 0; // reset
+          const origin = centers[activeSkillId];
+          const skill = SKILLS_DATA[activeSkillId];
+          const partners = skill ? skill.synergies : [];
+
+          partners.forEach((synId, idx) => {
+            const target = centers[synId];
+            if (!target) return;
+            drawInteractiveResonanceLine(origin, target, idx);
+          });
+
+          // Prominent glowing beacon on active card center (in front of card)
+          ctx.strokeStyle = 'rgba(224, 35, 28, 0.95)';
+          ctx.lineWidth = 2.4;
+          ctx.shadowColor = 'rgba(224, 35, 28, 1)';
+          ctx.shadowBlur = 16;
+          ctx.beginPath();
+          ctx.arc(origin.x, origin.y, 14 + Math.sin(globalPulsePhase * 2) * 3.5, 0, Math.PI * 2);
+          ctx.stroke();
+
+          ctx.fillStyle = '#ffffff';
+          ctx.beginPath();
+          ctx.arc(origin.x, origin.y, 3.5, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.shadowBlur = 0;
+        }
       }
-
-      // Draw strings strictly ONLY when a technology card is clicked/selected
-      if (activeSkillId && centers[activeSkillId]) {
-        const origin = centers[activeSkillId];
-        const skill = SKILLS_DATA[activeSkillId];
-        const partners = skill ? skill.synergies : [];
-
-        partners.forEach((synId, idx) => {
-          const target = centers[synId];
-          if (!target) return;
-          drawInteractiveResonanceLine(origin, target, idx, false);
-        });
-
-        // Prominent glowing beacon on active card center (in front of card)
-        ctx.strokeStyle = 'rgba(224, 35, 28, 0.95)';
-        ctx.lineWidth = 2.4;
-        ctx.shadowColor = 'rgba(224, 35, 28, 1)';
-        ctx.shadowBlur = 16;
-        ctx.beginPath();
-        ctx.arc(origin.x, origin.y, 14 + Math.sin(globalPulsePhase * 2) * 3.5, 0, Math.PI * 2);
-        ctx.stroke();
-
-        ctx.fillStyle = '#ffffff';
-        ctx.beginPath();
-        ctx.arc(origin.x, origin.y, 3.5, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.shadowBlur = 0;
-      }
-    }
-
-    if (canvasEl && ctx) {
-      animId = requestAnimationFrame(renderCanvasLoop);
     }
 
     // -------------------------------------------------------------
@@ -10158,22 +10153,31 @@ else addEventListener('DOMContentLoaded', boot);
 
     if ('IntersectionObserver' in window && iframe) {
       const stage = document.getElementById('cert-vault-stage') || iframe;
+      let lastKnownVis = false;
       const io = new IntersectionObserver(([entry]) => {
-        const isVisible = entry.isIntersecting;
+        lastKnownVis = entry.isIntersecting;
         if (iframe.contentWindow) {
           try {
-            iframe.contentWindow.postMessage({ type: 'VISIBILITY', visible: isVisible }, '*');
+            iframe.contentWindow.postMessage({ type: 'VISIBILITY', visible: lastKnownVis }, '*');
           } catch(e) {}
         }
-      }, { rootMargin: '300px' });
+      }, { rootMargin: '150px' });
       io.observe(stage);
 
-      iframe.addEventListener('load', () => {
+      const sendVis = () => {
         const rect = stage.getBoundingClientRect();
-        const isVis = rect.bottom > -300 && rect.top < window.innerHeight + 300;
+        lastKnownVis = rect.bottom > -100 && rect.top < window.innerHeight + 100;
         try {
-          iframe.contentWindow.postMessage({ type: 'VISIBILITY', visible: isVis }, '*');
+          iframe.contentWindow.postMessage({ type: 'VISIBILITY', visible: lastKnownVis }, '*');
         } catch(e) {}
+      };
+
+      iframe.addEventListener('load', sendVis);
+
+      window.addEventListener('message', (e) => {
+        if (e.data && e.data.type === 'REQUEST_VISIBILITY') {
+          sendVis();
+        }
       });
     }
   }
